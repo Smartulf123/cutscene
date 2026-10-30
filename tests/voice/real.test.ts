@@ -10,10 +10,22 @@ import { fileURLToPath } from "node:url";
 import { afterAll, describe, expect, it } from "vitest";
 import { voiceStatus } from "../../skills/cutscene-voice/scripts/lib/status.mjs";
 import { compareWavs, wavInfo } from "../../skills/cutscene-voice/scripts/lib/wav.mjs";
+import type { BeatSheet } from "../../skills/cutscene-voice/scripts/lib/types.mjs";
+
+type Line = { id: string; seconds: number; duration: number };
+/** The one JSON object voice.mjs prints under --json (only the fields these tests read). */
+type VoiceJson = {
+  error?: { message?: string };
+  takes?: { seed: number | null; seconds: number; duration: number }[];
+  voice: { reference_verified: boolean | null };
+  lines?: Line[];
+  spoken?: Line[];
+  verified?: boolean | null;
+};
 
 const VOICE = fileURLToPath(new URL("../../skills/cutscene-voice/scripts/voice.mjs", import.meta.url));
 const status = await voiceStatus({ voicestudio: false });
-const has = (id) => status.models.find((m) => m.id === id)?.installed;
+const has = (id: string) => status.models.find((m) => m.id === id)?.installed;
 const ready = has("omnivoice") && has("whisper");
 const skipReason = process.env.CUTSCENE_VOICE_REAL === "0" ? "CUTSCENE_VOICE_REAL=0" : !ready ? "OmniVoice and Whisper aren't installed (cutscene voice setup)" : null;
 if (skipReason) console.log(`[voice real tests] skipped: ${skipReason}`);
@@ -24,15 +36,15 @@ const LINES = [
   ["b3", "Each line is checked by ear before it ships."],
 ];
 
-let project;
+let project: string | undefined;
 afterAll(() => {
   if (project && process.env.CUTSCENE_VOICE_KEEP !== "1") rmSync(project, { recursive: true, force: true });
 });
 
-function voice(args) {
+function voice(args: string[]) {
   const t0 = Date.now();
   const r = spawnSync(process.execPath, [VOICE, ...args, "--json"], { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
-  const json = JSON.parse(r.stdout.trim().split(/\r?\n/).pop());
+  const json = JSON.parse(r.stdout.trim().split(/\r?\n/).pop()!) as VoiceJson;
   return { code: r.status, json, seconds: (Date.now() - t0) / 1000, stderr: r.stderr };
 }
 
@@ -58,25 +70,25 @@ describe.skipIf(!!skipReason)("real voices on this computer", () => {
     console.log(`[voice real] speak+verify 3 lines: ${s.seconds.toFixed(0)} s total; per line: ${JSON.stringify((s.json.lines || s.json.spoken || []).map((l) => ({ id: l.id, seconds: l.seconds, duration: l.duration })))}`);
     expect(s.code, s.json?.error?.message).toBe(0);
     expect(s.json.verified).toBe(true);
-    const after = JSON.parse(readFileSync(join(project, ".cutscene", "beats.json"), "utf8"));
+    const after = JSON.parse(readFileSync(join(project, ".cutscene", "beats.json"), "utf8")) as BeatSheet & { beats: Required<BeatSheet>["beats"] };
     for (const [id] of LINES) {
-      const b = after.beats.find((x) => x.id === id);
-      expect(b.voice.verified).toBe(true);
-      expect(b.voice.seed).toBe(42);
-      expect(b.voice.words.length).toBeGreaterThan(5);
-      expect(b.voice.duration).toBeGreaterThan(1);
-      const info = wavInfo(join(project, b.voice.file));
+      const b = after.beats.find((x) => x.id === id)!;
+      expect(b.voice!.verified).toBe(true);
+      expect(b.voice!.seed).toBe(42);
+      expect(b.voice!.words!.length).toBeGreaterThan(5);
+      expect(b.voice!.duration).toBeGreaterThan(1);
+      const info = wavInfo(join(project, b.voice!.file!));
       expect(info.sampleRate).toBeGreaterThanOrEqual(24000);
       expect(info.channels).toBe(1);
       const lic = readFileSync(join(project, "assets", "voice", `${id}.license.txt`), "utf8");
       expect(lic).toContain("CC-BY-NC-4.0");
       expect(lic).toContain("NON-COMMERCIAL");
     }
-    const report = JSON.parse(readFileSync(join(project, ".cutscene", "voice", "verify.json"), "utf8"));
+    const report = JSON.parse(readFileSync(join(project, ".cutscene", "voice", "verify.json"), "utf8")) as { lines: { verified: boolean }[] };
     expect(report.lines.every((l) => l.verified)).toBe(true);
 
     // 3. same seed, same line, same audio
-    const take = join(project, after.beats[2].voice.take);
+    const take = join(project, after.beats[2].voice!.take!);
     const first = join(project, "first-take.wav");
     copyFileSync(take, first);
     const again = voice(["speak", "--project", project, "--beats", "b3", "--no-verify"]);

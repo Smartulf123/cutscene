@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Built from src/skills/cutscene-voice/scripts/voice.mts by `npm run build`. Edit that file, not this one.
 // `cutscene voice <command>`: local AI voices for Cutscene videos.
 // Started by skills/cutscene/scripts/cli.mjs (env: CUTSCENE_HOME, CUTSCENE_CLI,
 // CUTSCENE_ENGINE_VERSION), or directly with `node voice.mjs <command>`.
@@ -9,7 +10,6 @@ import { fileURLToPath } from "node:url";
 import { cmdBenchmark, cmdClone, cmdDesign, cmdSetup, cmdSpeak, cmdStatus, cmdVerify } from "./lib/commands.mjs";
 import { cmdSpeakOne, isOneShot } from "./lib/oneshot.mjs";
 import { EXIT, VoiceError, envelope, parseFlags, usage } from "./lib/util.mjs";
-
 export const HELP = `Cutscene voices: design, clone, speak and check voiceover lines on this computer.
 
 Usage: cutscene voice <command> [options] [--json]
@@ -41,77 +41,85 @@ Usage: cutscene voice <command> [options] [--json]
                --model omnivoice  --steps N  --fast
 
 Every command takes --json (one JSON object on stdout). Exit code 0 = ok, 1 = failed, 2 = wrong usage.`;
-
 const COMMON = { json: "bool", help: "bool" };
 const SPECS = {
-  setup: { ...COMMON, model: "list", yes: "bool", "dry-run": "bool", repair: "bool" },
-  status: { ...COMMON, project: "string" },
-  design: { ...COMMON, yes: "bool", project: "string", speaker: "string", describe: "string", sample: "string", seed: "int", language: "string", model: "string", preset: "string", voice: "string", engine: "string", steps: "int", fast: "bool", tries: "int", replace: "bool" },
-  clone: { ...COMMON, yes: "bool", project: "string", speaker: "string", from: "string", text: "string", consent: "string", model: "string", seed: "int", language: "string", sample: "string", steps: "int", fast: "bool", force: "bool", replace: "bool" },
-  speak: { ...COMMON, yes: "bool", project: "string", beats: "list", retry: "bool", seed: "int", model: "string", steps: "int", fast: "bool", "no-verify": "bool", "text-file": "string", text: "string", out: "string", voice: "string", describe: "string", language: "string", provider: "string" },
-  verify: { ...COMMON, project: "string", beats: "list", accept: "list", reason: "string" },
-  benchmark: { ...COMMON, yes: "bool", model: "list", steps: "int", fast: "bool" },
+    setup: { ...COMMON, model: "list", yes: "bool", "dry-run": "bool", repair: "bool" },
+    status: { ...COMMON, project: "string" },
+    design: { ...COMMON, yes: "bool", project: "string", speaker: "string", describe: "string", sample: "string", seed: "int", language: "string", model: "string", preset: "string", voice: "string", engine: "string", steps: "int", fast: "bool", tries: "int", replace: "bool" },
+    clone: { ...COMMON, yes: "bool", project: "string", speaker: "string", from: "string", text: "string", consent: "string", model: "string", seed: "int", language: "string", sample: "string", steps: "int", fast: "bool", force: "bool", replace: "bool" },
+    speak: { ...COMMON, yes: "bool", project: "string", beats: "list", retry: "bool", seed: "int", model: "string", steps: "int", fast: "bool", "no-verify": "bool", "text-file": "string", text: "string", out: "string", voice: "string", describe: "string", language: "string", provider: "string" },
+    verify: { ...COMMON, project: "string", beats: "list", accept: "list", reason: "string" },
+    benchmark: { ...COMMON, yes: "bool", model: "list", steps: "int", fast: "bool" },
 };
+// parseFlags checked the options against the command's spec, so each command gets the ones it knows.
 const RUN = { setup: cmdSetup, status: cmdStatus, design: cmdDesign, clone: cmdClone, speak: cmdSpeak, verify: cmdVerify, benchmark: cmdBenchmark };
-
 /** Parse argv into {cmd, flags}. Throws a usage VoiceError (exit 2) for wrong usage. */
 export function parseArgs(argv) {
-  const [cmd, ...rest] = argv;
-  const json = rest.includes("--json");
-  if (!cmd || cmd === "help" || cmd === "--help" || cmd === "-h") return { cmd: "help", flags: { json } };
-  const spec = SPECS[cmd];
-  if (!spec) throw usage(`Unknown voice command "${cmd}".`);
-  const { flags, positionals } = parseFlags(rest, spec);
-  if (positionals.length) {
-    if (cmd === "status" && !flags.project && positionals.length === 1) flags.project = positionals[0];
-    else throw usage(`Unexpected argument "${positionals[0]}".`, "Options start with --, for example --project my-video.");
-  }
-  return { cmd: flags.help ? "help" : cmd, flags };
+    const [cmd, ...rest] = argv;
+    const json = rest.includes("--json");
+    if (!cmd || cmd === "help" || cmd === "--help" || cmd === "-h")
+        return { cmd: "help", flags: { json } };
+    const spec = SPECS[cmd];
+    if (!spec)
+        throw usage(`Unknown voice command "${cmd}".`);
+    const { flags, positionals } = parseFlags(rest, spec);
+    if (positionals.length) {
+        if (cmd === "status" && !flags.project && positionals.length === 1)
+            flags.project = positionals[0];
+        else
+            throw usage(`Unexpected argument "${positionals[0]}".`, "Options start with --, for example --project my-video.");
+    }
+    return { cmd: flags.help ? "help" : cmd, flags };
 }
-
 function print(json, result) {
-  if (json) {
-    const { message, ...rest } = result;
-    process.stdout.write(JSON.stringify({ ok: true, ...rest, summary: message }) + "\n");
-  } else if (result.message) process.stdout.write(result.message + "\n");
+    if (json) {
+        const { message, ...rest } = result;
+        process.stdout.write(JSON.stringify({ ok: true, ...rest, summary: message }) + "\n");
+    }
+    else if (result.message)
+        process.stdout.write(result.message + "\n");
 }
-
 export async function main(argv = process.argv.slice(2), ctx = {}) {
-  let json = argv.includes("--json");
-  try {
-    const { cmd, flags } = parseArgs(argv);
-    json = !!flags.json;
-    if (cmd === "help") {
-      if (json) process.stdout.write(JSON.stringify({ ok: true, commands: Object.keys(SPECS), help: HELP }) + "\n");
-      else process.stdout.write(HELP + "\n");
-      return EXIT.OK;
+    let json = argv.includes("--json");
+    try {
+        const { cmd, flags } = parseArgs(argv);
+        json = !!flags.json;
+        if (cmd === "help") {
+            if (json)
+                process.stdout.write(JSON.stringify({ ok: true, commands: Object.keys(SPECS), help: HELP }) + "\n");
+            else
+                process.stdout.write(HELP + "\n");
+            return EXIT.OK;
+        }
+        const run = cmd === "speak" && isOneShot(flags) ? cmdSpeakOne : RUN[cmd];
+        const result = await run(flags, ctx);
+        print(json, result);
+        return EXIT.OK;
     }
-    const run = cmd === "speak" && isOneShot(flags) ? cmdSpeakOne : RUN[cmd];
-    const result = await run(flags, ctx);
-    print(json, result);
-    return EXIT.OK;
-  } catch (err) {
-    const env = envelope(err);
-    if (json) process.stdout.write(JSON.stringify(env) + "\n");
-    else {
-      process.stderr.write(`${env.error.message}\n`);
-      if (env.error.hint) process.stderr.write(`${env.error.hint}\n`);
-      if (!(err instanceof VoiceError)) process.stderr.write(`${err?.stack || err}\n`);
+    catch (err) {
+        const env = envelope(err);
+        if (json)
+            process.stdout.write(JSON.stringify(env) + "\n");
+        else {
+            process.stderr.write(`${env.error.message}\n`);
+            if (env.error.hint)
+                process.stderr.write(`${env.error.hint}\n`);
+            if (!(err instanceof VoiceError))
+                process.stderr.write(`${err?.stack || err}\n`);
+        }
+        return err instanceof VoiceError ? err.exitCode : EXIT.FAIL;
     }
-    return err instanceof VoiceError ? err.exitCode : EXIT.FAIL;
-  }
 }
-
 function isMain() {
-  try {
-    return realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
-  } catch {
-    return false;
-  }
+    try {
+        return realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
+    }
+    catch {
+        return false;
+    }
 }
-
 if (isMain()) {
-  main().then((code) => {
-    process.exitCode = code;
-  });
+    main().then((code) => {
+        process.exitCode = code;
+    });
 }

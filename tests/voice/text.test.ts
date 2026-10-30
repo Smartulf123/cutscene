@@ -16,7 +16,7 @@ import {
 } from "../../skills/cutscene-voice/scripts/lib/text.mjs";
 
 /** Fake transcriber output: words spaced 0.3 s apart. */
-const heard = (text, p = 0.95) =>
+const heard = (text: string, p = 0.95) =>
   text.split(/\s+/).filter(Boolean).map((w, i) => ({ w, start: +(i * 0.3).toFixed(3), end: +(i * 0.3 + 0.25).toFixed(3), p }));
 
 describe("numbers", () => {
@@ -29,7 +29,7 @@ describe("numbers", () => {
   });
   it("reads decimals, commas and ordinals", () => {
     expect(numberWords("3.14")).toEqual(["three", "point", "one", "four"]);
-    expect(numberWords("1,200").join(" ")).toBe("one thousand two hundred");
+    expect(numberWords("1,200")!.join(" ")).toBe("one thousand two hundred");
     expect(numberWords("1st")).toEqual(["first"]);
     expect(numberWords("22nd")).toEqual(["twenty", "second"]);
     expect(numberWords("30th")).toEqual(["thirtieth"]);
@@ -106,9 +106,9 @@ describe("judging a line", () => {
   it("reports missing and extra words", () => {
     const missing = judgeLine("One two three four", heard("One two four"));
     expect(missing.issues).toEqual([expect.objectContaining({ type: "missing", expected: "three" })]);
-    const missingWord = missing.words.find((w) => w.w === "three");
+    const missingWord = missing.words.find((w) => w.w === "three")!;
     expect(missingWord.estimated).toBe(true);
-    expect(missingWord.start).toBeGreaterThanOrEqual(missing.words[1].end);
+    expect(missingWord.start).toBeGreaterThanOrEqual(missing.words[1].end!);
     const extra = judgeLine("One two", heard("One two thank you"));
     expect(extra.issues).toEqual([expect.objectContaining({ type: "extra", heard: "thank you" })]);
   });
