@@ -175,7 +175,7 @@ export async function cmdSetup(f, ctx) {
 // status
 export async function cmdStatus(f, ctx) {
     const status = await voiceStatus({ home: homeOf(ctx) });
-    const out = { ok: true, ...status, status_ok: status.ok }; // status.ok replaces ok: true here
+    const out = { ...status, ok: true, status_ok: status.ok }; // ok: the command ran; status_ok: voices are ready
     if (f.project) {
         const { sheet } = await loadSheet(findProject(f.project));
         out.project = {

@@ -247,7 +247,7 @@ export async function cmdStatus(f: StatusFlags, ctx?: Ctx) {
     status_ok: boolean;
     project?: { voices: Record<string, VoiceSpec>; lines: { id: string; speaker?: string; line: string; file: string | null; duration: number | null; verified: boolean | null }[] };
     message?: string;
-  } = { ok: true, ...(status as Omit<VoiceStatus, "ok"> & { ok?: boolean }), status_ok: status.ok }; // status.ok replaces ok: true here
+  } = { ...status, ok: true, status_ok: status.ok }; // ok: the command ran; status_ok: voices are ready
   if (f.project) {
     const { sheet } = await loadSheet(findProject(f.project));
     out.project = {

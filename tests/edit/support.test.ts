@@ -1,4 +1,6 @@
-import { readFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { gunzipSync, gzipSync } from "node:zlib";
 import { describe, expect, it } from "vitest";
 import { parseArgs } from "../../skills/cutscene-edit/scripts/lib/cli.mjs";
@@ -11,7 +13,7 @@ import { pinFor, platformKey, sizeText, untar } from "../../skills/cutscene-edit
 import { buildReviewHtml, joinsFor, markCutWords, peaks } from "../../skills/cutscene-edit/scripts/lib/review-page.mjs";
 import { buildEdl } from "../../skills/cutscene-edit/scripts/lib/edl.mjs";
 import { compareWords } from "../../skills/cutscene-edit/scripts/commands/review.mjs";
-import { silenceThreshold } from "../../skills/cutscene-edit/scripts/commands/cut.mjs";
+import { applyCuts, silenceThreshold } from "../../skills/cutscene-edit/scripts/commands/cut.mjs";
 
 describe("arguments", () => {
   const spec = { gap: { type: "number" }, apply: { type: "boolean" }, out: { type: "string", alias: "o" }, refine: { type: "boolean", default: true } } satisfies Record<string, OptSpec>;
@@ -144,5 +146,20 @@ describe("verify word comparison", () => {
     expect(r.matched).toBe(3);
     expect(r.missing).toEqual([{ text: "general", at: 1 }]);
     expect(r.medianOffset).toBe(0);
+  });
+});
+
+describe("apply-cuts", () => {
+  it("refuses a transcript with no words when nothing else gives the length", () => {
+    const dir = mkdtempSync(join(tmpdir(), "cutscene-edit-apply-"));
+    try {
+      const transcript = join(dir, "empty.transcript.json");
+      const cuts = join(dir, "approved.json");
+      writeFileSync(transcript, JSON.stringify({ words: [] }));
+      writeFileSync(cuts, JSON.stringify({ cuts: [] }));
+      expect(() => applyCuts.run([transcript, "--cuts", cuts, "--no-memory"])).toThrow(expect.objectContaining({ code: "NO_WORDS" }));
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });

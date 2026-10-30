@@ -300,6 +300,10 @@ export const applyCuts = {
         }
         const media = sourceMedia(lt, opts.video);
         const params = { approved: cuts.length, fade: opts.fade };
+        // with no words, the length has to come from the edit list, the transcript or the video
+        if (!lt.words.length && !lt.parent && !Number(lt.transcript.audio_duration_secs) && !media?.info.duration) {
+            throw new EditError("NO_WORDS", "The transcript has no timed words.", "Transcribe the recording with `cutscene edit transcribe`.");
+        }
         const inputDuration = lt.parent ? lt.parent.edited_duration : Number(lt.transcript.audio_duration_secs) || media?.info.duration || lt.words.at(-1).end + 0.2;
         const fps = media?.info.fps || lt.parent?.fps || 30;
         const edl = lt.parent

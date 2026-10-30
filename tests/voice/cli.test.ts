@@ -298,6 +298,11 @@ describe("VoiceStudio absent", () => {
     expect(s.models.map((m) => m.id)).toEqual(["omnivoice", "whisper", "voxcpm2", "kokoro"]);
     expect(s.voicestudio.running).toBe(false);
   });
+  it("status --json says ok when it ran, and puts readiness in status_ok", () => {
+    const r = cli(["status", "--json"], { CUTSCENE_HOME: join(tmp, "status-home") });
+    expect(r.code).toBe(0);
+    expect(r.json).toMatchObject({ ok: true, status_ok: false });
+  });
 });
 
 describe("model choice", () => {

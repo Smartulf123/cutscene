@@ -73,7 +73,9 @@ export function validatePlan(plan, transcript, edl, exists = () => true) {
         if (!ids.has(e.visual) || e.time < 0 || e.time >= plan.duration)
             fail(`Visual event ${JSON.stringify(e)} is not valid.`);
     (plan.captions ?? []).forEach((g, i) => {
-        if (g.start > g.words[0].start + 0.005 || g.end < g.words.at(-1).end - 0.005)
+        if (!g.words.length)
+            fail(`Caption group ${i} has no words.`);
+        else if (g.start > g.words[0].start + 0.005 || g.end < g.words.at(-1).end - 0.005)
             fail(`Caption group ${i} cuts off a word.`);
         if (i && g.start < plan.captions[i - 1].end - 0.005)
             fail(`Caption groups ${i - 1} and ${i} overlap.`);

@@ -233,8 +233,8 @@ async function ensureVenv(home: string, onStep?: (step: string) => void): Promis
 export async function installPython(groups: string[], { home = cutsceneHome(), onStep }: { home?: string; onStep?: (step: string) => void } = {}) {
   const manifest = readManifest();
   const vp = voicePaths(home);
-  // ensureVenv gives null only if the new environment's Python doesn't answer; the steps below assume it does.
-  const py = (await ensureVenv(home, onStep)) as PythonInfo;
+  const py = await ensureVenv(home, onStep);
+  if (!py) throw new VoiceError("VENV_FAILED", "The voice environment was created, but its Python doesn't answer.", "Run `cutscene voice setup --yes` again; it moves a broken environment aside and builds a new one.");
   const env = pipEnv(home);
   mkdirSync(vp.jobs, { recursive: true });
   const req = (name: string, text: string) => {

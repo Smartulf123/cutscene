@@ -390,7 +390,9 @@ export function updateBeatSheet(file: string, patch: Record<string, unknown>): B
     const next = mergePatch(sheet, patch) as BeatSheet;
     const result = validateBeats(next);
     if (!result.ok) throw invalidError(file, result);
-    const out = spliceMergePatch(text, parseSpans(text) as ObjectNode, sheet, patch) ?? JSON.stringify(next, null, detectUnit(text)) + "\n";
+    // Only an object can be spliced; a file that held an array or a plain value is rewritten whole.
+    const root = parseSpans(text);
+    const out = (root.type === "object" ? spliceMergePatch(text, root, sheet, patch) : null) ?? JSON.stringify(next, null, detectUnit(text)) + "\n";
     writeFileAtomic(file, out);
     return next;
   });
