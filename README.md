@@ -5,11 +5,9 @@ other agents) that plans the video with you, builds it as an animated HTML compo
 3D shots, speaks the narration in a voice you design, and shows you every change in a live preview.
 Everything runs on your computer.
 
-![Four frames from a 12-second intro made with Cutscene: a 3D logo, an extruded 3D title, three columns for motion, 3D and voice, and an end card](docs/media/showcase.jpg)
-
-The intro above was made with Cutscene itself. Its project is in
-[`examples/cutscene-intro`](examples/cutscene-intro): the brief, the look, the beat sheet, the
-Blender logo, the Three.js title and the four voice lines.
+For an example, [`examples/cutscene-intro`](examples/cutscene-intro) is a 12-second intro made
+with Cutscene itself: the brief, the look, the beat sheet, the Blender logo, the Three.js title and
+the four voice lines.
 
 ## What it does
 
