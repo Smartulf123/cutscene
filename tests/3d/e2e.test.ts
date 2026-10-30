@@ -14,7 +14,7 @@ const blender = await findBlender();
 const ffmpeg = hasTool("ffmpeg") && hasTool("ffprobe");
 const engineCli = existsSync(CUTSCENE) ? CUTSCENE : null;
 
-function run3d(args, cwd) {
+function run3d(args: string[], cwd: string) {
   const r = spawnSync(process.execPath, [CLI3D, ...args, "--json"], { cwd, encoding: "utf8", windowsHide: true, timeout: 20 * 60_000 });
   let json = null;
   try {
@@ -35,7 +35,7 @@ describe.skipIf(why)(`Tier 2 title: spec -> stills -> render -> transparent WebM
   writeFileSync(join(dir, "index.html"), "<!doctype html><html></html>");
   writeFileSync(join(dir, ".cutscene", "look.json"), JSON.stringify({ version: 1, palette: { bg: "#0B1020", fg: "#F4F3EE", accent: "#5B8DEF", accent2: "#FF7A45" }, motion: { character: "snappy" }, seed: 1337 }));
   writeFileSync(join(dir, ".cutscene", "beats.json"), JSON.stringify({ version: 1, fps: 30, width: 1920, height: 1080, beats: [{ id: "b1", start: 0, end: 2, label: "logo", voice: { line: "Meet Cutscene." } }] }, null, 2));
-  const timings = {};
+  const timings: Record<string, unknown> = {};
 
   it("writes and plans a spec", () => {
     const n = run3d(["new", "title3d", "--id", "e2e", "--text", "CUTSCENE", "--beat", "b1"], dir);
@@ -95,7 +95,7 @@ describe.skipIf(!engineCli)(`Tier 1 shot passes the engine's lint and check ${en
   it("title3d in a fresh project", () => {
     const root = mkdtempSync(join(tmpdir(), "cs3d-t1-"));
     const env = { ...process.env, HYPERFRAMES_SKIP_SKILLS: "1" };
-    const init = spawnSync(process.execPath, [engineCli, "init", "video", "--non-interactive"], { cwd: root, encoding: "utf8", env, timeout: 300_000, windowsHide: true });
+    const init = spawnSync(process.execPath, [engineCli!, "init", "video", "--non-interactive"], { cwd: root, encoding: "utf8", env, timeout: 300_000, windowsHide: true });
     const dir = join(root, "video");
     if (init.status !== 0 || !existsSync(join(dir, "index.html"))) {
       console.warn("[cutscene-3d e2e] skipped: engine init failed", init.stderr.slice(-500));
@@ -107,10 +107,10 @@ describe.skipIf(!engineCli)(`Tier 1 shot passes the engine's lint and check ${en
     let html = readFileSync(join(dir, "index.html"), "utf8");
     html = html.replace(/<h1 id="title"[^\n]*\n/, "").replace(/data-duration="\d+"/, 'data-duration="3"').replace(/(\s*<\/div>\s*<script>)/, `\n      ${w.snippet}$1`);
     writeFileSync(join(dir, "index.html"), html);
-    const lint = spawnSync(process.execPath, [engineCli, "lint"], { cwd: dir, encoding: "utf8", env, timeout: 300_000, windowsHide: true });
+    const lint = spawnSync(process.execPath, [engineCli!, "lint"], { cwd: dir, encoding: "utf8", env, timeout: 300_000, windowsHide: true });
     expect(lint.status, lint.stdout + lint.stderr).toBe(0);
     expect(lint.stdout + lint.stderr).toMatch(/0 error/);
-    const check = spawnSync(process.execPath, [engineCli, "check", "--timeout", "30000"], { cwd: dir, encoding: "utf8", env, timeout: 600_000, windowsHide: true });
+    const check = spawnSync(process.execPath, [engineCli!, "check", "--timeout", "30000"], { cwd: dir, encoding: "utf8", env, timeout: 600_000, windowsHide: true });
     expect(check.status, (check.stdout + check.stderr).slice(-2000)).toBe(0);
     expect(check.stdout + check.stderr).toMatch(/Check passed/);
   }, LONG);

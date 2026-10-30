@@ -10,10 +10,10 @@ describe("parseBlenderVersion", () => {
     expect(v).toMatchObject({ major: 5, minor: 2, patch: 3, text: "5.2.3", lts: true });
   });
   it("reads a two-part version", () => {
-    expect(parseBlenderVersion("Blender 4.2\n").text).toBe("4.2.0");
+    expect(parseBlenderVersion("Blender 4.2\n")!.text).toBe("4.2.0");
   });
   it("reads alpha builds and ignores noise before the banner", () => {
-    expect(parseBlenderVersion("Read prefs...\nBlender 5.3.0 Alpha\n").text).toBe("5.3.0");
+    expect(parseBlenderVersion("Read prefs...\nBlender 5.3.0 Alpha\n")!.text).toBe("5.3.0");
   });
   it("returns null for other programs", () => {
     expect(parseBlenderVersion("ffmpeg version 8.1")).toBeNull();
@@ -43,10 +43,10 @@ describe("version checks", () => {
   });
 });
 
-function fakeFs(tree, files = {}) {
+function fakeFs(tree: Record<string, string[]>, files: Record<string, string> = {}) {
   return {
-    list: (dir) => tree[dir] || [],
-    read: (p) => files[p] || "",
+    list: (dir: string) => tree[dir] || [],
+    read: (p: string) => files[p] || "",
   };
 }
 
@@ -101,7 +101,7 @@ describe("blenderCandidates (macOS, Linux)", () => {
 
 describe("findBlender", () => {
   it("skips missing and too-old installs and returns the first good one", async () => {
-    const versions = { "C:\\old\\blender.exe": "Blender 3.6.5", "C:\\Program Files\\Blender Foundation\\Blender 5.2\\blender.exe": "Blender 5.2.3 LTS" };
+    const versions: Record<string, string> = { "C:\\old\\blender.exe": "Blender 3.6.5", "C:\\Program Files\\Blender Foundation\\Blender 5.2\\blender.exe": "Blender 5.2.3 LTS" };
     const r = await findBlender({
       env: { CUTSCENE_BLENDER: "C:\\missing\\blender.exe", PATH: "C:\\old", ProgramFiles: "C:\\Program Files" },
       platform: "win32",
@@ -111,8 +111,8 @@ describe("findBlender", () => {
       probe: (p) => parseBlenderVersion(versions[p]),
     });
     // Program Files is listed by real directory reads; on machines without it, only the old one exists.
-    expect(r.skipped.find((s) => s.source === "CUTSCENE_BLENDER").reason).toMatch(/not found/);
-    expect(r.skipped.find((s) => s.path === "C:\\old\\blender.exe").reason).toMatch(/older than 4\.2/);
+    expect(r.skipped.find((s) => s.source === "CUTSCENE_BLENDER")!.reason).toMatch(/not found/);
+    expect(r.skipped.find((s) => s.path === "C:\\old\\blender.exe")!.reason).toMatch(/older than 4\.2/);
   });
   it("returns null when nothing usable exists", async () => {
     const r = await findBlender({ env: { PATH: "" }, platform: "linux", config: {}, exists: () => false, probe: () => null });

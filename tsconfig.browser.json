@@ -1,0 +1,15 @@
+{
+  "$comment": "Builds the code that runs inside a video, in the browser: src/**/templates/**/*.ts -> the same path without src/, as .js. DOM types, no Node types. Three.js and GSAP come from the page at runtime; their types are small local declaration files next to the sources.",
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": ".",
+    "declaration": true,
+    "lib": ["es2024", "dom"],
+    "types": [],
+    "module": "esnext",
+    "moduleResolution": "bundler"
+  },
+  "include": ["src/skills/cutscene-3d/templates/tier1/*.ts"],
+  "exclude": []
+}

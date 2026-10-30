@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import {
   BUNDLED_FONT, DEMO_SVG, TEMPLATES, frameCount, newSpec, resolveColors, resolveSpec, stillFrames, validateSpec,
 } from "../../skills/cutscene-3d/scripts/lib/spec.mjs";
+import type { ShotSpec } from "../../skills/cutscene-3d/scripts/lib/spec.mjs";
 import { decideTier, estimate, humanTime } from "../../skills/cutscene-3d/scripts/lib/tier.mjs";
 
 describe("newSpec + validateSpec", () => {
@@ -45,8 +46,8 @@ describe("resolveSpec", () => {
   it("merges look.json: colours, eases from the motion character, seed, frames, engine", () => {
     const spec = newSpec("title3d", { id: "x", duration: 2 });
     const r = resolveSpec(spec, { projectDir: "C:/p", look });
-    expect(r.params.face.color).toBe("#FFFFFF");
-    expect(r.params.sides.color).toBe("#112233");
+    expect(r.params.face!.color).toBe("#FFFFFF");
+    expect(r.params.sides!.color).toBe("#112233");
     expect(r.params.reveal_ease).toBe("quint-out");
     expect(r.camera.ease).toBe("quint-inout");
     expect(r.params.stagger).toBeCloseTo(0.2);
@@ -58,7 +59,7 @@ describe("resolveSpec", () => {
   });
   it("spec palette overrides the look", () => {
     const spec = { ...newSpec("title3d", { id: "x" }), palette: { accent: "#FF0000" } };
-    expect(resolveSpec(spec, { look }).params.sides.color).toBe("#FF0000");
+    expect(resolveSpec(spec, { look }).params.sides!.color).toBe("#FF0000");
   });
   it("picks Cycles for glass and makes paths absolute", () => {
     const spec = newSpec("product-shot", { id: "p", model: "assets/p.glb" });
@@ -91,7 +92,7 @@ describe("frames", () => {
 });
 
 describe("decideTier", () => {
-  const spec = (t, extra = {}) => ({ ...newSpec(t, { id: "s" }), ...extra });
+  const spec = (t: string, extra: Partial<ShotSpec> = {}) => ({ ...newSpec(t, { id: "s" }), ...extra });
   it("plain titles, logos and turntables go to Tier 1", () => {
     for (const t of ["title3d", "logo-svg", "turntable"]) expect(decideTier(spec(t)).tier).toBe(1);
   });
@@ -127,7 +128,7 @@ describe("decideTier", () => {
   it("offers a fallback when Blender is missing", () => {
     const d = decideTier(spec("physics-drop"), { blender: null });
     expect(d.fallback).toMatchObject({ tier: 1, template: "title3d" });
-    expect(d.fallback.message).toMatch(/Ask the user/);
+    expect(d.fallback!.message).toMatch(/Ask the user/);
   });
   it("Tier 1-only templates stay Tier 1", () => {
     expect(decideTier(spec("title3d", { template: "shapes" }))).toMatchObject({ tier: 1, template: "shapes" });

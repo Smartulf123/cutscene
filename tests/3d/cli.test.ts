@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
 const CLI = resolve("skills/cutscene-3d/scripts/3d.mjs");
-const run = (args, cwd, env = {}) => {
+const run = (args: string[], cwd: string, env: Record<string, string> = {}) => {
   const r = spawnSync(process.execPath, [CLI, ...args], { cwd, encoding: "utf8", windowsHide: true, env: { ...process.env, ...env } });
   return { code: r.status, out: r.stdout, err: r.stderr, json: (() => { try { return JSON.parse(r.stdout); } catch { return null; } })() };
 };
