@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene/scripts/lib/json.mts by `npm run build`. Edit that file, not this one.
 export declare const EXIT: Readonly<{
     OK: 0;
     FAIL: 1;

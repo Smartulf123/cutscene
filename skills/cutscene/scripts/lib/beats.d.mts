@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene/scripts/lib/beats.mts by `npm run build`. Edit that file, not this one.
 export declare const BEATS_VERSION = 1;
 export declare const FORMATS: string[];
 /** One word of a voice line, with its timing. */

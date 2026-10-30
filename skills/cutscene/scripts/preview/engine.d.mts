@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene/scripts/preview/engine.mts by `npm run build`. Edit that file, not this one.
 import type { ChildProcess } from "node:child_process";
 /** A running Studio and where it answers. */
 export interface Studio {

@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene/scripts/preview/state.mts by `npm run build`. Edit that file, not this one.
 export declare const DEFAULT_PORT = 3002;
 /** The project a preview shows. */
 export interface PreviewProject {

@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene/scripts/lib/config.mts by `npm run build`. Edit that file, not this one.
 /** Where the settings live: an explicit home folder, or the environment's CUTSCENE_HOME. */
 export interface ConfigOptions {
     home?: string;

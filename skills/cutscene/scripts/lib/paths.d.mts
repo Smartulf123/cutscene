@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene/scripts/lib/paths.mts by `npm run build`. Edit that file, not this one.
 /** Cutscene's own version. Kept in step with the plugin manifests (a test checks this). */
 export declare const CUTSCENE_VERSION = "0.1.0";
 /** skills/cutscene/scripts */

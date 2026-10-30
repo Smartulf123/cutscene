@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene/scripts/preview/frontdoor.mts by `npm run build`. Edit that file, not this one.
 import http from "node:http";
 import type { IncomingHttpHeaders, OutgoingHttpHeader, OutgoingHttpHeaders } from "node:http";
 export declare const STUDIO_TITLE = "Cutscene Studio";

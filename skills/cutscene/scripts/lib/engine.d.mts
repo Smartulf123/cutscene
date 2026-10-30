@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene/scripts/lib/engine.mts by `npm run build`. Edit that file, not this one.
 import type { RunOptions, RunResult } from "./proc.mjs";
 export declare const ENGINE_PACKAGE = "hyperframes";
 /** The engine's dependency lockfile, shipped next to engine.json. */

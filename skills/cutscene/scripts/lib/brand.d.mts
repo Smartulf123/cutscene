@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene/scripts/lib/brand.mts by `npm run build`. Edit that file, not this one.
 /** Remove terminal colour codes. */
 export declare function stripAnsi(s: string): string;
 /**

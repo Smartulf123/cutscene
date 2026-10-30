@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Built from src/skills/cutscene/scripts/cli.mts by `npm run build`. Edit that file, not this one.
 /** How an engine command handles `--json`, and whether it takes `--yes` itself. */
 export interface EngineCommandSpec {
     json: boolean | "own" | "batch";

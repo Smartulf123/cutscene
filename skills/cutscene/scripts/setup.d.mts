@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene/scripts/setup.mts by `npm run build`. Edit that file, not this one.
 import type { Check } from "./doctor.mjs";
 /** Something setup would download, for the consent message. */
 export interface SetupDownload {

@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene/scripts/lib/atomic.mts by `npm run build`. Edit that file, not this one.
 /** Block the current thread for `ms` milliseconds (keeps the helpers synchronous). */
 export declare function sleepSync(ms: number): void;
 /**

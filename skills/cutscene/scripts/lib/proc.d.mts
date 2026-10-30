@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene/scripts/lib/proc.mts by `npm run build`. Edit that file, not this one.
 /** Options for `run`. */
 export interface RunOptions {
     cwd?: string;

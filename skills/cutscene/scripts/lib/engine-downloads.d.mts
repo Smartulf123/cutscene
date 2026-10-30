@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene/scripts/lib/engine-downloads.mts by `npm run build`. Edit that file, not this one.
 /** One download a command would make, for the consent message. */
 export interface DownloadPlan {
     id: string;

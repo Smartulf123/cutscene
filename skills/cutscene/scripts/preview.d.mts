@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Built from src/skills/cutscene/scripts/preview.mts by `npm run build`. Edit that file, not this one.
 import type { PreviewProject, PreviewState } from "./preview/state.mjs";
 /** The parsed command line. */
 export interface PreviewOptions {

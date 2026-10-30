@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene/scripts/doctor.mts by `npm run build`. Edit that file, not this one.
 import type { PythonCandidate } from "./lib/python.mjs";
 export declare const MIN_NODE: number[];
 export declare const MIN_BLENDER: number[];
