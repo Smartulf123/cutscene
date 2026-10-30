@@ -5,6 +5,13 @@
 - **TypeScript.** Cutscene's own code and tests are now TypeScript, in `src/` and `tests/`. Each
   file is built to the same `.mjs` path as before, so skills still run with plain `node` on Node 22
   and nothing changes for users.
+- **Fixes.** `cutscene voice status --json` reports `"ok": true` with readiness in `status_ok`;
+  voice setup explains a broken Python environment instead of crashing; captions handle a spoken
+  word with a line break; `apply-cuts` refuses a transcript with no words (`NO_WORDS`); plan
+  checks report an empty caption group; a `beats.json` that isn't an object is rewritten instead
+  of crashing.
+- **Safer edit lists.** An edit list's tool name can no longer point output files outside the
+  project folder, and only numbers from a mix file reach FFmpeg.
 
 ## 0.1.0 (2026-10-30)
 
