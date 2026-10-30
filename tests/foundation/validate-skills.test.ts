@@ -114,7 +114,7 @@ describe("validateSkills on fixtures", () => {
 
 describe("helpers", () => {
   it("parses frontmatter", () => {
-    expect(parseFrontmatter("---\nname: x\ndescription: |\n  a\n  b\n---\n").data).toEqual({ name: "x", description: "a\nb" });
+    expect(parseFrontmatter("---\nname: x\ndescription: |\n  a\n  b\n---\n")!.data).toEqual({ name: "x", description: "a\nb" });
     expect(parseFrontmatter("no frontmatter")).toBeNull();
   });
   it("lists relative links", () => {

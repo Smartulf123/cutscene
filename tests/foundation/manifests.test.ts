@@ -64,7 +64,7 @@ describe("the cutscene skill", () => {
   });
 
   it("has a router SKILL.md with only name and description", () => {
-    const fm = parseFrontmatter(read("skills/cutscene/SKILL.md"));
+    const fm = parseFrontmatter(read("skills/cutscene/SKILL.md"))!;
     expect(Object.keys(fm.data)).toEqual(["name", "description"]);
     expect(fm.data.name).toBe("cutscene");
     expect(fm.data.description.length).toBeLessThanOrEqual(1024);

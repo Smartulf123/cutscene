@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { ageDays, checkPins, classify, collectPins, isExactVersion } from "../../tools/check-pin-ages.mjs";
+import { ageDays, checkPins, classify, collectPins, isExactVersion, type PinResult } from "../../tools/check-pin-ages.mjs";
 import { cleanup, tempDir } from "./helpers.ts";
 
 let root: string;
@@ -19,15 +19,6 @@ interface FakeResponse {
   json: () => Promise<unknown>;
 }
 type FakeFetch = (url: string, opts?: unknown) => Promise<FakeResponse>;
-
-/** One pin's result, as far as these tests read it. */
-interface PinResult {
-  name: string;
-  status: string;
-  from?: string;
-  message?: string;
-  note?: string;
-}
 
 /** A fake registry: answers from a table and records the URLs asked for. */
 function fakeFetch(table: Record<string, unknown>) {
