@@ -790,8 +790,8 @@
     },
     "skills/cutscene-audio/scripts/sound-engine.mjs": {
       "from": "overlays/cutscene-audio/scripts/sound-engine.mjs",
-      "sourceSha256": "19c57b863f567a390a6be58b1487db9d86c9bb31f7c62700f15b2a2d916b45ed",
-      "sha256": "19c57b863f567a390a6be58b1487db9d86c9bb31f7c62700f15b2a2d916b45ed"
+      "sourceSha256": "1730539eb208695c61d2d82c26680d3f409f302cc1e1baa6361d15340ed663d8",
+      "sha256": "1730539eb208695c61d2d82c26680d3f409f302cc1e1baa6361d15340ed663d8"
     },
     "skills/cutscene-audio/sound/scripts/audio-duck.mjs": {
       "from": "skills/media-use/scripts/audio-duck.mjs",
@@ -1376,8 +1376,8 @@
     },
     "skills/cutscene-captions/scripts/beats-captions.mjs": {
       "from": "overlays/cutscene-captions/scripts/beats-captions.mjs",
-      "sourceSha256": "2b0a1c4731c598bf635736723f3c0639d3e85cfe5b38a7b7f28a684fa7e0ba49",
-      "sha256": "2b0a1c4731c598bf635736723f3c0639d3e85cfe5b38a7b7f28a684fa7e0ba49"
+      "sourceSha256": "af5f4ddeecac30918e6042103539afcf89f1193177a044a73b5450852d410846",
+      "sha256": "af5f4ddeecac30918e6042103539afcf89f1193177a044a73b5450852d410846"
     },
     "skills/cutscene-captions/scripts/check-occlusion.cjs": {
       "from": "skills/embedded-captions/scripts/check-occlusion.cjs",
@@ -1416,8 +1416,8 @@
     },
     "skills/cutscene-captions/scripts/hf-cli.cjs": {
       "from": "overlays/cutscene-captions/scripts/hf-cli.cjs",
-      "sourceSha256": "7f5b8c506491759da355f53597ad7410918a4c7151a15dce76b672ba5319768b",
-      "sha256": "7f5b8c506491759da355f53597ad7410918a4c7151a15dce76b672ba5319768b"
+      "sourceSha256": "03ab4ac553368933d23e36a0e34d9f6d70ac1c17d68a2004fe32e368fad96de6",
+      "sha256": "03ab4ac553368933d23e36a0e34d9f6d70ac1c17d68a2004fe32e368fad96de6"
     },
     "skills/cutscene-captions/scripts/inject-fonts.cjs": {
       "from": "skills/embedded-captions/scripts/inject-fonts.cjs",
@@ -2198,8 +2198,8 @@
     },
     "skills/cutscene-design/scripts/look.mjs": {
       "from": "overlays/cutscene-design/scripts/look.mjs",
-      "sourceSha256": "76491c66a78bbcc2327a45f756c22655c0f933e0c3e46ca8d43b3c97803eb5c6",
-      "sha256": "76491c66a78bbcc2327a45f756c22655c0f933e0c3e46ca8d43b3c97803eb5c6"
+      "sourceSha256": "4906c2aba1fa1d78f4eb061008af0ffc3e4e3c6b4aeae34b6c122d4488013d8b",
+      "sha256": "4906c2aba1fa1d78f4eb061008af0ffc3e4e3c6b4aeae34b6c122d4488013d8b"
     },
     "skills/cutscene-design/scripts/package-loader.mjs": {
       "from": "skills/hyperframes-creative/scripts/package-loader.mjs",

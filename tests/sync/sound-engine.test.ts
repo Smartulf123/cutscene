@@ -8,15 +8,16 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import { cutsceneCli, engineSfxDir, loadSfxHashes, loadSfxLibrary, main, matchSfx, resolveBgm, resolveSfxCues, wavDuration } from "../../skills/cutscene-audio/scripts/sound-engine.mjs";
+import type { AudioMeta } from "../../skills/cutscene-audio/scripts/sound-engine.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const tmp = () => mkdtempSync(join(tmpdir(), "cutscene-sound-"));
-const sha = (b) => createHash("sha256").update(b).digest("hex");
+const sha = (b: Buffer): string => createHash("sha256").update(b).digest("hex");
 
 /** A stand-in for the engine's sound folder: fake files plus their checksums. */
-function fakeEngineSfx(names) {
+function fakeEngineSfx(names: string[]): { dir: string; hashes: Record<string, string> } {
   const dir = tmp();
-  const hashes = {};
+  const hashes: Record<string, string> = {};
   for (const n of names) {
     const body = Buffer.from(`fake ${n}`);
     writeFileSync(join(dir, n), body);
@@ -25,7 +26,7 @@ function fakeEngineSfx(names) {
   return { dir, hashes };
 }
 
-function wav(path, seconds, rate = 24000) {
+function wav(path: string, seconds: number, rate = 24000): void {
   const n = Math.round(seconds * rate);
   const b = Buffer.alloc(44 + n * 2);
   b.write("RIFF", 0);
@@ -147,7 +148,7 @@ describe("sound engine (offline parts)", () => {
       writeFileSync(join(p, "req.json"), JSON.stringify({ lines: [{ id: "01", sfx: ["riser", "pop"] }], bgm: { mode: "none" } }));
       const code = await main(["--request", join(p, "req.json"), "--hyperframes", p, "--out", join(p, "meta.json"), "--only", "sfx,bgm"]);
       expect(code).toBe(0);
-      const meta = JSON.parse(readFileSync(join(p, "meta.json"), "utf8"));
+      const meta = JSON.parse(readFileSync(join(p, "meta.json"), "utf8")) as AudioMeta;
       expect(meta.engine).toBe("cutscene-local");
       expect(meta.sfx.map((s) => s.name)).toEqual(["riser", "pop"]);
       expect(meta.bgm).toBe(null);
@@ -174,7 +175,7 @@ describe("sound engine (offline parts)", () => {
       writeFileSync(join(p, "req.json"), JSON.stringify({ lines: [{ id: "01", text: "Meet Cutscene." }], bgm: { mode: "none" } }));
       const code = await main(["--request", join(p, "req.json"), "--hyperframes", p, "--out", join(p, "meta.json"), "--only", "tts"]);
       expect(code).toBe(0);
-      const meta = JSON.parse(readFileSync(join(p, "meta.json"), "utf8"));
+      const meta = JSON.parse(readFileSync(join(p, "meta.json"), "utf8")) as AudioMeta;
       if (!meta.voices.length) ctx.skip(`the engine could not speak here: ${meta.anomalies.join("; ")}`);
       expect(meta.voices[0].path).toBe("assets/voice/01.wav");
       expect(meta.voices[0].duration_s).toBeGreaterThan(0.3);
