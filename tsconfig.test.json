@@ -1,0 +1,10 @@
+{
+  "$comment": "Type-checks the tests. Tests import the built .mjs files under skills/ and tools/; rootDirs points those imports at their TypeScript source in src/ for types.",
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDirs": ["src", "."]
+  },
+  "include": ["tests/**/*.ts", "vitest.config.ts"],
+  "exclude": []
+}

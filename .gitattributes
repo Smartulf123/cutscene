@@ -10,3 +10,23 @@
 *.glb binary
 *.ttf binary
 *.woff2 binary
+
+# Built from src/ by `npm run build` (the TypeScript source lives in src/)
+tools/*.mjs linguist-generated
+overlays/**/*.mjs linguist-generated
+overlays/**/*.cjs linguist-generated
+skills/cutscene/scripts/**/*.mjs linguist-generated
+skills/cutscene-3d/scripts/**/*.mjs linguist-generated
+skills/cutscene-3d/templates/tier1/*.js linguist-generated
+skills/cutscene-edit/scripts/**/*.mjs linguist-generated
+skills/cutscene-voice/scripts/**/*.mjs linguist-generated
+
+# Generated from the pinned HyperFrames source by tools/sync-hyperframes.mjs
+skills/cutscene/references/upstream/** linguist-generated
+skills/cutscene-compose/** linguist-generated
+skills/cutscene-animate/** linguist-generated
+skills/cutscene-design/** linguist-generated
+skills/cutscene-captions/** linguist-generated
+skills/cutscene-audio/** linguist-generated
+skills/cutscene-render/** linguist-generated
+skills/cutscene-promo/** linguist-generated

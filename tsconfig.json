@@ -1,0 +1,10 @@
+{
+  "$comment": "Builds src/**/*.mts and *.cts into the same path without src/ (src/skills/x.mts -> skills/x.mjs). Run npm run build; never edit the built files.",
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "."
+  },
+  "include": ["src/**/*.mts", "src/**/*.cts"],
+  "exclude": []
+}

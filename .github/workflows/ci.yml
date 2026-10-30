@@ -34,6 +34,11 @@ jobs:
           cache: npm
       - name: Install dev dependencies
         run: npm ci
+      # Skills run the built .mjs files, so they are committed. This fails if one is out of date.
+      - name: Build TypeScript (built files must match src/)
+        run: node tools/build.mjs --check
+      - name: Type-check tests
+        run: npx tsc -p tsconfig.test.json
       # Every tests/<owner>/ folder runs once: sync and preview as their own steps, the rest here.
       - name: Tests (Vitest, all parts except sync and preview)
         run: npx vitest run --exclude "tests/sync/**" --exclude "tests/preview/**"
