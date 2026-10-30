@@ -226,4 +226,13 @@ describe("updateBeatSheet", () => {
     expect(readBeats(file).voices!.narrator.seed).toBe(42);
     expect(existsSync(`${file}.lock`)).toBe(false);
   });
+  for (const held of ["[]", "7"]) {
+    it(`rewrites the whole file when it held ${held} instead of an object`, () => {
+      writeFileSync(file, `${held}\n`);
+      const sheet = JSON.parse(SAMPLE);
+      updateBeatSheet(file, sheet);
+      expect(readBeats(file)).toEqual(sheet);
+      expect(existsSync(`${file}.lock`)).toBe(false);
+    });
+  }
 });
