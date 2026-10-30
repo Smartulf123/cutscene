@@ -81,7 +81,8 @@ export function alignDisplay(displayText, words) {
 /** Spoken words as captions: "A I" -> "AI", "three D," -> "3D,". */
 export function tidySpoken(words) {
     const out = [];
-    const split = (w) => /^(.*?)([.,;:!?…"”)\]]*)$/.exec(String(w)).slice(1);
+    // s flag: a word with a line break in it still splits (without it, exec gives null)
+    const split = (w) => /^(.*?)([.,;:!?…"”)\]]*)$/s.exec(String(w)).slice(1);
     for (let i = 0; i < words.length; i++) {
         const [core, punct] = split(words[i].w);
         const next = words[i + 1] && split(words[i + 1].w);

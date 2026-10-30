@@ -146,7 +146,8 @@ export function alignDisplay(displayText: unknown, words: SpokenWord[]): Caption
 /** Spoken words as captions: "A I" -> "AI", "three D," -> "3D,". */
 export function tidySpoken(words: SpokenWord[]): CaptionToken[] {
   const out: CaptionToken[] = [];
-  const split = (w: unknown): string[] => /^(.*?)([.,;:!?…"”)\]]*)$/.exec(String(w))!.slice(1);
+  // s flag: a word with a line break in it still splits (without it, exec gives null)
+  const split = (w: unknown): string[] => /^(.*?)([.,;:!?…"”)\]]*)$/s.exec(String(w))!.slice(1);
   for (let i = 0; i < words.length; i++) {
     const [core, punct] = split(words[i].w);
     const next = words[i + 1] && split(words[i + 1].w);

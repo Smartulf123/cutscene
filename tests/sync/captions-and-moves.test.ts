@@ -43,6 +43,9 @@ describe("caption text vs spoken text", () => {
     expect(tidySpoken(B3).map((t) => t.text).join(" ")).toBe("It renders real 3D, and speaks.");
     expect(tidySpoken(W([["I", 0, 0.1], ["think", 0.1, 0.3]])).map((t) => t.text)).toEqual(["I", "think"]);
   });
+  it("tidies a spoken word that has a line break in it", () => {
+    expect(tidySpoken(W([["Hello\nthere.", 0, 0.4], ["Bye", 0.4, 0.6]])).map((t) => t.text)).toEqual(["Hello\nthere.", "Bye"]);
+  });
   it("breaks lines at sentence ends and keeps them short", () => {
     const toks = "One two three, four five six seven eight nine.".split(" ").map((text, i) => ({ text, start: i, end: i + 1 }));
     expect(splitLines(toks, 7).map((l) => l.map((t) => t.text).join(" "))).toEqual(["One two three,", "four five six seven eight nine."]);

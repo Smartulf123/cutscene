@@ -1386,8 +1386,8 @@
     },
     "skills/cutscene-captions/scripts/beats-captions.mjs": {
       "from": "overlays/cutscene-captions/scripts/beats-captions.mjs",
-      "sourceSha256": "af5f4ddeecac30918e6042103539afcf89f1193177a044a73b5450852d410846",
-      "sha256": "af5f4ddeecac30918e6042103539afcf89f1193177a044a73b5450852d410846"
+      "sourceSha256": "48e43371aed8e33ac1aa78f4ec2c8413341cd5f26e0fd12c4246b05d33be7d6b",
+      "sha256": "48e43371aed8e33ac1aa78f4ec2c8413341cd5f26e0fd12c4246b05d33be7d6b"
     },
     "skills/cutscene-captions/scripts/check-occlusion.cjs": {
       "from": "skills/embedded-captions/scripts/check-occlusion.cjs",
