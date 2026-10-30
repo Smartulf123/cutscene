@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-3d/scripts/lib/tier1.mts by `npm run build`. Edit that file, not this one.
 // Write a Tier 1 (Three.js) shot into a Cutscene project as a sub-composition:
 //   compositions/scene3d-<id>.html  + compositions/assets/3d/{fonts,models,vendor}/...
 // Values come from the spec and look.json and are baked into the file as its defaults.
@@ -7,161 +8,156 @@ import { fileURLToPath } from "node:url";
 import { copyInto, findItem, isCached, assetPath, loadManifest, fetchAsset } from "./assets.mjs";
 import { cutsceneError, writeFileAtomic } from "./project.mjs";
 import { DEFAULT_LOOK, TIER1_TEMPLATES, merge, BUNDLED_FONT } from "./spec.mjs";
-
 const here = dirname(fileURLToPath(import.meta.url));
 export const TIER1_DIR = resolve(here, "..", "..", "templates", "tier1");
 export const THREE_VERSION = "0.184.0";
-
 /** Composition id for a shot ("logo" -> "3d-logo"). */
 export function compositionId(id) {
-  return `scene3d-${String(id).toLowerCase().replace(/[^a-z0-9-]+/g, "-")}`;
+    return `scene3d-${String(id).toLowerCase().replace(/[^a-z0-9-]+/g, "-")}`;
 }
-
 /** Safe to drop inside <script>: no "</script" and no U+2028/2029. */
 export function scriptJson(obj) {
-  const LS = String.fromCharCode(0x2028);
-  const PS = String.fromCharCode(0x2029);
-  return JSON.stringify(obj)
-    .split("</").join("<\\/")
-    .split(LS).join("\\u2028")
-    .split(PS).join("\\u2029");
+    const LS = String.fromCharCode(0x2028);
+    const PS = String.fromCharCode(0x2029);
+    return JSON.stringify(obj)
+        .split("</").join("<\\/")
+        .split(LS).join("\\u2028")
+        .split(PS).join("\\u2029");
 }
-
 /** Safe inside a single-quoted HTML attribute. */
 export function attrJson(obj) {
-  return JSON.stringify(obj).replace(/&/g, "&amp;").replace(/'/g, "&#39;").replace(/</g, "&lt;");
+    return JSON.stringify(obj).replace(/&/g, "&amp;").replace(/'/g, "&#39;").replace(/</g, "&lt;");
 }
-
 /** Studio-editable variables for each template (the rest is baked config). */
 export function variablesFor(template, config) {
-  const v = [];
-  if (["title3d"].includes(template) || config.vars?.text !== undefined) {
-    v.push({ id: "text", type: "string", role: "content", label: "Text", default: config.vars?.text ?? "", maxLength: 40 });
-  }
-  return v;
+    const v = [];
+    if (["title3d"].includes(template) || config.vars?.text !== undefined) {
+        v.push({ id: "text", type: "string", role: "content", label: "Text", default: config.vars?.text ?? "", maxLength: 40 });
+    }
+    return v;
 }
-
 /** Build the baked config object for a Tier 1 template. Pure. */
 export function tier1Config(template, spec, { look, assets = {} } = {}) {
-  const lk = merge(DEFAULT_LOOK, look || {});
-  const palette = merge(lk.palette, spec.palette || {});
-  const p = spec.params || {};
-  const config = {
-    template,
-    id: compositionId(spec.id),
-    width: spec.width || 1920,
-    height: spec.height || 1080,
-    duration: spec.duration || 3,
-    seed: Number.isInteger(spec.seed) ? spec.seed : Number.isInteger(lk.seed) ? lk.seed : 1337,
-    motion: lk.motion?.character || "snappy",
-    palette,
-    transparent: spec.transparent ?? !["shapes", "flythrough"].includes(template),
-    bloom: spec.bloom ?? (["shapes", "flythrough"].includes(template) ? "three" : false),
-    bloomStrength: spec.bloom_strength,
-    exposure: spec.exposure ? 2 ** spec.exposure : 1,
-    face: template === "turntable" ? p.label ?? p.face : p.face,
-    sides: p.sides,
-    rim: spec.lighting?.rim_color || "accent",
-    depth: p.depth,
-    bevel: p.bevel,
-    tracking: p.tracking,
-    swing: p.swing,
-    stagger: p.stagger,
-    letter_duration: p.letter_duration,
-    turns: p.turns,
-    count: p.count,
-    vars: {},
-    ...assets,
-  };
-  if (template === "title3d") config.vars.text = String(p.text ?? "CUTSCENE");
-  for (const k of Object.keys(config)) if (config[k] === undefined) delete config[k];
-  return config;
+    const lk = merge(DEFAULT_LOOK, look || {});
+    const palette = merge(lk.palette, spec.palette || {});
+    const p = spec.params || {};
+    const config = {
+        template,
+        id: compositionId(spec.id),
+        width: spec.width || 1920,
+        height: spec.height || 1080,
+        duration: spec.duration || 3,
+        seed: Number.isInteger(spec.seed) ? spec.seed : Number.isInteger(lk.seed) ? lk.seed : 1337,
+        motion: lk.motion?.character || "snappy",
+        palette,
+        transparent: spec.transparent ?? !["shapes", "flythrough"].includes(template),
+        bloom: spec.bloom ?? (["shapes", "flythrough"].includes(template) ? "three" : false),
+        bloomStrength: spec.bloom_strength,
+        exposure: spec.exposure ? 2 ** spec.exposure : 1,
+        face: template === "turntable" ? p.label ?? p.face : p.face,
+        sides: p.sides,
+        rim: spec.lighting?.rim_color || "accent",
+        depth: p.depth,
+        bevel: p.bevel,
+        tracking: p.tracking,
+        swing: p.swing,
+        stagger: p.stagger,
+        letter_duration: p.letter_duration,
+        turns: p.turns,
+        count: p.count,
+        vars: {},
+        ...assets,
+    };
+    if (template === "title3d")
+        config.vars.text = String(p.text ?? "CUTSCENE");
+    for (const k of Object.keys(config))
+        if (config[k] === undefined)
+            delete config[k];
+    return config;
 }
-
 /** Fill the template text. Pure (given template sources). */
 export function renderTemplate({ html, boot, common, id, config, variables }) {
-  const out = html
-    .replace("/*__CS3D_BOOT__*/", () => boot)
-    .replace("/*__CS3D_COMMON__*/", () => common)
-    .replaceAll("__CS3D_ID__", id)
-    .replaceAll("__CS3D_WIDTH__", String(config.width))
-    .replaceAll("__CS3D_HEIGHT__", String(config.height))
-    .replaceAll("__CS3D_DURATION__", String(config.duration))
-    .replace("__CS3D_VARIABLES__", () => attrJson(variables));
-  return out.replace("__CS3D_CONFIG__", () => scriptJson(config));
+    const out = html
+        .replace("/*__CS3D_BOOT__*/", () => boot)
+        .replace("/*__CS3D_COMMON__*/", () => common)
+        .replaceAll("__CS3D_ID__", id)
+        .replaceAll("__CS3D_WIDTH__", String(config.width))
+        .replaceAll("__CS3D_HEIGHT__", String(config.height))
+        .replaceAll("__CS3D_DURATION__", String(config.duration))
+        .replace("__CS3D_VARIABLES__", () => attrJson(variables));
+    return out.replace("__CS3D_CONFIG__", () => scriptJson(config));
 }
-
 /** Rewrite postprocessing's bare `three` imports to the pinned three ESM build. */
 export function pinThreeImports(js, version = THREE_VERSION) {
-  return js.replace(/from\s*["']three["']/g, `from "https://cdn.jsdelivr.net/npm/three@${version}/+esm"`);
+    return js.replace(/from\s*["']three["']/g, `from "https://cdn.jsdelivr.net/npm/three@${version}/+esm"`);
 }
-
 /**
  * Write the shot. Returns {file, compositionId, snippet, copied:[...], warnings:[...]}.
- * @param {{template:string, spec:object, projectDir:string, look?:object, font?:string, yes?:boolean,
- *          start?:number, track?:number}} o
  */
 export async function writeTier1({ template, spec, projectDir, look, font, yes = false, start = 0, track = 2 }) {
-  if (!TIER1_TEMPLATES[template]) {
-    throw cutsceneError("UNKNOWN_TEMPLATE", `There's no Three.js template called "${template}".`, `Choose one of: ${Object.keys(TIER1_TEMPLATES).join(", ")}.`, 2);
-  }
-  const id = compositionId(spec.id);
-  const compDir = join(projectDir, "compositions");
-  const assetDir = join(compDir, "assets", "3d");
-  const copied = [];
-  const warnings = [];
-  const assets = {};
-  const p = spec.params || {};
-
-  if (["title3d"].includes(template)) {
-    const src = font || BUNDLED_FONT;
-    const dest = copyInto(src, join(assetDir, "fonts"));
-    copied.push(dest);
-    assets.font = `assets/3d/fonts/${basename(dest)}`;
-    const ofl = join(dirname(BUNDLED_FONT), "Geist-OFL.txt");
-    if (src === BUNDLED_FONT && existsSync(ofl)) copied.push(copyInto(ofl, join(assetDir, "fonts")));
-  }
-  if (template === "logo-svg") {
-    const svg = p.svg ? resolve(projectDir, p.svg) : join(here, "..", "..", "templates", "tier2", "cutscene-mark.svg");
-    if (!existsSync(svg)) throw cutsceneError("FILE_NOT_FOUND", `The SVG ${svg} doesn't exist.`, "Check params.svg in the spec.");
-    const dest = copyInto(svg, join(assetDir, "logos"), `${spec.id}${extname(svg)}`);
-    copied.push(dest);
-    assets.svg = `assets/3d/logos/${basename(dest)}`;
-    assets.keepSvgColors = !!p.keep_svg_colors;
-  }
-  if (template === "turntable" && p.model) {
-    const model = resolve(projectDir, p.model);
-    if (!existsSync(model)) throw cutsceneError("FILE_NOT_FOUND", `The model ${model} doesn't exist.`, "Check params.model in the spec.");
-    if (!/\.(glb|gltf)$/i.test(model)) throw cutsceneError("MODEL_FORMAT", "Tier 1 turntables need a .glb or .gltf model.", "Convert the model to .glb (Blender can export it), or use Tier 2, which also reads OBJ/FBX.");
-    if (/\.gltf$/i.test(model)) warnings.push("A .gltf with separate .bin/texture files must have those files copied next to it in compositions/assets/3d/models/.");
-    const dest = copyInto(model, join(assetDir, "models"), `${spec.id}${extname(model)}`);
-    copied.push(dest);
-    assets.model = `assets/3d/models/${basename(dest)}`;
-  }
-  const config = tier1Config(template, spec, { look, assets });
-  if (config.bloom === "postprocessing") {
-    const item = findItem("postprocessing", loadManifest());
-    const got = await fetchAsset(item, { yes });
-    const vendorDir = join(assetDir, "vendor");
-    mkdirSync(vendorDir, { recursive: true });
-    const dest = join(vendorDir, `postprocessing-${item.version}.js`);
-    writeFileSync(dest, `// postprocessing ${item.version} (Zlib, Raoul van Rüschen), three import pinned for Cutscene.\n` + pinThreeImports(readFileSync(got.path, "utf8")));
-    copied.push(dest);
-    config.vendor = { postprocessing: `assets/3d/vendor/postprocessing-${item.version}.js` };
-  }
-
-  const html = readFileSync(join(TIER1_DIR, `${template}.html`), "utf8");
-  const boot = readFileSync(join(TIER1_DIR, "_boot.js"), "utf8");
-  const common = readFileSync(join(TIER1_DIR, "_preamble.js"), "utf8");
-  copied.push(copyInto(join(TIER1_DIR, "cs3d-runtime.js"), assetDir));
-  const text = renderTemplate({ html, boot, common, id, config, variables: variablesFor(template, config) });
-  const file = join(compDir, `${id}.html`);
-  writeFileAtomic(file, text);
-  const snippet = hostSnippet({ id, config, start, track });
-  return { file, compositionId: id, snippet, copied, warnings, config };
+    if (!TIER1_TEMPLATES[template]) {
+        throw cutsceneError("UNKNOWN_TEMPLATE", `There's no Three.js template called "${template}".`, `Choose one of: ${Object.keys(TIER1_TEMPLATES).join(", ")}.`, 2);
+    }
+    const id = compositionId(spec.id);
+    const compDir = join(projectDir, "compositions");
+    const assetDir = join(compDir, "assets", "3d");
+    const copied = [];
+    const warnings = [];
+    const assets = {};
+    const p = spec.params || {};
+    if (["title3d"].includes(template)) {
+        const src = font || BUNDLED_FONT;
+        const dest = copyInto(src, join(assetDir, "fonts"));
+        copied.push(dest);
+        assets.font = `assets/3d/fonts/${basename(dest)}`;
+        const ofl = join(dirname(BUNDLED_FONT), "Geist-OFL.txt");
+        if (src === BUNDLED_FONT && existsSync(ofl))
+            copied.push(copyInto(ofl, join(assetDir, "fonts")));
+    }
+    if (template === "logo-svg") {
+        const svg = p.svg ? resolve(projectDir, p.svg) : join(here, "..", "..", "templates", "tier2", "cutscene-mark.svg");
+        if (!existsSync(svg))
+            throw cutsceneError("FILE_NOT_FOUND", `The SVG ${svg} doesn't exist.`, "Check params.svg in the spec.");
+        const dest = copyInto(svg, join(assetDir, "logos"), `${spec.id}${extname(svg)}`);
+        copied.push(dest);
+        assets.svg = `assets/3d/logos/${basename(dest)}`;
+        assets.keepSvgColors = !!p.keep_svg_colors;
+    }
+    if (template === "turntable" && p.model) {
+        const model = resolve(projectDir, p.model);
+        if (!existsSync(model))
+            throw cutsceneError("FILE_NOT_FOUND", `The model ${model} doesn't exist.`, "Check params.model in the spec.");
+        if (!/\.(glb|gltf)$/i.test(model))
+            throw cutsceneError("MODEL_FORMAT", "Tier 1 turntables need a .glb or .gltf model.", "Convert the model to .glb (Blender can export it), or use Tier 2, which also reads OBJ/FBX.");
+        if (/\.gltf$/i.test(model))
+            warnings.push("A .gltf with separate .bin/texture files must have those files copied next to it in compositions/assets/3d/models/.");
+        const dest = copyInto(model, join(assetDir, "models"), `${spec.id}${extname(model)}`);
+        copied.push(dest);
+        assets.model = `assets/3d/models/${basename(dest)}`;
+    }
+    const config = tier1Config(template, spec, { look, assets });
+    if (config.bloom === "postprocessing") {
+        // The bundled manifest always pins postprocessing.
+        const item = findItem("postprocessing", loadManifest());
+        const got = await fetchAsset(item, { yes });
+        const vendorDir = join(assetDir, "vendor");
+        mkdirSync(vendorDir, { recursive: true });
+        const dest = join(vendorDir, `postprocessing-${item.version}.js`);
+        writeFileSync(dest, `// postprocessing ${item.version} (Zlib, Raoul van Rüschen), three import pinned for Cutscene.\n` + pinThreeImports(readFileSync(got.path, "utf8")));
+        copied.push(dest);
+        config.vendor = { postprocessing: `assets/3d/vendor/postprocessing-${item.version}.js` };
+    }
+    const html = readFileSync(join(TIER1_DIR, `${template}.html`), "utf8");
+    const boot = readFileSync(join(TIER1_DIR, "_boot.js"), "utf8");
+    const common = readFileSync(join(TIER1_DIR, "_preamble.js"), "utf8");
+    copied.push(copyInto(join(TIER1_DIR, "cs3d-runtime.js"), assetDir));
+    const text = renderTemplate({ html, boot, common, id, config, variables: variablesFor(template, config) });
+    const file = join(compDir, `${id}.html`);
+    writeFileAtomic(file, text);
+    const snippet = hostSnippet({ id, config, start, track });
+    return { file, compositionId: id, snippet, copied, warnings, config };
 }
-
 /** The clip to paste into index.html (inside the root composition). */
 export function hostSnippet({ id, config, start = 0, track = 2 }) {
-  return `<div id="${id}-clip" data-composition-id="${id}" data-composition-src="compositions/${id}.html" data-start="${start}" data-duration="${config.duration}" data-track-index="${track}" data-width="${config.width}" data-height="${config.height}"></div>`;
+    return `<div id="${id}-clip" data-composition-id="${id}" data-composition-src="compositions/${id}.html" data-start="${start}" data-duration="${config.duration}" data-track-index="${track}" data-width="${config.width}" data-height="${config.height}"></div>`;
 }

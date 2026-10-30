@@ -14,7 +14,7 @@ const tmp = () => mkdtempSync(join(tmpdir(), "cs3d-"));
 
 describe("encode arguments", () => {
   const a = encodeArgs({ framesDir: "C:/p/.cutscene/3d/logo/frames/", fps: 30, out: "C:/p/assets/3d/logo.webm" });
-  const pair = (flag) => a[a.indexOf(flag) + 1];
+  const pair = (flag: string) => a[a.indexOf(flag) + 1];
   it("uses VP9 with an alpha pixel format and the alpha_mode tag", () => {
     expect(pair("-c:v")).toBe("libvpx-vp9");
     expect(pair("-pix_fmt")).toBe("yuva420p");
@@ -82,7 +82,7 @@ describe("beats.json shot3d updates", () => {
       err = e;
     }
     expect(err).toMatchObject({ code: "BEAT_NOT_FOUND" });
-    expect(err.hint).toMatch(/b1, b2/);
+    expect((err as { hint: string }).hint).toMatch(/b1, b2/);
   });
   it("updateShot3d writes the file and keeps every other field", async () => {
     const dir = tmp();
@@ -182,7 +182,7 @@ describe("assets and fonts", () => {
   });
   it("maps families to Fontsource slugs and the nearest weight", () => {
     expect(fontSlug("Space Grotesk")).toBe("space-grotesk");
-    expect(fontItemFor("Inter", 650, manifest).weight).toBe(700);
+    expect(fontItemFor("Inter", 650, manifest)!.weight).toBe(700);
     expect(fontItemFor("Comic Neue", 700, manifest)).toBeNull();
   });
   it("scores font files by family and weight", () => {
@@ -216,6 +216,6 @@ describe("assets and fonts", () => {
 });
 
 import { mkdirSync } from "node:fs";
-function require_mkdir(p) {
+function require_mkdir(p: string) {
   mkdirSync(p, { recursive: true });
 }

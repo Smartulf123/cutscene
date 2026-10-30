@@ -12,7 +12,7 @@ import { BUNDLED_FONT, usesText } from "../../skills/cutscene-3d/scripts/lib/spe
 const tmp = () => mkdtempSync(join(tmpdir(), "cs3d-font-"));
 const CLI = resolve("skills/cutscene-3d/scripts/3d.mjs");
 
-function projectWithFont(files, look) {
+function projectWithFont(files: string[], look?: object) {
   const dir = tmp();
   mkdirSync(join(dir, ".cutscene"), { recursive: true });
   mkdirSync(join(dir, "assets", "fonts"), { recursive: true });
@@ -21,7 +21,7 @@ function projectWithFont(files, look) {
   if (look) writeFileSync(join(dir, ".cutscene", "look.json"), JSON.stringify(look));
   return dir;
 }
-const opts = (extra) => ({ home: tmp(), systemDirs: [], manifest: { downloads: [] }, ...extra });
+const opts = (extra = {}) => ({ home: tmp(), systemDirs: [], manifest: { downloads: [] }, ...extra });
 
 describe("3D fonts", () => {
   it("knows which templates draw text", () => {
@@ -55,7 +55,7 @@ describe("3D fonts", () => {
     const pin = loadManifest().downloads.find((d) => d.name === "font-bodoni-moda-700");
     expect(pin, "Bodoni Moda has a pinned .woff for 3D titles").toBeTruthy();
     const home = tmp();
-    const fake = { ...pin, sha256: createHash("sha256").update("x").digest("hex") };
+    const fake = { ...pin!, sha256: createHash("sha256").update("x").digest("hex") };
     mkdirSync(join(home, "assets", fake.sha256), { recursive: true });
     writeFileSync(join(home, "assets", fake.sha256, "bodoni-moda-latin-700-normal.woff"), "x");
     const only2 = projectWithFont(["bodoni-moda-latin-700-normal.woff2"]);
@@ -74,7 +74,7 @@ describe("3D fonts", () => {
     const look = { version: 1, name: "t", palette: { bg: "#101010", fg: "#F4F4F4", accent: "#FF5A1F", accent2: "#4CC5F1" }, type: { display: { family: "Nonexistent Sans", weight: 700 }, body: { family: "Lato", weight: 400 } }, motion: { character: "snappy", ease: "power3.out", duration_scale: 1 } };
     const dir = projectWithFont([], look);
     const env = { ...process.env, CUTSCENE_HOME: tmp() };
-    const run = (t) => JSON.parse(spawnSync(process.execPath, [CLI, "tier1", t, "--json"], { cwd: dir, encoding: "utf8", windowsHide: true, env }).stdout);
+    const run = (t: string) => JSON.parse(spawnSync(process.execPath, [CLI, "tier1", t, "--json"], { cwd: dir, encoding: "utf8", windowsHide: true, env }).stdout);
     const logo = run("logo-svg");
     expect(logo.ok).toBe(true);
     expect(logo.warnings.join(" ")).not.toMatch(/font/i);
