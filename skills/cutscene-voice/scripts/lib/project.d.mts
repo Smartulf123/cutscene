@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-voice/scripts/lib/project.mts by `npm run build`. Edit that file, not this one.
 import type { LicenseFacts, VoiceSpec } from "./types.mjs";
 /** What a licence note says about one voice file. */
 export interface LicenseInfo {

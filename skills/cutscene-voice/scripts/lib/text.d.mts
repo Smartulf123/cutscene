@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-voice/scripts/lib/text.mts by `npm run build`. Edit that file, not this one.
 /** A word as the transcriber heard it (p = its probability, when known). */
 export type HeardWord = {
     w: string;

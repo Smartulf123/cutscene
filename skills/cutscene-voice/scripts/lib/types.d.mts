@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-voice/scripts/lib/types.mts by `npm run build`. Edit that file, not this one.
 /** How parseFlags reads one option. */
 export type FlagType = "string" | "number" | "int" | "bool" | "list";
 /** Option name -> how to read it. */

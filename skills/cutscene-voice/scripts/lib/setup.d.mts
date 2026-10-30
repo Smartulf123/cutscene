@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-voice/scripts/lib/setup.mts by `npm run build`. Edit that file, not this one.
 import type { LockPackage, Manifest, ModelLock, ProgressEvent, PythonPin, VoiceLock } from "./types.mjs";
 /** What a Python reports about itself. */
 export interface PythonInfo {

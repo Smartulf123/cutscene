@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-voice/scripts/lib/util.mts by `npm run build`. Edit that file, not this one.
 import type { FlagSpec, Flags } from "./types.mjs";
 export declare const EXIT: Readonly<{
     OK: 0;

@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-voice/scripts/lib/voicestudio.mts by `npm run build`. Edit that file, not this one.
 import type { WordTiming } from "./types.mjs";
 /** What the HTTP calls take besides their own fields (tests pass a fake fetch). */
 type StudioOptions = {

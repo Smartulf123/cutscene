@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-voice/scripts/lib/paths.mts by `npm run build`. Edit that file, not this one.
 import type { Manifest } from "./types.mjs";
 export declare const SCRIPTS_DIR: string;
 export declare const SKILL_DIR: string;

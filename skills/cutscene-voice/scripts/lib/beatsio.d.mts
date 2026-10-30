@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-voice/scripts/lib/beatsio.mts by `npm run build`. Edit that file, not this one.
 import type { BeatSheet } from "./types.mjs";
 /** RFC 7386 JSON merge patch: objects merge, null removes, everything else replaces. */
 export declare function mergePatch(target: unknown, patch: unknown): unknown;

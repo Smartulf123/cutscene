@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-voice/scripts/lib/kokoro.mts by `npm run build`. Edit that file, not this one.
 export declare function enginePin(env?: NodeJS.ProcessEnv): string | null;
 /** How to reach the `cutscene` command: CUTSCENE_CLI from the dispatcher, else the CLI next to this skill. */
 export declare function cutsceneCli(env?: NodeJS.ProcessEnv): string | null;

@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-voice/scripts/lib/worker.mts by `npm run build`. Edit that file, not this one.
 import type { ProgressEvent, WorkerResult } from "./types.mjs";
 /** Environment for every worker run: models stay inside <home>/voice, no telemetry, offline by default. */
 export declare function workerEnv(home: string, { offline, base }?: {

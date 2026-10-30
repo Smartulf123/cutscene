@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-voice/scripts/lib/audio.mts by `npm run build`. Edit that file, not this one.
 /** loudnorm's first-pass measurement. */
 export interface Loudnorm {
     input_i: number;

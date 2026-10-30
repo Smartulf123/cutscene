@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-voice/scripts/lib/wav.mts by `npm run build`. Edit that file, not this one.
 export interface WavInfo {
     sampleRate: number;
     channels: number;

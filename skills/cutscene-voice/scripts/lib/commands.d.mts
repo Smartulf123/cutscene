@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-voice/scripts/lib/commands.mts by `npm run build`. Edit that file, not this one.
 import type { ModelStatus } from "./status.mjs";
 import type { CaptionWord, LineIssue, LineWarning } from "./text.mjs";
 import type { BenchmarkFlags, Benchmarks, CloneFlags, Ctx, DesignFlags, GenItem, GenResultItem, ModelBenchmark, SetupFlags, SpeakFlags, StatusFlags, TranscribeJobItem, TranscribedItem, VerifyFlags, VoiceSpec } from "./types.mjs";

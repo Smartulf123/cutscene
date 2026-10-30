@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-voice/scripts/lib/oneshot.mts by `npm run build`. Edit that file, not this one.
 import type { CaptionWord } from "./text.mjs";
 import type { Ctx, Flags, SpeakFlags, VoiceSpec } from "./types.mjs";
 /** Who speaks a one-shot line; `design` = a fresh voice from --describe. */

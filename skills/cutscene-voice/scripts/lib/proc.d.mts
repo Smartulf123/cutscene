@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-voice/scripts/lib/proc.mts by `npm run build`. Edit that file, not this one.
 export interface RunOptions {
     env?: NodeJS.ProcessEnv;
     cwd?: string;

@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-voice/scripts/lib/status.mts by `npm run build`. Edit that file, not this one.
 import type { Benchmarks, ModelBenchmark } from "./types.mjs";
 /** Are all pinned files of a model present with the right sizes? */
 export declare function modelFilesStatus(model: string, home?: string): {
