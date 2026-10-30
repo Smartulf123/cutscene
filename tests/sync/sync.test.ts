@@ -3,6 +3,7 @@
 // verified against the pinned commit). Without network and without a cached copy the
 // upstream-dependent tests skip with a reason.
 import { describe, it, expect, beforeAll } from "vitest";
+import type { TestContext } from "vitest";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { cpSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
@@ -11,14 +12,15 @@ import { dirname, join, posix, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { gzipSync } from "node:zlib";
 import { build, diffTree, writeTree, matchGlob, readTarGz, REPO_ROOT } from "../../tools/sync-hyperframes.mjs";
+import type { BuildResult, LockJson, SyncMap } from "../../tools/sync-hyperframes.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const MAP = JSON.parse(readFileSync(join(ROOT, "tools", "sync-map.json"), "utf8"));
+const MAP = JSON.parse(readFileSync(join(ROOT, "tools", "sync-map.json"), "utf8")) as SyncMap;
 const GENERATED = Object.values(MAP.targets).map((t) => t.dir);
 const SKILL_TARGETS = Object.values(MAP.targets).filter((t) => t.skillMd !== false);
-const sha = (b) => createHash("sha256").update(b).digest("hex");
+const sha = (b: Buffer): string => createHash("sha256").update(b).digest("hex");
 
-function walk(dir, base = dir, out = []) {
+function walk(dir: string, base: string = dir, out: string[] = []): string[] {
   if (!existsSync(dir)) return out;
   for (const name of readdirSync(dir)) {
     const full = join(dir, name);
@@ -27,20 +29,21 @@ function walk(dir, base = dir, out = []) {
   }
   return out;
 }
-const treeFiles = () => GENERATED.flatMap((d) => walk(join(ROOT, d)).map((r) => `${d}/${r}`));
-const read = (rel) => readFileSync(join(ROOT, ...rel.split("/")), "utf8");
+const treeFiles = (): string[] => GENERATED.flatMap((d) => walk(join(ROOT, d)).map((r) => `${d}/${r}`));
+const read = (rel: string): string => readFileSync(join(ROOT, ...rel.split("/")), "utf8");
 
-let result = null;
-let skipReason = null;
+let result: BuildResult | null = null;
+let skipReason: string | null = null;
 beforeAll(async () => {
   try {
     result = await build({ quiet: true });
   } catch (e) {
-    skipReason = `upstream source unavailable (${e.message})`;
+    skipReason = `upstream source unavailable (${(e as Error).message})`;
   }
 }, 600_000);
-const needUpstream = (ctx) => {
-  if (!result) ctx.skip(skipReason);
+// After this, `result` is set (ctx.skip ends the test otherwise).
+const needUpstream = (ctx: TestContext): void => {
+  if (!result) ctx.skip(skipReason as string);
 };
 
 describe("glob and tar helpers", () => {
@@ -53,7 +56,7 @@ describe("glob and tar helpers", () => {
   });
 
   it("reads a tar.gz with a pax global header (the commit id git archive writes)", async () => {
-    const block = (name, size, type) => {
+    const block = (name: string, size: number, type: string): Buffer => {
       const h = Buffer.alloc(512);
       h.write(name, 0, "utf8");
       h.write("0000644\0", 100);
@@ -70,7 +73,7 @@ describe("glob and tar helpers", () => {
       h.write(sum.toString(8).padStart(6, "0") + "\0 ", 148);
       return h;
     };
-    const pad = (b) => Buffer.concat([b, Buffer.alloc((512 - (b.length % 512)) % 512)]);
+    const pad = (b: Buffer): Buffer => Buffer.concat([b, Buffer.alloc((512 - (b.length % 512)) % 512)]);
     // a pax record is "<length> key=value\n", where length counts the whole record
     const paxBuf = Buffer.from("18 comment=abc123\n");
     const file = Buffer.from("hello\n");
@@ -84,7 +87,7 @@ describe("glob and tar helpers", () => {
     const dir = mkdtempSync(join(tmpdir(), "cutscene-tar-"));
     const path = join(dir, "t.tar.gz");
     writeFileSync(path, gzipSync(tar));
-    const seen = [];
+    const seen: [string, string][] = [];
     const { globalPax } = await readTarGz(path, (e) => seen.push([e.path, e.data.toString()]));
     expect(globalPax.comment).toBe("abc123");
     expect(seen).toEqual([["root-abc/skills/x.md", "hello\n"]]);
@@ -96,9 +99,9 @@ describe("sync output", () => {
   it("is deterministic: two builds give identical files and lock", async (ctx) => {
     needUpstream(ctx);
     const again = await build({ quiet: true });
-    expect(again.lockBuf.equals(result.lockBuf)).toBe(true);
-    expect([...again.plan.keys()].sort()).toEqual([...result.plan.keys()].sort());
-    for (const [k, v] of result.plan) expect(again.plan.get(k).equals(v), k).toBe(true);
+    expect(again.lockBuf.equals(result!.lockBuf)).toBe(true);
+    expect([...again.plan.keys()].sort()).toEqual([...result!.plan.keys()].sort());
+    for (const [k, v] of result!.plan) expect(again.plan.get(k)!.equals(v), k).toBe(true);
   });
 
   it("is idempotent on disk and --check notices drift", async (ctx) => {
@@ -128,22 +131,22 @@ describe("sync output", () => {
   it("`--check --strict` passes on the committed tree", (ctx) => {
     needUpstream(ctx);
     const r = spawnSync(process.execPath, [join(ROOT, "tools", "sync-hyperframes.mjs"), "--check", "--strict", "--json"], { encoding: "utf8" });
-    const out = JSON.parse(r.stdout.trim().split("\n").pop());
+    const out = JSON.parse(r.stdout.trim().split("\n").pop()!) as unknown;
     expect(out, r.stderr).toMatchObject({ ok: true, changed: [], missing: [], extra: [], issues: 0 });
     expect(r.status).toBe(0);
   });
 
   it("reports no patch problems, residue or missing script imports", (ctx) => {
     needUpstream(ctx);
-    expect(result.problems).toEqual([]);
-    expect(result.residue).toEqual([]);
-    expect(result.links).toEqual([]);
-    expect(result.deps.filter((d) => !d.external)).toEqual([]);
+    expect(result!.problems).toEqual([]);
+    expect(result!.residue).toEqual([]);
+    expect(result!.links).toEqual([]);
+    expect(result!.deps.filter((d) => !d.external)).toEqual([]);
   });
 
   it("records the pinned upstream in the lock", (ctx) => {
     needUpstream(ctx);
-    const lock = JSON.parse(read("tools/sync-lock.json"));
+    const lock = JSON.parse(read("tools/sync-lock.json")) as LockJson;
     expect(lock.upstream).toEqual({ repo: "heygen-com/hyperframes", tag: "v0.8.162", commit: "76222e41d7760f94426484ceb9f76d0007813fcc" });
     for (const [file, v] of Object.entries(lock.files)) {
       if (file === "THIRD_PARTY.md") continue;
@@ -156,8 +159,8 @@ describe("sync output", () => {
 describe("generated skills on disk", () => {
   const files = treeFiles();
   const md = files.filter((f) => f.endsWith(".md"));
-  const lock = existsSync(join(ROOT, "tools/sync-lock.json")) ? JSON.parse(read("tools/sync-lock.json")).files : {};
-  const verbatim = (f) => /(?:^|\/)(?:CREDITS\.md|OFL[^/]*\.txt|LICENSE[^/]*|NOTICE[^/]*)$/.test(f);
+  const lock: LockJson["files"] = existsSync(join(ROOT, "tools/sync-lock.json")) ? (JSON.parse(read("tools/sync-lock.json")) as LockJson).files : {};
+  const verbatim = (f: string): boolean => /(?:^|\/)(?:CREDITS\.md|OFL[^/]*\.txt|LICENSE[^/]*|NOTICE[^/]*)$/.test(f);
 
   it("exist", () => {
     expect(files.length).toBeGreaterThan(400);
@@ -180,7 +183,7 @@ describe("generated skills on disk", () => {
       /\bhyperframes[A-Z]\w*/g,
       /--hyperframes\b/g,
     ];
-    const bad = [];
+    const bad: string[] = [];
     for (const f of md) {
       if (verbatim(f)) continue;
       read(f)
@@ -203,7 +206,7 @@ describe("generated skills on disk", () => {
   });
 
   it("have no relative markdown link that fails to resolve", () => {
-    const broken = [];
+    const broken: string[] = [];
     for (const f of md) {
       const lines = read(f).split("\n");
       let fence = false;
@@ -227,11 +230,11 @@ describe("generated skills on disk", () => {
       const text = read(`${t.dir}/SKILL.md`);
       const fm = /^---\n([\s\S]*?)\n---\n/.exec(text);
       expect(fm, t.dir).not.toBeNull();
-      const keys = fm[1].split("\n").filter((l) => /^\w/.test(l)).map((l) => l.split(":")[0]);
+      const keys = fm![1].split("\n").filter((l) => /^\w/.test(l)).map((l) => l.split(":")[0]);
       expect(keys).toEqual(["name", "description"]);
-      expect(fm[1]).toContain(`name: ${t.name}`);
+      expect(fm![1]).toContain(`name: ${t.name}`);
       expect(t.name).toBe(t.dir.split("/").pop());
-      const desc = /description: (.*)/.exec(fm[1])[1];
+      const desc = /description: (.*)/.exec(fm![1])![1];
       expect(desc.length).toBeLessThanOrEqual(1024);
       expect(desc).toMatch(/does not/i);
       expect(text).toContain("## How to run cutscene commands");
@@ -244,12 +247,12 @@ describe("generated skills on disk", () => {
   });
 
   it("carry the adaptation header on every adapted file", () => {
-    const missing = [];
+    const missing: string[] = [];
     for (const [f, v] of Object.entries(lock)) {
       if (typeof v.from !== "string" || !v.from.startsWith("skills/")) continue;
       if (verbatim(f)) continue;
       const ext = /\.[^./]+$/.exec(f)?.[0];
-      if (![".md", ".mjs", ".cjs", ".js", ".sh", ".py", ".html", ".css"].includes(ext)) continue;
+      if (![".md", ".mjs", ".cjs", ".js", ".sh", ".py", ".html", ".css"].includes(ext as string)) continue;
       // the header sits at the top, after a shebang or doctype, or right after YAML frontmatter
       const text = read(f);
       const fm = /^---\n[\s\S]*?\n---\n/.exec(text);
@@ -274,11 +277,11 @@ describe("generated skills on disk", () => {
     // The Pixabay sound files are not shipped (their licence forbids a standalone library); the
     // sound engine takes them from the installed engine, checked against sha256.json.
     expect(existsSync(join(ROOT, "skills/cutscene-audio/sound/sfx/whoosh.mp3"))).toBe(false);
-    expect(Object.keys(JSON.parse(read("skills/cutscene-audio/sound/sfx/sha256.json")).files)).toHaveLength(19);
+    expect(Object.keys((JSON.parse(read("skills/cutscene-audio/sound/sfx/sha256.json")) as { files: Record<string, string> }).files)).toHaveLength(19);
   });
 
   it("have every relative script import resolve", () => {
-    const missing = [];
+    const missing: string[] = [];
     for (const f of files.filter((x) => /\.(mjs|cjs|js)$/.test(x))) {
       const t = read(f);
       const specs = [...t.matchAll(/\bfrom\s+["'](\.{1,2}\/[^"']+)["']/g), ...t.matchAll(/\brequire\s*\(\s*["'](\.{1,2}\/[^"']+)["']\s*\)/g)].map((m) => m[1]);
@@ -291,7 +294,7 @@ describe("generated skills on disk", () => {
   });
 
   it("parse as valid JavaScript (generated and overlay scripts)", () => {
-    const bad = [];
+    const bad: string[] = [];
     for (const f of files.filter((x) => /\.(mjs|cjs)$/.test(x))) {
       const r = spawnSync(process.execPath, ["--check", join(ROOT, ...f.split("/"))], { encoding: "utf8" });
       if (r.status !== 0) bad.push(`${f}: ${r.stderr.split("\n").slice(0, 3).join(" ")}`);

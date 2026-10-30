@@ -7,12 +7,13 @@ import { join } from "node:path";
 import {
   alignDisplay, audioStarts, buildCaptions, captionsHtml, dimColor, readableAccent, runCli, spokenKey, splitLines, tidySpoken,
 } from "../../skills/cutscene-captions/scripts/beats-captions.mjs";
+import type { BeatSheet, SpokenWord } from "../../skills/cutscene-captions/scripts/beats-captions.mjs";
 import { moveSectionOut } from "../../tools/sync-hyperframes.mjs";
 
-const W = (list) => list.map(([w, start, end]) => ({ w, start, end }));
+const W = (list: [string, number, number][]): SpokenWord[] => list.map(([w, start, end]) => ({ w, start, end }));
 const B2 = W([["Tell", 0, 0.34], ["your", 0.34, 0.5], ["A", 0.5, 0.62], ["I", 0.62, 0.76], ["the", 0.76, 0.94], ["video", 0.94, 1.22], ["you", 1.22, 1.4], ["want.", 1.4, 1.62]]);
 const B3 = W([["It", 0, 0.32], ["renders", 0.32, 0.7], ["real", 0.7, 0.9], ["three", 0.9, 1.2], ["D,", 1.2, 1.5], ["and", 1.6, 1.7], ["speaks.", 1.7, 2.1]]);
-const SHEET = {
+const SHEET: BeatSheet = {
   version: 1, fps: 30, width: 1920, height: 1080, duration: 8,
   beats: [
     { id: "b1", start: 0, end: 3, voice: { file: "assets/voice/b1.wav", line: "Tell your A I the video you want.", heard: "Tell your AI the video you want.", words: B2 } },
@@ -30,10 +31,10 @@ describe("caption text vs spoken text", () => {
     expect(spokenKey("it's")).toBe("its");
   });
   it("lines display text up with the spoken words, one caption word per spoken span", () => {
-    const a = alignDisplay("Tell your AI the video you want.", B2);
+    const a = alignDisplay("Tell your AI the video you want.", B2)!;
     expect(a.map((t) => t.text)).toEqual(["Tell", "your", "AI", "the", "video", "you", "want."]);
     expect(a[2]).toEqual({ text: "AI", start: 0.5, end: 0.76 });
-    expect(alignDisplay("It renders real 3D, and speaks.", B3)[3]).toEqual({ text: "3D,", start: 0.9, end: 1.5 });
+    expect(alignDisplay("It renders real 3D, and speaks.", B3)![3]).toEqual({ text: "3D,", start: 0.9, end: 1.5 });
     expect(alignDisplay("Tell your robot the video you want.", B2)).toBeNull();
     expect(alignDisplay("Tell your AI", B2)).toBeNull(); // words left over
   });
@@ -62,8 +63,8 @@ describe("buildCaptions", () => {
   });
   it("warns about a voice without word timings and about display text that doesn't match", () => {
     const sheet = structuredClone(SHEET);
-    sheet.beats[1].voice.display = "Something else entirely.";
-    sheet.beats.push({ id: "b4", start: 8, end: 9, voice: { line: "Bye." } });
+    sheet.beats![1].voice!.display = "Something else entirely.";
+    sheet.beats!.push({ id: "b4", start: 8, end: 9, voice: { line: "Bye." } });
     const r = buildCaptions(sheet);
     expect(r.sources[1].source).toBe("spoken");
     expect(r.warnings.join(" ")).toMatch(/b2: voice.display doesn't line up/);
@@ -103,7 +104,7 @@ describe("the caption sub-composition", () => {
     for (const [fg, bg] of [["#0F1614", "#D1E9E2"], ["#F4F3EE", "#0B0D12"], ["#1F1515", "#F8938C"]]) {
       const dim = dimColor(fg, bg);
       expect(dim).not.toBe(fg);
-      const lum = (h) => {
+      const lum = (h: string): number => {
         const c = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
         return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
       };
@@ -121,19 +122,19 @@ describe("the caption sub-composition", () => {
     writeFileSync(join(dir, ".cutscene", "beats.json"), JSON.stringify(SHEET));
     writeFileSync(join(dir, "index.html"), `<html><body>${HTML}</body></html>`);
     const io = () => {
-      const out = [];
-      return { out: (s) => out.push(s), err: (s) => out.push(s), text: () => out.join("") };
+      const out: string[] = [];
+      return { out: (s: string) => out.push(s), err: (s: string) => out.push(s), text: () => out.join("") };
     };
     const a = io();
     expect(runCli([dir, "--json"], a)).toBe(0);
-    const res = JSON.parse(a.text());
+    const res = JSON.parse(a.text()) as { snippet: string };
     expect(res.snippet).toMatch(/data-composition-id="captions" data-composition-src="compositions\/captions.html" data-track-kind="captions"/);
     expect(existsSync(join(dir, "compositions", "captions.html"))).toBe(true);
     expect(runCli([dir, "--json"], io())).toBe(0); // its own file: replaced
     writeFileSync(join(dir, "compositions", "mine.html"), "hand made");
     const b = io();
     expect(runCli([dir, "--id", "mine", "--json"], b)).toBe(1);
-    expect(JSON.parse(b.text()).error.code).toBe("FILE_EXISTS");
+    expect((JSON.parse(b.text()) as { error: { code: string } }).error.code).toBe("FILE_EXISTS");
     expect(readFileSync(join(dir, "compositions", "mine.html"), "utf8")).toBe("hand made");
     expect(runCli([dir, "--out", "../escape.html"], io())).toBe(2);
     expect(runCli([dir, "--out", `../${dir.split(/[\\/]/).pop()}-evil/c.html`], io())).toBe(2); // sibling folder sharing the name prefix
@@ -141,7 +142,7 @@ describe("the caption sub-composition", () => {
     for (const unc of ["\\\\server\\share\\video", "//server/share/video", "/\\server\\share\\video"]) {
       const n = io();
       expect(runCli([unc, "--json"], n), unc).toBe(2);
-      expect(JSON.parse(n.text()).error.code).toBe("NETWORK_PATH");
+      expect((JSON.parse(n.text()) as { error: { code: string } }).error.code).toBe("NETWORK_PATH");
     }
   });
 });
@@ -149,7 +150,7 @@ describe("the caption sub-composition", () => {
 describe("moveSections", () => {
   const BODY = "# Skill\n\nIntro.\n\n## Carve\n\nLong text with [a link](references/fx.md) and [b](scripts/x.mjs).\n\n### Sub\n\n```md\n## not a heading\n```\n\n## Next\n\nKeep.\n";
   it("moves a section to a reference, leaves a summary and fixes the links", () => {
-    const r = moveSectionOut(BODY, { heading: "^Carve$", to: "references/carve.md", summary: "Short." });
+    const r = moveSectionOut(BODY, { heading: "^Carve$", to: "references/carve.md", summary: "Short." })!;
     expect(r.text).toBe("# Skill\n\nIntro.\n\n## Carve\n\nShort.\n\nDetails: [references/carve.md](references/carve.md).\n\n## Next\n\nKeep.\n");
     expect(r.moved).toMatch(/^# Carve\n/);
     expect(r.moved).toMatch(/\n## Sub\n/);

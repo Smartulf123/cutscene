@@ -26,24 +26,38 @@ import {
   validateLook,
   DEFAULT_THRESHOLD,
 } from "../../skills/cutscene-design/scripts/look.mjs";
+import type { Look } from "../../skills/cutscene-design/scripts/look.mjs";
+
+/** The parts of the CLI's --json answers these tests read. */
+interface CliJson {
+  ok: boolean;
+  look: Look;
+  error: { code: string };
+  compared: number;
+  tooSimilar: { project: string; score: number }[];
+  rows: { project: string }[];
+  score: number;
+  fontsCopied: string[];
+  warnings: string[];
+}
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const LOOK = join(ROOT, "skills", "cutscene-design", "scripts", "look.mjs");
 const BRIEF_A = "A fast, punchy launch video for our developer tool. Tech startup energy, 20 seconds.";
 const BRIEF_B = "A calm, gentle wellness explainer about sleep and meditation.";
 
-function project(root, name, brief) {
+function project(root: string, name: string, brief: string): string {
   const dir = join(root, name);
   mkdirSync(join(dir, ".cutscene"), { recursive: true });
   writeFileSync(join(dir, ".cutscene", "brief.md"), brief);
   return dir;
 }
-function cli(args) {
-  const out = [];
-  const err = [];
+function cli(args: string[]): { code: number; text: string; err: string; json: CliJson } {
+  const out: string[] = [];
+  const err: string[] = [];
   const code = runCli(args, { out: (s) => out.push(s), err: (s) => err.push(s) });
   const text = out.join("");
-  return { code, text, err: err.join(""), json: args.includes("--json") && text ? JSON.parse(text.trim()) : null };
+  return { code, text, err: err.join(""), json: (args.includes("--json") && text ? JSON.parse(text.trim()) : null) as CliJson };
 }
 const tmp = () => mkdtempSync(join(tmpdir(), "cutscene-look-"));
 
@@ -67,7 +81,7 @@ describe("font choice", () => {
 
   it("brand colours without fonts still draw from the curated pairs, with variety", () => {
     const brand = readBrand(JSON.stringify({ colors: { primary: "#FF5A1F" } }));
-    const pairs = new Set();
+    const pairs = new Set<string>();
     for (let seed = 0; seed < 120; seed++) {
       const l = generateLook({ briefText: BRIEF_A, seed, brand });
       const key = `${l.type.display.family}|${l.type.body.family}`;
@@ -90,7 +104,7 @@ describe("font choice", () => {
     for (const [display, weight] of PAIRINGS) {
       const pin = fontPin3d(display, weight);
       expect(pin, display).toBeTruthy();
-      expect(pin.url, display).toMatch(/\.woff$/);
+      expect(pin!.url, display).toMatch(/\.woff$/);
     }
   });
 });
@@ -98,7 +112,7 @@ describe("font choice", () => {
 describe("background tones and brief colour cues", () => {
   const BRIEFS = [BRIEF_A, BRIEF_B, "A playful kids game trailer", "A cinematic luxury perfume teaser", "A data-driven news explainer"];
   it("uses every background tone, not only near-white and near-black", () => {
-    const tones = new Set();
+    const tones = new Set<string>();
     for (let seed = 0; seed < 300; seed++) tones.add(toneOf(generateLook({ briefText: BRIEFS[seed % 5], seed }).palette.bg));
     expect([...tones].sort()).toEqual([...TONES].sort());
   });
@@ -142,7 +156,7 @@ describe("background tones and brief colour cues", () => {
         expect(r.code).toBe(0);
         const fonts = before.map((l) => l.type.display.family);
         expect(fonts).not.toContain(r.json.look.type.display.family);
-        if (before.length) expect(toneOf(r.json.look.palette.bg)).not.toBe(toneOf(before.at(-1).palette.bg));
+        if (before.length) expect(toneOf(r.json.look.palette.bg)).not.toBe(toneOf(before.at(-1)!.palette.bg));
         utimesSync(join(p, ".cutscene", "look.json"), new Date(Date.now() + i * 1000), new Date(Date.now() + i * 1000));
       }
     } finally {
@@ -151,11 +165,11 @@ describe("background tones and brief colour cues", () => {
   });
 });
 
-function previousLooksFor(root) {
-  const out = [];
+function previousLooksFor(root: string): Look[] {
+  const out: Look[] = [];
   for (let i = 0; i < 5; i++) {
     try {
-      out.push(JSON.parse(readFileSync(join(root, `p${i}`, ".cutscene", "look.json"), "utf8")));
+      out.push(JSON.parse(readFileSync(join(root, `p${i}`, ".cutscene", "look.json"), "utf8")) as Look);
     } catch {
       /* not made yet */
     }
@@ -185,13 +199,13 @@ describe("generateLook", () => {
   });
 
   it("always produces a valid look with passing contrast (200 seeds)", () => {
-    const characters = new Set();
+    const characters = new Set<string>();
     for (let seed = 0; seed < 200; seed++) {
       const look = generateLook({ briefText: seed % 2 ? BRIEF_A : BRIEF_B, seed });
       const res = validateLook(look);
       expect(res.errors, `seed ${seed}`).toEqual([]);
-      expect(res.info.contrast.fg_bg).toBeGreaterThanOrEqual(7);
-      expect(res.info.contrast.accent_bg).toBeGreaterThanOrEqual(3);
+      expect(res.info.contrast!.fg_bg).toBeGreaterThanOrEqual(7);
+      expect(res.info.contrast!.accent_bg).toBeGreaterThanOrEqual(3);
       expect(CHARACTERS).toContain(look.motion.character);
       characters.add(look.motion.character);
     }
@@ -199,7 +213,7 @@ describe("generateLook", () => {
   });
 
   it("leans the motion character toward the brief's mood", () => {
-    const count = (brief, c) => Array.from({ length: 60 }, (_, s) => generateLook({ briefText: brief, seed: s })).filter((l) => l.motion.character === c).length;
+    const count = (brief: string, c: string): number => Array.from({ length: 60 }, (_, s) => generateLook({ briefText: brief, seed: s })).filter((l) => l.motion.character === c).length;
     expect(count(BRIEF_B, "smooth")).toBeGreaterThan(count(BRIEF_A, "smooth"));
     expect(count(BRIEF_A, "snappy")).toBeGreaterThan(count(BRIEF_B, "snappy"));
   });
@@ -207,7 +221,7 @@ describe("generateLook", () => {
   it("uses only fonts the engine renders or that Cutscene bundles", () => {
     for (let seed = 0; seed < 100; seed++) {
       const look = generateLook({ briefText: BRIEF_A, seed });
-      for (const k of ["display", "body"]) {
+      for (const k of ["display", "body"] as const) {
         const f = look.type[k].family;
         expect(ENGINE_FONTS.includes(f) || f in BUNDLED_FONTS, f).toBe(true);
         if (f in BUNDLED_FONTS) {
@@ -230,7 +244,7 @@ describe("generateLook", () => {
   });
 
   it("reads a captured site's ordered colour list as a brand", () => {
-    const b = readBrand(JSON.stringify({ title: "Site", colors: ["#FFFFFF", "#111111", "#E8E8E8", "#00A86B", "#FFB000"], fonts: ["Inter"] }));
+    const b = readBrand(JSON.stringify({ title: "Site", colors: ["#FFFFFF", "#111111", "#E8E8E8", "#00A86B", "#FFB000"], fonts: ["Inter"] }))!;
     expect(b.background).toBe("#FFFFFF");
     expect(["#00A86B", "#FFB000"]).toContain(b.primary);
     expect(b.text).toBe("#111111");
@@ -317,8 +331,8 @@ describe("look CLI", () => {
       const p2 = project(root, "two", BRIEF_A);
       expect(cli(["new", "--brief", join(p1, ".cutscene", "brief.md"), "--seed", "77"]).code).toBe(0);
       expect(cli(["new", "--brief", join(p2, ".cutscene", "brief.md"), "--seed", "77"]).code).toBe(0);
-      const a = JSON.parse(readFileSync(join(p1, ".cutscene", "look.json"), "utf8"));
-      const b = JSON.parse(readFileSync(join(p2, ".cutscene", "look.json"), "utf8"));
+      const a = JSON.parse(readFileSync(join(p1, ".cutscene", "look.json"), "utf8")) as Look;
+      const b = JSON.parse(readFileSync(join(p2, ".cutscene", "look.json"), "utf8")) as Look;
       expect(a).toEqual(b);
       const again = cli(["new", "--brief", join(p1, ".cutscene", "brief.md"), "--json"]);
       expect(again.code).toBe(1);
@@ -338,8 +352,8 @@ describe("look CLI", () => {
       expect(r.code).toBe(0);
       expect(r.json.compared).toBe(1);
       expect(r.json.tooSimilar).toEqual([]);
-      const a = JSON.parse(readFileSync(join(old, ".cutscene", "look.json"), "utf8"));
-      const b = JSON.parse(readFileSync(join(fresh, ".cutscene", "look.json"), "utf8"));
+      const a = JSON.parse(readFileSync(join(old, ".cutscene", "look.json"), "utf8")) as Look;
+      const b = JSON.parse(readFileSync(join(fresh, ".cutscene", "look.json"), "utf8")) as Look;
       expect(diffLooks(a, b).score).toBeGreaterThanOrEqual(DEFAULT_THRESHOLD);
     } finally {
       rmSync(root, { recursive: true, force: true });
@@ -392,7 +406,7 @@ describe("look CLI", () => {
       const p = project(root, "p", BRIEF_A);
       cli(["new", "--brief", join(p, ".cutscene", "brief.md"), "--seed", "8"]);
       expect(cli(["check", p]).code).toBe(0);
-      const look = JSON.parse(readFileSync(join(p, ".cutscene", "look.json"), "utf8"));
+      const look = JSON.parse(readFileSync(join(p, ".cutscene", "look.json"), "utf8")) as Look;
       look.palette.fg = look.palette.bg;
       writeFileSync(join(p, ".cutscene", "look.json"), JSON.stringify(look));
       const bad = cli(["check", p, "--json"]);
@@ -417,7 +431,7 @@ describe("look CLI", () => {
       const p = project(root, "fonts", BRIEF_A);
       const r = cli(["new", "--brief", join(p, ".cutscene", "brief.md"), "--seed", String(seed), "--json"]);
       expect(r.json.fontsCopied.length).toBeGreaterThan(0);
-      const look = JSON.parse(readFileSync(join(p, ".cutscene", "look.json"), "utf8"));
+      const look = JSON.parse(readFileSync(join(p, ".cutscene", "look.json"), "utf8")) as Look;
       expect(look.type.display.src).toMatch(/^assets\/fonts\/.+\.woff2$/);
       expect(cli(["check", p, "--json"]).json.warnings.join(" ")).not.toMatch(/font_family_without_font_face/);
     } finally {
