@@ -39,7 +39,7 @@ Upstream: `heygen-com/hyperframes` at tag `v0.8.162`, commit `76222e41d7760f9442
 
 | Files | Origin | Licence | Notes |
 |---|---|---|---|
-| `skills/cutscene-*/**` | HyperFrames skills (HeyGen, Inc.) | Apache-2.0 | adapted; see the header in each file (Cutscene's own files are listed below) (523 files) |
+| `skills/cutscene-*/**` | HyperFrames skills (HeyGen, Inc.) | Apache-2.0 | adapted; see the header in each file (Cutscene's own files are listed below) (527 files) |
 | `skills/cutscene/references/upstream/**` | HyperFrames router and Studio skills | Apache-2.0 | reference knowledge for the router (23 files) |
 | `skills/cutscene-design/frame-presets/code-editorial/fonts/*.woff2` | EB Garamond, Inter, JetBrains Mono | SIL Open Font License 1.1 | licence texts kept beside the fonts (OFL-*.txt) (6 files) |
 | `skills/cutscene-captions/modes/standard/fonts/files/*.woff2`<br>`skills/cutscene-captions/modes/standard/fonts/fonts.css`<br>`skills/cutscene-captions/modes/standard/fonts/licenses/*.txt` | Google Fonts families via @fontsource (latin subsets): Anton, Audiowide, Baloo 2, Bangers, Bodoni Moda, Caveat, Chakra Petch, Cinzel, Cormorant Garamond, Creepster, Fredoka, Inter, Monoton, Orbitron, Press Start 2P, Rajdhani, Saira Stencil One, Shippori Mincho, Sora, Space Grotesk, Teko, VT323 (SIL OFL 1.1); Permanent Marker, Special Elite (Apache-2.0) | SIL Open Font License 1.1 / Apache-2.0 | each family's licence text with its copyright line, as Fontsource ships it, is kept in modes/standard/fonts/licenses/ (OFL-<family>.txt, LICENSE-<family>.txt); see https://github.com/fontsource/font-files (69 files) |
@@ -50,14 +50,18 @@ Upstream: `heygen-com/hyperframes` at tag `v0.8.162`, commit `76222e41d7760f9442
 Written for Cutscene (Apache-2.0) and layered on top by the sync from `overlays/`:
 
 - `skills/cutscene-audio/references/sound-library.md`
+- `skills/cutscene-audio/scripts/sound-engine.d.mts`
 - `skills/cutscene-audio/scripts/sound-engine.mjs`
 - `skills/cutscene-audio/sound/sfx/README.md`
 - `skills/cutscene-audio/sound/sfx/sha256.json`
 - `skills/cutscene-captions/modes/standard/fonts/licenses/README.md`
 - `skills/cutscene-captions/references/narrated-motion-graphics.md`
+- `skills/cutscene-captions/scripts/beats-captions.d.mts`
 - `skills/cutscene-captions/scripts/beats-captions.mjs`
 - `skills/cutscene-captions/scripts/hf-cli.cjs`
+- `skills/cutscene-captions/scripts/hf-cli.d.cts`
 - `skills/cutscene-design/references/look-system.md`
+- `skills/cutscene-design/scripts/look.d.mts`
 - `skills/cutscene-design/scripts/look.mjs`
 - `skills/cutscene/references/upstream/README.md`
 
