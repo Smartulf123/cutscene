@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { join } from "node:path";
+import { resolve } from "node:path";
 import {
   BUNDLED_FONT, DEMO_SVG, TEMPLATES, frameCount, newSpec, resolveColors, resolveSpec, stillFrames, validateSpec,
 } from "../../skills/cutscene-3d/scripts/lib/spec.mjs";
@@ -63,9 +63,10 @@ describe("resolveSpec", () => {
   it("picks Cycles for glass and makes paths absolute", () => {
     const spec = newSpec("product-shot", { id: "p", model: "assets/p.glb" });
     spec.params.material_override = { preset: "glass" };
-    const r = resolveSpec(spec, { projectDir: "C:/proj", look });
+    const proj = resolve("/proj"); // absolute on every system
+    const r = resolveSpec(spec, { projectDir: proj, look });
     expect(r.engine).toBe("CYCLES");
-    expect(r.params.model).toBe(join("C:/proj", "assets/p.glb"));
+    expect(r.params.model).toBe(resolve(proj, "assets/p.glb"));
   });
   it("uses the demo mark when a logo spec has no SVG", () => {
     expect(resolveSpec(newSpec("logo-svg", { id: "l" }), {}).params.svg).toBe(DEMO_SVG);
