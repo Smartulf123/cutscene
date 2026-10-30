@@ -1,12 +1,12 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { join } from "node:path";
 import { BLOCKED } from "../../skills/cutscene/scripts/cli.mjs";
-import { PIN, cleanup, copySkill, fakeHome, fakePart, runCli, tempDir } from "./helpers.mjs";
+import { PIN, cleanup, copySkill, fakeHome, fakePart, runCli, tempDir } from "./helpers.ts";
 
-let root;
-let cli;
-let skillsRoot;
-let home;
+let root: string;
+let cli: string;
+let skillsRoot: string;
+let home: string;
 
 beforeAll(() => {
   root = tempDir();

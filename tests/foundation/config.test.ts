@@ -4,10 +4,10 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 import { configPath, mergePatch, readConfig, writeConfig } from "../../skills/cutscene/scripts/lib/config.mjs";
 import { cutsceneHome, homePaths, isNetworkPath, resolveUserPath } from "../../skills/cutscene/scripts/lib/paths.mjs";
-import { cleanup, tempDir } from "./helpers.mjs";
+import { cleanup, tempDir } from "./helpers.ts";
 
-let dir;
-let saved;
+let dir: string;
+let saved: string | undefined;
 beforeEach(() => {
   dir = tempDir();
   saved = process.env.CUTSCENE_HOME;
@@ -70,7 +70,7 @@ describe("readConfig / writeConfig", () => {
   it("explains a broken settings file instead of crashing", () => {
     writeFileSync(join(dir, "config.json"), "{ not json");
     expect(() => readConfig()).toThrow(expect.objectContaining({ code: "CONFIG_INVALID" }));
-    expect(() => writeConfig("nope")).toThrow(expect.objectContaining({ code: "CONFIG_PATCH_INVALID" }));
+    expect(() => writeConfig("nope" as unknown as Record<string, unknown>)).toThrow(expect.objectContaining({ code: "CONFIG_PATCH_INVALID" }));
   });
 
   it("reads a file saved with a byte-order mark", () => {

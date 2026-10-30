@@ -21,15 +21,15 @@ describe("parseArgs", () => {
 
   it("rejects bad ports, unknown options and clashing actions with a usage error", () => {
     for (const argv of [["--port", "80"], ["--port", "abc"], ["--port", "70000"], ["--port"], ["--frobnicate"], ["--status", "--stop"], ["--background", "--list"], ["a", "b"], ["--all"]]) {
-      let err;
+      let err: { code?: string; exitCode?: number } | undefined;
       try {
         parseArgs(argv);
       } catch (e) {
-        err = e;
+        err = e as { code?: string; exitCode?: number };
       }
       expect(err, argv.join(" ")).toBeDefined();
-      expect(err.code).toBe("USAGE");
-      expect(err.exitCode).toBe(2);
+      expect(err!.code).toBe("USAGE");
+      expect(err!.exitCode).toBe(2);
     }
   });
 });

@@ -6,6 +6,7 @@ import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from "node
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import http from "node:http";
+import type { IncomingHttpHeaders } from "node:http";
 import { engineCliPath, engineEnv } from "../../skills/cutscene/scripts/preview/engine.mjs";
 import { pidAlive, readState } from "../../skills/cutscene/scripts/preview/state.mjs";
 
@@ -13,12 +14,36 @@ const PREVIEW = resolve(import.meta.dirname, "../../skills/cutscene/scripts/prev
 const CLI = engineCliPath();
 const PORT = 3092;
 
-function run(args) {
-  const r = spawnSync(process.execPath, [PREVIEW, ...args], { encoding: "utf8", windowsHide: true, timeout: 180_000 });
-  return { code: r.status, out: r.stdout, err: r.stderr, json: safeJson(r.stdout) };
+/** The fields these tests read from `cutscene preview --json` (null when stdout isn't JSON). */
+interface PreviewJson {
+  ok: boolean;
+  pid: number;
+  previews: { port: number }[];
+  stopped: { port: number; stopped: boolean }[];
+  [key: string]: unknown;
 }
 
-function safeJson(s) {
+/** Options for `request`. */
+interface RequestOptions {
+  method?: string;
+  path?: string;
+  headers?: Record<string, string>;
+  body?: string;
+}
+
+/** What `request` resolves with. */
+interface Reply {
+  status: number | undefined;
+  body: string;
+  headers: IncomingHttpHeaders;
+}
+
+function run(args: string[]) {
+  const r = spawnSync(process.execPath, [PREVIEW, ...args], { encoding: "utf8", windowsHide: true, timeout: 180_000 });
+  return { code: r.status, out: r.stdout, err: r.stderr, json: safeJson(r.stdout) as PreviewJson };
+}
+
+function safeJson(s: string): unknown {
   try {
     return JSON.parse(s);
   } catch {
@@ -26,14 +51,14 @@ function safeJson(s) {
   }
 }
 
-function request({ method = "GET", path = "/", headers = {}, body } = {}) {
+function request({ method = "GET", path = "/", headers = {}, body }: RequestOptions = {}): Promise<Reply> {
   return new Promise((resolveReq, reject) => {
     const req = http.request(
       { host: "127.0.0.1", port: PORT, method, path, headers: { host: `127.0.0.1:${PORT}`, ...headers }, agent: false },
       (res) => {
         let data = "";
         res.setEncoding("utf8");
-        res.on("data", (c) => (data += c));
+        res.on("data", (c: string) => (data += c));
         res.on("end", () => resolveReq({ status: res.statusCode, body: data, headers: res.headers }));
       },
     );
@@ -47,7 +72,7 @@ describe.skipIf(!CLI)("the pinned Studio still has what the Cutscene theme targe
   // Re-checked on every engine bump: if one of these disappears, theme.css or frontdoor.mjs
   // needs a new selector, or HyperFrames chrome would show through.
   it("finds every selector and string the front door relies on", () => {
-    const studioDir = join(CLI, "..", "studio");
+    const studioDir = join(CLI!, "..", "studio");
     const html = readFileSync(join(studioDir, "index.html"), "utf8");
     expect(html).toMatch(/<title>[^<]*<\/title>/);
     expect(html).toContain('rel="icon"');
@@ -73,14 +98,14 @@ describe.skipIf(!CLI)("the pinned Studio still has what the Cutscene theme targe
 });
 
 describe.skipIf(!CLI)("cutscene preview with the real engine", () => {
-  let tmp;
-  let project;
-  let started;
+  let tmp: string;
+  let project: string;
+  let started: PreviewJson;
 
   beforeAll(() => {
     tmp = mkdtempSync(join(tmpdir(), "cs-preview-int-"));
     project = join(tmp, "demo");
-    const init = spawnSync(process.execPath, [CLI, "init", project, "--non-interactive", "--example", "blank"], {
+    const init = spawnSync(process.execPath, [CLI!, "init", project, "--non-interactive", "--example", "blank"], {
       encoding: "utf8",
       windowsHide: true,
       env: engineEnv(),
@@ -141,7 +166,7 @@ describe.skipIf(!CLI)("cutscene preview with the real engine", () => {
     const list = run(["--list", "--json"]);
     const mine = list.json.previews.find((p) => p.port === PORT);
     expect(mine).toBeDefined();
-    const enginePid = readState(PORT).enginePid;
+    const enginePid = readState(PORT)!.enginePid;
     expect(pidAlive(enginePid)).toBe(true);
     const r = run(["--stop", "--port", String(PORT), "--json"]);
     expect(r.json).toMatchObject({ ok: true });

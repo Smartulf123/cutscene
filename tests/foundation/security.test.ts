@@ -7,9 +7,9 @@ import { isNetworkPath, resolveUserPath, ENGINE_JSON } from "../../skills/cutsce
 import { CLOUD_ENV, ENGINE_LOCK, engineEnv, readEngineLock, readPin } from "../../skills/cutscene/scripts/lib/engine.mjs";
 import { engineDownloadsFor } from "../../skills/cutscene/scripts/lib/engine-downloads.mjs";
 import { adjustEngineArgs } from "../../skills/cutscene/scripts/cli.mjs";
-import { cleanup, tempDir } from "./helpers.mjs";
+import { cleanup, tempDir } from "./helpers.ts";
 
-const roots = [];
+const roots: string[] = [];
 afterAll(() => roots.forEach(cleanup));
 
 describe("network paths", () => {

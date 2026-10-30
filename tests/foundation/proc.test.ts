@@ -3,17 +3,17 @@ import { spawn } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { findOnPath, killTree, probe, run } from "../../skills/cutscene/scripts/lib/proc.mjs";
-import { REPO, cleanup, tempDir } from "./helpers.mjs";
+import { REPO, cleanup, tempDir } from "./helpers.ts";
 
-const alive = (pid) => {
+const alive = (pid: number | undefined) => {
   try {
-    process.kill(pid, 0);
+    process.kill(pid as number, 0);
     return true;
   } catch {
     return false;
   }
 };
-const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 describe("process helpers", () => {
   it("captures output and exit codes", async () => {
@@ -46,7 +46,7 @@ describe("process helpers", () => {
         setTimeout(() => {}, 60000);
       `;
       const child = spawn(process.execPath, ["-e", script], { stdio: "ignore", windowsHide: true });
-      let grandchild;
+      let grandchild: number | undefined;
       for (let i = 0; i < 100 && !grandchild; i++) {
         await wait(50);
         try {
@@ -60,7 +60,7 @@ describe("process helpers", () => {
       for (let i = 0; i < 40 && (alive(grandchild) || alive(child.pid)); i++) await wait(50);
       expect(alive(child.pid)).toBe(false);
       if (process.platform === "win32") expect(alive(grandchild)).toBe(false); // taskkill /T
-      else process.kill(grandchild);
+      else process.kill(grandchild as number);
     } finally {
       cleanup(dir);
     }
@@ -75,8 +75,8 @@ describe("process helpers", () => {
 
   it("hides windows on every spawn in the cutscene skill's own scripts", () => {
     const text = readFileSync(join(REPO, "skills", "cutscene", "scripts", "lib", "proc.mjs"), "utf8");
-    const spawns = text.match(/\bspawn(Sync)?\(/g).length;
-    const hidden = text.match(/windowsHide: true/g).length;
+    const spawns = text.match(/\bspawn(Sync)?\(/g)!.length;
+    const hidden = text.match(/windowsHide: true/g)!.length;
     expect(hidden).toBeGreaterThanOrEqual(spawns);
   });
 });
