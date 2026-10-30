@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 170" width="200" height="170">
+  <!-- Cutscene demo mark (made for Cutscene, CC0): a clapper board with a play cut-out. -->
+  <path fill="#5B8DEF" fill-rule="evenodd" d="M30 62 H170 Q188 62 188 80 V146 Q188 164 170 164 H30 Q12 164 12 146 V80 Q12 62 30 62 Z M86 90 L86 136 L126 113 Z"/>
+  <path fill="#FF7A45" d="M14 44 L170 14 Q184 11 187 25 L189 36 L22 68 L16 58 Q12 47 14 44 Z"/>
+</svg>

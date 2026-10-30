@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <style>
+    .tile { fill: #F4F3EE; }
+    .cut { fill: #0B0D12; }
+    @media (prefers-color-scheme: light) {
+      .tile { fill: #0B0D12; }
+      .cut { fill: #F4F3EE; }
+    }
+  </style>
+  <rect class="tile" x="4" y="4" width="56" height="56" rx="15"/>
+  <rect class="cut" x="24.5" y="14" width="7" height="36" rx="3.5"/>
+</svg>

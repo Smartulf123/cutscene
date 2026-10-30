@@ -1,0 +1,322 @@
+{
+  "version": 1,
+  "fps": 30,
+  "format": "landscape",
+  "width": 1920,
+  "height": 1080,
+  "duration": 12.4,
+  "beats": [
+    {
+      "id": "b1",
+      "start": 0,
+      "end": 3,
+      "label": "3D logo reveal (Blender), wordmark lands",
+      "graphics": [
+        {
+          "id": "g-wordmark",
+          "kind": "wordmark",
+          "text": "Cutscene"
+        }
+      ],
+      "sfx": [
+        {
+          "at": 0.2,
+          "name": "whoosh"
+        },
+        {
+          "at": 1.5,
+          "name": "impact"
+        }
+      ],
+      "voice": {
+        "speaker": "narrator",
+        "line": "This is Cutscene.",
+        "file": "assets/voice/b1.wav",
+        "duration": 1.14,
+        "model": "omnivoice",
+        "seed": 42,
+        "take": ".cutscene/voice/takes/b1.omnivoice.s42.wav",
+        "spoken": "2026-10-30",
+        "verified": true,
+        "words": [
+          {
+            "w": "This",
+            "start": 0,
+            "end": 0.3,
+            "p": 0.743
+          },
+          {
+            "w": "is",
+            "start": 0.3,
+            "end": 0.44,
+            "p": 0.996
+          },
+          {
+            "w": "Cutscene.",
+            "start": 0.44,
+            "end": 0.88,
+            "p": 0.921
+          }
+        ],
+        "heard": "This is Cutscene."
+      },
+      "shot3d": {
+        "spec": ".cutscene/3d/logo.json",
+        "tier": 2,
+        "file": "assets/3d/logo.webm",
+        "duration": 3
+      }
+    },
+    {
+      "id": "b2",
+      "start": 3,
+      "end": 6.4,
+      "label": "3D title (Three.js): Describe it",
+      "graphics": [
+        {
+          "id": "g-prompt",
+          "kind": "prompt",
+          "text": "make a 12 second intro for my channel"
+        }
+      ],
+      "voice": {
+        "speaker": "narrator",
+        "line": "Tell your A I the video you want.",
+        "file": "assets/voice/b2.wav",
+        "duration": 1.87,
+        "model": "omnivoice",
+        "seed": 42,
+        "take": ".cutscene/voice/takes/b2.omnivoice.s42.wav",
+        "spoken": "2026-10-30",
+        "verified": true,
+        "words": [
+          {
+            "w": "Tell",
+            "start": 0,
+            "end": 0.34,
+            "p": 0.687
+          },
+          {
+            "w": "your",
+            "start": 0.34,
+            "end": 0.5,
+            "p": 0.961
+          },
+          {
+            "w": "A",
+            "start": 0.5,
+            "end": 0.76,
+            "p": 0.935
+          },
+          {
+            "w": "I",
+            "start": 0.5,
+            "end": 0.76,
+            "p": 0.935
+          },
+          {
+            "w": "the",
+            "start": 0.76,
+            "end": 0.94,
+            "p": 0.989
+          },
+          {
+            "w": "video",
+            "start": 0.94,
+            "end": 1.22,
+            "p": 0.999
+          },
+          {
+            "w": "you",
+            "start": 1.22,
+            "end": 1.4,
+            "p": 0.999
+          },
+          {
+            "w": "want.",
+            "start": 1.4,
+            "end": 1.62,
+            "p": 0.999
+          }
+        ],
+        "heard": "Tell your AI the video you want."
+      },
+      "shot3d": {
+        "spec": ".cutscene/3d/title.json",
+        "tier": 1,
+        "file": "compositions/scene3d-title.html",
+        "duration": 3.4
+      }
+    },
+    {
+      "id": "b3",
+      "start": 6.4,
+      "end": 9.9,
+      "label": "the three parts: motion, 3D, voice",
+      "graphics": [
+        {
+          "id": "g-motion",
+          "kind": "part",
+          "text": "Motion"
+        },
+        {
+          "id": "g-3d",
+          "kind": "part",
+          "text": "3D"
+        },
+        {
+          "id": "g-voice",
+          "kind": "part",
+          "text": "Voice"
+        }
+      ],
+      "voice": {
+        "speaker": "narrator",
+        "line": "It animates, renders real three D, and speaks every line.",
+        "file": "assets/voice/b3.wav",
+        "duration": 3.29,
+        "model": "omnivoice",
+        "seed": 42,
+        "take": ".cutscene/voice/takes/b3.omnivoice.s42.wav",
+        "spoken": "2026-10-30",
+        "verified": true,
+        "words": [
+          {
+            "w": "It",
+            "start": 0,
+            "end": 0.32,
+            "p": 0.926
+          },
+          {
+            "w": "animates,",
+            "start": 0.32,
+            "end": 0.84,
+            "p": 0.998
+          },
+          {
+            "w": "renders",
+            "start": 0.96,
+            "end": 1.3,
+            "p": 0.999
+          },
+          {
+            "w": "real",
+            "start": 1.3,
+            "end": 1.5,
+            "p": 0.964
+          },
+          {
+            "w": "three",
+            "start": 1.5,
+            "end": 1.94,
+            "p": 0.957
+          },
+          {
+            "w": "D,",
+            "start": 1.5,
+            "end": 1.94,
+            "p": 0.957
+          },
+          {
+            "w": "and",
+            "start": 2.12,
+            "end": 2.18,
+            "p": 0.994
+          },
+          {
+            "w": "speaks",
+            "start": 2.18,
+            "end": 2.44,
+            "p": 0.996
+          },
+          {
+            "w": "every",
+            "start": 2.44,
+            "end": 2.74,
+            "p": 0.996
+          },
+          {
+            "w": "line.",
+            "start": 2.74,
+            "end": 2.98,
+            "p": 0.996
+          }
+        ],
+        "heard": "It animates, renders real 3D, and speaks every line."
+      }
+    },
+    {
+      "id": "b4",
+      "start": 9.9,
+      "end": 12.4,
+      "label": "end card: wordmark and install line",
+      "graphics": [
+        {
+          "id": "g-end",
+          "kind": "wordmark",
+          "text": "Cutscene"
+        },
+        {
+          "id": "g-install",
+          "kind": "code",
+          "text": "claude plugin install cutscene"
+        }
+      ],
+      "voice": {
+        "speaker": "narrator",
+        "line": "All on your computer.",
+        "file": "assets/voice/b4.wav",
+        "duration": 1.35,
+        "model": "omnivoice",
+        "seed": 42,
+        "take": ".cutscene/voice/takes/b4.omnivoice.s42.wav",
+        "spoken": "2026-10-30",
+        "verified": true,
+        "words": [
+          {
+            "w": "All",
+            "start": 0,
+            "end": 0.38,
+            "p": 0.638
+          },
+          {
+            "w": "on",
+            "start": 0.38,
+            "end": 0.52,
+            "p": 0.998
+          },
+          {
+            "w": "your",
+            "start": 0.52,
+            "end": 0.64,
+            "p": 0.999
+          },
+          {
+            "w": "computer.",
+            "start": 0.64,
+            "end": 0.84,
+            "p": 0.999
+          }
+        ],
+        "heard": "All on your computer."
+      }
+    }
+  ],
+  "voices": {
+    "narrator": {
+      "model": "omnivoice",
+      "design": "female, young adult, american accent",
+      "reference": ".cutscene/voice/narrator-ref.wav",
+      "reference_text": "Hi, I'm the voice of Cutscene. Let's make something.",
+      "seed": 42,
+      "language": "en",
+      "license": "CC-BY-NC-4.0",
+      "created": "2026-10-30",
+      "instruct": "female, young adult, american accent",
+      "prompt": ".cutscene/voice/narrator.omnivoice.pt",
+      "num_step": 16,
+      "fast": false,
+      "reference_verified": true
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "name": "cutscene echo",
+  "palette": {
+    "bg": "#0B0D12",
+    "fg": "#F4F3EE",
+    "accent": "#FF7A45",
+    "accent2": "#5B8DEF"
+  },
+  "type": {
+    "display": {
+      "family": "DM Serif Display",
+      "weight": 400,
+      "src": "assets/fonts/dm-serif-display-latin-400-normal.woff"
+    },
+    "body": {
+      "family": "Space Grotesk",
+      "weight": 400,
+      "src": "assets/fonts/space-grotesk-latin-400-normal.woff2"
+    }
+  },
+  "motion": {
+    "character": "snappy",
+    "ease": "circ.out",
+    "duration_scale": 0.87
+  },
+  "texture": {
+    "grain": 0.03,
+    "vignette": 0.09
+  },
+  "source": "brand",
+  "seed": 662107
+}

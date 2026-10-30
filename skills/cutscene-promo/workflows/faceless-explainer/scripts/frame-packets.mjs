@@ -1,0 +1,28 @@
+#!/usr/bin/env node
+// Adapted from HyperFrames skills/faceless-explainer/scripts/frame-packets.mjs (Apache-2.0), HeyGen, Inc. Modified for Cutscene.
+
+// Thin wrapper over the shared packet builder in hyperframes — this file only
+// pins the paths that are specific to this workflow skill. The logic (frame
+// splitting, rule citation, packet bounds, `_role.md` assembly) has one owner:
+// ../../hyperframes/scripts/lib/frame-packets-core.mjs
+
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import * as core from "./lib/frame-packets-core.mjs";
+
+const SKILL_DIR = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const CONFIG = {
+  animationDir: resolve(SKILL_DIR, "../../../cutscene-animate"),
+  corePath: resolve(SKILL_DIR, "../../../cutscene/references/upstream/references/frame-worker-core.md"),
+  deltaPath: resolve(SKILL_DIR, "sub-agents/frame-worker.md"),
+};
+
+export function buildRolePayload({ outDir }) {
+  return core.buildRolePayload({ ...CONFIG, outDir });
+}
+
+export function buildFramePackets(options) {
+  return core.buildFramePackets({ ...CONFIG, ...options });
+}
+
+if (core.isMainModule(import.meta.url)) core.runCli({ buildFramePackets, buildRolePayload });

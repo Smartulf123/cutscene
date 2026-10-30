@@ -1,0 +1,28 @@
+{
+  "name": "cutscene",
+  "description": "Make and edit videos with your AI agent: animated HTML compositions, 3D shots with Three.js or Blender, local AI voices you design or clone, captions, music and footage clean-up. Everything runs on your computer.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Smartulf123",
+    "url": "https://github.com/Smartulf123"
+  },
+  "homepage": "https://github.com/Smartulf123/cutscene",
+  "repository": "https://github.com/Smartulf123/cutscene",
+  "license": "Apache-2.0",
+  "keywords": [
+    "cutscene",
+    "video",
+    "video-editing",
+    "motion-graphics",
+    "animation",
+    "gsap",
+    "three",
+    "blender",
+    "3d",
+    "voiceover",
+    "tts",
+    "voice-cloning",
+    "captions",
+    "local-first"
+  ]
+}

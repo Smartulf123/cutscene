@@ -1,0 +1,137 @@
+<!doctype html>
+<!--
+  Cutscene 3D (Tier 1): shapes. Abstract floating shapes and seeded dust in the palette colours; the camera drifts in.
+  Written by `cutscene 3d tier1`.
+  Adapted from HyperFrames registry block cuboid-carousel (Apache-2.0, HeyGen, Inc.); modified for Cutscene.
+-->
+<html lang="en" data-composition-variables='__CS3D_VARIABLES__'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=__CS3D_WIDTH__, height=__CS3D_HEIGHT__" />
+    <title>__CS3D_ID__</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js" integrity="sha384-sG0Hv1tP1lZCk9KQmrIbY/XNwi+OY84GQqhMscbnsoBFqAz8KNCil1kvfL3Hbbk2" crossorigin="anonymous"></script>
+    <style>
+      #cs3d-__CS3D_ID__ {
+        position: relative;
+        width: __CS3D_WIDTH__px;
+        height: __CS3D_HEIGHT__px;
+        overflow: hidden;
+      }
+      #cs3d-__CS3D_ID__-canvas {
+        position: absolute;
+        inset: 0;
+        width: __CS3D_WIDTH__px;
+        height: __CS3D_HEIGHT__px;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="cs3d-__CS3D_ID__"
+      data-composition-id="__CS3D_ID__"
+      data-start="0"
+      data-duration="__CS3D_DURATION__"
+      data-width="__CS3D_WIDTH__"
+      data-height="__CS3D_HEIGHT__"
+    >
+      <canvas
+        id="cs3d-__CS3D_ID__-canvas"
+        class="clip"
+        data-start="0"
+        data-duration="__CS3D_DURATION__"
+        data-track-index="1"
+      ></canvas>
+    </div>
+
+    <script>
+/*__CS3D_BOOT__*/
+    </script>
+
+    <script type="module">
+      import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.184.0/+esm";
+      import { RoundedBoxGeometry } from "https://cdn.jsdelivr.net/npm/three@0.184.0/examples/jsm/geometries/RoundedBoxGeometry.js/+esm";
+/*__CS3D_COMMON__*/
+      try {
+        scene.environment = studioEnvironment(color(C.rim, P.accent));
+        if (!C.transparent) scene.fog = new THREE.Fog(new THREE.Color(P.bg), 9, 26);
+        const camera = new THREE.PerspectiveCamera(32, W / H, 0.1, 100);
+        const key = new THREE.DirectionalLight(0xffffff, 2.0);
+        key.position.set(-4, 6, 6);
+        scene.add(key);
+        const rim = new THREE.DirectionalLight(new THREE.Color(P.accent2), 2.5);
+        rim.position.set(5, 2, -5);
+        scene.add(rim);
+        scene.add(new THREE.HemisphereLight(0xffffff, new THREE.Color(P.bg), 0.5));
+
+        const rand = rng(C.seed);
+        const geos = [
+          new THREE.IcosahedronGeometry(0.7, 0),
+          new THREE.TorusGeometry(0.55, 0.2, 32, 96),
+          new THREE.SphereGeometry(0.6, 64, 32),
+          new RoundedBoxGeometry(1, 1, 1, 6, 0.16),
+          new THREE.TorusKnotGeometry(0.45, 0.15, 160, 24),
+          new THREE.CapsuleGeometry(0.3, 0.7, 12, 32),
+        ];
+        const palette = [P.accent, P.accent2, P.fg, P.accent];
+        const presets = ["glossy", "metal", "glossy", "plastic", "chrome", "glossy"];
+        const shapes = [];
+        const count = Math.max(4, Math.min(40, Number(C.count) || 16));
+        for (let i = 0; i < count; i++) {
+          const mat = material({ preset: presets[i % presets.length], color: palette[i % palette.length] }, P.accent);
+          const mesh = new THREE.Mesh(geos[i % geos.length], mat);
+          const r = 2 + rand() * 5.5;
+          const a = rand() * Math.PI * 2;
+          mesh.userData = {
+            base: new THREE.Vector3(Math.cos(a) * r * 1.4, (rand() - 0.5) * 5, -rand() * 9 + 2),
+            spin: new THREE.Vector3(rand() - 0.5, rand() - 0.5, rand() - 0.5).multiplyScalar(1.6),
+            phase: rand() * Math.PI * 2,
+            bob: 0.15 + rand() * 0.35,
+            scale: 0.5 + rand() * 0.9,
+            delay: rand() * 0.6,
+          };
+          scene.add(mesh);
+          shapes.push(mesh);
+        }
+        // Dust: seeded points drifting toward the camera.
+        const N = 900;
+        const pos = new Float32Array(N * 3);
+        for (let i = 0; i < N; i++) {
+          pos[i * 3] = (rand() - 0.5) * 22;
+          pos[i * 3 + 1] = (rand() - 0.5) * 12;
+          pos[i * 3 + 2] = -rand() * 24 + 4;
+        }
+        const dustGeo = new THREE.BufferGeometry();
+        dustGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+        const dust = new THREE.Points(
+          dustGeo,
+          new THREE.PointsMaterial({ color: new THREE.Color(P.fg), size: 0.035, transparent: true, opacity: 0.55, depthWrite: false }),
+        );
+        scene.add(dust);
+
+        const composer = await makeComposer(camera);
+        const D = host.duration;
+        host.render = (t) => {
+          for (const m of shapes) {
+            const d = m.userData;
+            const g = ease.backOut((t - d.delay) / 0.9);
+            m.scale.setScalar(Math.max(0.0001, g * d.scale));
+            m.position.set(d.base.x, d.base.y + Math.sin(t * 1.1 + d.phase) * d.bob, d.base.z);
+            m.rotation.set(d.spin.x * t + d.phase, d.spin.y * t, d.spin.z * t);
+          }
+          dust.position.z = t * 0.6;
+          const k = CAMERA_EASE(t / D);
+          camera.position.set(Math.sin(k * 0.5 - 0.25) * 2, 0.4 + k * 0.3, 11 - k * 2.5);
+          camera.lookAt(0, 0, -2);
+          if (composer) composer.render();
+          else renderer.render(scene, camera);
+        };
+        host.render(host.clock.t);
+        host.ready();
+      } catch (error) {
+        console.error("[cutscene-3d] shapes failed to build", error);
+        host.fail(error);
+      }
+    </script>
+  </body>
+</html>

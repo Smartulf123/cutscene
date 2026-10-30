@@ -1,0 +1,1117 @@
+{
+  "$comment": "Read by tools/sync-hyperframes.mjs; the mechanism (targets, overlays, patches, drops, rewrite) is documented in overlays/README.md. Patches match UPSTREAM paths and text (stage \"before\") unless stage is \"after\"; a patch that stops matching fails the sync, so upstream drift is caught.",
+  "upstream": {
+    "repo": "heygen-com/hyperframes",
+    "tag": "v0.8.162",
+    "commit": "76222e41d7760f94426484ceb9f76d0007813fcc",
+    "version": "0.8.162",
+    "extract": [
+      "skills/",
+      "LICENSE",
+      "CREDITS.md"
+    ]
+  },
+  "headers": {
+    "markdown": "<!-- Adapted from HyperFrames (Apache-2.0, HeyGen, Inc.); modified for Cutscene. -->",
+    "code": "// Adapted from HyperFrames {path} (Apache-2.0), HeyGen, Inc. Modified for Cutscene.",
+    "hash": "# Adapted from HyperFrames {path} (Apache-2.0), HeyGen, Inc. Modified for Cutscene.",
+    "html": "<!-- Adapted from HyperFrames {path} (Apache-2.0), HeyGen, Inc. Modified for Cutscene. -->",
+    "css": "/* Adapted from HyperFrames {path} (Apache-2.0), HeyGen, Inc. Modified for Cutscene. */"
+  },
+  "runNote": "## How to run cutscene commands\n\nIn this skill, `cutscene <command>` is shorthand for:\n\n```bash\nnode \"<this skill's folder>/../cutscene/scripts/cli.mjs\" <command>\n```\n\nReplace `<this skill's folder>` with the folder this SKILL.md was loaded from. Scripts named `<this skill's folder>/scripts/...` run with plain `node`. Never call the engine through `npx`, and never use cloud commands: Cutscene works on this computer only, and it never renders a final video unless the user asks.",
+  "exclude": [
+    "**/*.test.mjs",
+    "**/*.test.cjs",
+    "**/*.test.js",
+    "**/*_test.py",
+    "**/.gitignore",
+    "agents/openai.yaml",
+    "scripts/fixtures/**"
+  ],
+  "verbatim": [
+    "**/OFL*.txt",
+    "**/LICENSE*",
+    "**/NOTICE*",
+    "**/*-NOTICE.txt",
+    "**/CREDITS.md",
+    "**/*.json",
+    "**/*.svg"
+  ],
+  "targets": {
+    "cutscene-upstream": {
+      "dir": "skills/cutscene/references/upstream",
+      "skillMd": false,
+      "sources": [
+        {
+          "from": "hyperframes",
+          "skillMd": "router-guide.md",
+          "kept": "router SKILL.md (as router-guide.md) and its references; plugin installer and its script dropped",
+          "exclude": [
+            "scripts/**",
+            "references/plugin-installation.md",
+            "references/skill-lifecycle.md",
+            "references/routes/music-to-video.md",
+            "references/routes/slideshow.md",
+            "references/routes/remotion-to-hyperframes.md"
+          ]
+        },
+        {
+          "from": "hyperframes-studio",
+          "skillMd": "studio.md",
+          "kept": "Studio guide (as studio.md)"
+        }
+      ]
+    },
+    "cutscene-compose": {
+      "dir": "skills/cutscene-compose",
+      "name": "cutscene-compose",
+      "description": "Use when writing or fixing the HTML of a Cutscene video project, once the cutscene skill has the approved brief and look: the composition contract (structure, data-* timing attributes, class=\"clip\", tracks, sub-compositions, variables, framework-owned media playback, deterministic-render rules), building a general (non-promo) video scene by scene, and installing ready-made blocks and components from the registry (cutscene catalog / cutscene add). Not the starting point for a new video (that is cutscene). Does NOT choose the look or palette (cutscene-design), author motion (cutscene-animate), mix sound (cutscene-audio), edit footage (cutscene-edit) or render (cutscene-render).",
+      "sources": [
+        {
+          "from": "hyperframes-core",
+          "skillMd": "body"
+        },
+        {
+          "from": "general-video",
+          "prefix": "general-video/",
+          "skillMd": "GUIDE.md",
+          "kept": "workflow guide, frame-packet script, frame-worker brief"
+        },
+        {
+          "from": "hyperframes-registry",
+          "prefix": "registry/",
+          "skillMd": "GUIDE.md",
+          "kept": "registry guide, references and examples",
+          "exclude": [
+            "references/contributing.md"
+          ]
+        }
+      ]
+    },
+    "cutscene-animate": {
+      "dir": "skills/cutscene-animate",
+      "name": "cutscene-animate",
+      "description": "Use for any motion in a Cutscene video: GSAP timelines, eases and staggers, the runtime adapters (GSAP, Lottie, Three.js, Anime.js, CSS keyframes, Web Animations, TypeGPU), atomic motion rules, multi-phase scene blueprints, scene transitions, motion blur, seek-safe keyframes for zooms, punch-ins and camera moves, auditing choreography with an animation map, kinetic type, and the motion-graphics workflow (lower thirds, charts, maps, 2D logo reveals, news, tweets). Use it when something moves wrong, too fast or too stiff. Does NOT pick the video's look (cutscene-design), make extruded 3D titles or Blender renders (cutscene-3d) or define the composition contract (cutscene-compose).",
+      "sources": [
+        {
+          "from": "hyperframes-animation",
+          "skillMd": "body"
+        },
+        {
+          "from": "hyperframes-keyframes",
+          "prefix": "keyframes/",
+          "skillMd": "GUIDE.md",
+          "kept": "keyframes guide and patterns"
+        },
+        {
+          "from": "motion-graphics",
+          "prefix": "motion-graphics/",
+          "skillMd": "GUIDE.md",
+          "kept": "workflow guide, agents, category modules, grounding, sample"
+        }
+      ]
+    },
+    "cutscene-design": {
+      "dir": "skills/cutscene-design",
+      "name": "cutscene-design",
+      "description": "Use when deciding how a Cutscene video looks before building it, or when the user says their videos look samey or wants another palette or font: the per-video look system (look.json with palette, background tone, type pair, motion character and texture, generated from the brief and the user's brand colours and fonts, checked for contrast and for being too close to earlier videos), frame presets, palettes, typography, visual styles, beat direction and narration planning, and optional Figma import with the user's own token. Does NOT run the brief and storyboard gates (cutscene), write motion code (cutscene-animate), compose the HTML (cutscene-compose) or make voices (cutscene-voice).",
+      "sources": [
+        {
+          "from": "hyperframes-creative",
+          "skillMd": "body"
+        },
+        {
+          "from": "figma",
+          "prefix": "figma/",
+          "skillMd": "GUIDE.md",
+          "kept": "Figma guide (optional, needs the user's FIGMA_TOKEN) and motion verifier"
+        },
+        {
+          "from": "media-use",
+          "prefix": "memory/",
+          "skillMd": false,
+          "kept": "user memory only (remembered preferences and frozen recipes, all local)",
+          "include": [
+            "references/memory.md",
+            "scripts/prefs.mjs",
+            "scripts/recipe.mjs",
+            "scripts/lib/prefs-store.mjs",
+            "scripts/lib/recipe-store.mjs",
+            "scripts/lib/media-home.mjs",
+            "scripts/lib/manifest.mjs",
+            "scripts/lib/index-gen.mjs"
+          ]
+        }
+      ]
+    },
+    "cutscene-captions": {
+      "dir": "skills/cutscene-captions",
+      "name": "cutscene-captions",
+      "description": "Use to put designed, word-timed captions on a Cutscene video: talking-head or interview footage (caption themes and DNA presets, standard and cinematic modes, typography, safe zones, overflow, occlusion and timing checks, subject matting so words sit behind a person), and word-highlight caption rails for narrated motion graphics with no footage, made from the voice word timings in .cutscene/beats.json (spoken \"A I\" shown as \"AI\"). Word timings come from local transcription (cutscene transcribe) or from cutscene-voice. Does NOT cut silences or retakes (cutscene-edit), export plain SRT subtitles (cutscene-edit), make voiceover (cutscene-voice) or render without the user's OK.",
+      "sources": [
+        {
+          "from": "embedded-captions",
+          "skillMd": "body",
+          "exclude": [
+            "modes/cinematic/_archive/**",
+            "references/example-renders/**"
+          ]
+        }
+      ]
+    },
+    "cutscene-audio": {
+      "dir": "skills/cutscene-audio",
+      "name": "cutscene-audio",
+      "description": "Use for the sound inside a Cutscene composition: placing the user's music and sound effects on the timeline, fade-in/out, crossfades, track gain, volume automation, ducking or carving music under a voiceover, audio effects, diagnosing a muddy mix, and the bundled offline sound-effect library (whoosh, click, impact). Music comes from the user's own files; nothing is fetched from a cloud catalog. Does NOT generate, clone or check voices or transcribe speech (cutscene-voice), and does NOT clean up a recording's own audio, such as hum, background noise or a loudness premix of footage (cutscene-edit).",
+      "sources": [
+        {
+          "from": "hyperframes-audio",
+          "skillMd": "body"
+        },
+        {
+          "from": "media-use",
+          "prefix": "sound/",
+          "skillMd": false,
+          "kept": "sound parts only: the SFX library manifest (the Pixabay sound files are not shipped; the sound engine reads them from the installed engine package), ducking script; voice, transcription, HeyGen catalog and image parts dropped",
+          "include": [
+            "audio/assets/sfx/manifest.json",
+            "scripts/audio-duck.mjs",
+            "scripts/lib/duck.mjs",
+            "scripts/lib/words.mjs"
+          ],
+          "rename": {
+            "audio/assets/sfx/": "sfx/"
+          }
+        }
+      ]
+    },
+    "cutscene-render": {
+      "dir": "skills/cutscene-render",
+      "name": "cutscene-render",
+      "description": "Use for Cutscene's local command loop once a project exists, and for diagnosing build or render failures: lint, check, snapshot, compare, timeline, preview, doctor, and local render (draft, looks, delivery, batch). Use it when a check fails, a preview is blank or a render errors or stalls. Everything runs on this computer. Not for planning a new video (cutscene). Does NOT publish, upload or render in any cloud, and never renders a final video unless the user asks for it.",
+      "sources": [
+        {
+          "from": "hyperframes-cli",
+          "skillMd": "body",
+          "exclude": [
+            "references/cloud.md",
+            "references/cloudrun.md",
+            "references/lambda.md"
+          ]
+        }
+      ]
+    },
+    "cutscene-promo": {
+      "dir": "skills/cutscene-promo",
+      "name": "cutscene-promo",
+      "description": "Use for promo-style Cutscene videos made from a product or marketing URL, a GitHub pull request, or a topic or script: product launch, feature reveal and site-tour videos, faceless explainers, and PR-to-video changelog clips. Load it after the cutscene skill (the entry point for every new video) has routed the brief here; each is a gated workflow (brief, script, storyboard, frames, sound, assembly, review). Does NOT edit existing footage (cutscene-edit), make Blender 3D (cutscene-3d), or render a final video without the user's OK.",
+      "sources": [
+        {
+          "from": "product-launch-video",
+          "prefix": "workflows/product-launch/",
+          "skillMd": "WORKFLOW.md",
+          "kept": "workflow, references, scripts, frame-worker brief"
+        },
+        {
+          "from": "faceless-explainer",
+          "prefix": "workflows/faceless-explainer/",
+          "skillMd": "WORKFLOW.md",
+          "kept": "workflow, references, scripts, frame-worker brief"
+        },
+        {
+          "from": "pr-to-video",
+          "prefix": "workflows/pr-to-video/",
+          "skillMd": "WORKFLOW.md",
+          "kept": "workflow, references, scripts, frame-worker brief"
+        }
+      ]
+    }
+  },
+  "linkTargets": {},
+  "rewrite": {
+    "skillNames": {
+      "hyperframes": "cutscene",
+      "hyperframes-studio": "cutscene",
+      "hyperframes-core": "cutscene-compose",
+      "general-video": "cutscene-compose",
+      "hyperframes-registry": "cutscene-compose",
+      "hyperframes-animation": "cutscene-animate",
+      "hyperframes-keyframes": "cutscene-animate",
+      "motion-graphics": "cutscene-animate",
+      "hyperframes-creative": "cutscene-design",
+      "figma": "cutscene-design",
+      "embedded-captions": "cutscene-captions",
+      "hyperframes-audio": "cutscene-audio",
+      "media-use": "cutscene-audio",
+      "hyperframes-cli": "cutscene-render",
+      "product-launch-video": "cutscene-promo",
+      "faceless-explainer": "cutscene-promo",
+      "pr-to-video": "cutscene-promo",
+      "talking-head-recut": "cutscene-edit",
+      "music-to-video": "!",
+      "slideshow": "!",
+      "remotion-to-hyperframes": "!"
+    },
+    "slashOnlyNames": [
+      "hyperframes",
+      "figma",
+      "slideshow"
+    ],
+    "notInV1Text": "{name} (not in Cutscene v1)",
+    "cliCommands": [
+      "init",
+      "add",
+      "catalog",
+      "capture",
+      "lint",
+      "check",
+      "snapshot",
+      "compare",
+      "grade-compare",
+      "preview",
+      "play",
+      "present",
+      "beats",
+      "keyframes",
+      "render",
+      "publish",
+      "cloud",
+      "cloudrun",
+      "feedback",
+      "lambda",
+      "doctor",
+      "browser",
+      "info",
+      "upgrade",
+      "skills",
+      "compositions",
+      "timeline",
+      "history",
+      "clean",
+      "docs",
+      "benchmark",
+      "telemetry",
+      "transcribe",
+      "auth",
+      "tts",
+      "remove-background",
+      "validate",
+      "inspect",
+      "layout",
+      "events",
+      "models",
+      "media-use",
+      "media-treatment",
+      "figma",
+      "open",
+      "catch-up",
+      "usage",
+      "normalize-audio",
+      "sfx",
+      "bgm"
+    ],
+    "blockedCommands": [
+      "cloud",
+      "cloudrun",
+      "lambda",
+      "publish",
+      "auth",
+      "usage",
+      "feedback",
+      "upgrade",
+      "skills",
+      "events",
+      "open",
+      "catch-up",
+      "telemetry",
+      "present",
+      "media-use"
+    ],
+    "engineApi": [
+      "https?://hyperframes\\.heygen\\.com/schema/[\\w./-]+",
+      "hyperframes\\.json",
+      "@hyperframes/[\\w./-]+",
+      "~/\\.hyperframes\\b/?",
+      "\\.cache/hyperframes\\b",
+      "\\.hyperframes(?:ignore)?\\b",
+      "HYPERFRAMES_[A-Z0-9_]+",
+      "(?:window\\.)?__hf\\w*",
+      "(?:window\\.)?__hyperframes\\b[\\w.]*",
+      "</?hyperframes-player\\b",
+      "\\bhyperframes-player\\b",
+      "data-hf-[\\w-]+",
+      "hyperframes-localize-fonts",
+      "\\bhf[A-Z]\\w*",
+      "\\bhyperframes[A-Z]\\w*",
+      "--hyperframes\\b"
+    ],
+    "beforeNames": [
+      {
+        "find": "/media-use(?=\\x60?[^\\n]{0,60}\\b(?:TTS|tts|voiceover|voice-over|narration|transcri))",
+        "replace": "/cutscene-voice"
+      },
+      {
+        "find": "/figma\\b(?![\\w./-])",
+        "replace": "/cutscene-design (Figma guide)"
+      }
+    ],
+    "prose": [
+      {
+        "find": "(?<![\\w/.-])BRIEF\\.md\\b",
+        "replace": ".cutscene/brief.md"
+      },
+      {
+        "find": "(?<![A-Za-z])HyperFrames'(?!s)",
+        "replace": "Cutscene's"
+      },
+      {
+        "find": "(?<![A-Za-z])HyperFrames(?![A-Za-z])",
+        "replace": "Cutscene"
+      },
+      {
+        "find": "(?<![A-Za-z])Hyperframes(?![A-Za-z])",
+        "replace": "Cutscene"
+      },
+      {
+        "find": "(?<![A-Za-z_])HYPERFRAMES(?![A-Za-z_])",
+        "replace": "CUTSCENE"
+      },
+      {
+        "find": "(?<=/tmp/)hyperframes-",
+        "replace": "cutscene-"
+      },
+      {
+        "find": "(?<![\\w./@$<-])hyperframes-(?=[a-z])",
+        "replace": "cutscene-"
+      },
+      {
+        "find": "(?<![\\w./@$-])hyperframes'",
+        "replace": "the engine's"
+      },
+      {
+        "find": "(?<![\\w./@$-])hyperframes(?![\\w-])(?!\\.\\w)",
+        "replace": "Cutscene"
+      }
+    ],
+    "code": [
+      {
+        "file": "skills/cutscene-captions/scripts/*.cjs",
+        "find": "path\\.join\\(os\\.homedir\\(\\), \"Downloads\", \"hyperframes\"\\)",
+        "replace": "path.join(process.env.CUTSCENE_HOME || path.join(os.homedir(), \".cutscene\"), \"engine\", \"{pin}\")",
+        "flags": "g"
+      }
+    ]
+  },
+  "dropLines": [
+    {
+      "match": [
+        "^\\*\\*Plugin installs:\\*\\*",
+        "\\bheygen\\b",
+        "HEYGEN_",
+        "\\bhosted cloud\\b",
+        "\\bFramey\\b"
+      ]
+    },
+    {
+      "match": [
+        "/(?:music-to-video|slideshow|remotion-to-hyperframes)\\b",
+        "routes/(?:music-to-video|slideshow|remotion-to-hyperframes)\\.md"
+      ]
+    },
+    {
+      "file": [
+        "skills/product-launch-video/SKILL.md",
+        "skills/faceless-explainer/SKILL.md",
+        "skills/pr-to-video/SKILL.md"
+      ],
+      "match": [
+        "media-use/audio/references/tts\\.md"
+      ]
+    },
+    {
+      "file": "skills/hyperframes-cli/SKILL.md",
+      "match": [
+        "^Skill attribution is automatic",
+        "^Use cloud rendering when",
+        "^9\\. \\*\\*Hand the project to the desktop app"
+      ]
+    },
+    {
+      "file": "skills/hyperframes-registry/SKILL.md",
+      "match": [
+        "\"registry\": \"https://raw\\.githubusercontent\\.com/"
+      ]
+    },
+    {
+      "file": "skills/hyperframes-registry/references/install-locations.md",
+      "match": [
+        "\"registry\": \"https://raw\\.githubusercontent\\.com/"
+      ]
+    },
+    {
+      "file": "skills/motion-graphics/SKILL.md",
+      "match": [
+        "GEMINI_API_KEY",
+        "asset_scout / search providers",
+        "^Optional keys \\(local fallbacks if unset\\)"
+      ]
+    },
+    {
+      "file": "skills/hyperframes-cli/SKILL.md",
+      "match": [
+        "references/(?:lambda|cloudrun|cloud)\\.md",
+        "\\bLambda\\b",
+        "Cloud Run"
+      ]
+    }
+  ],
+  "dropSections": [
+    {
+      "file": "skills/hyperframes/SKILL.md",
+      "heading": [
+        "^Check remaining usage",
+        "^Keep the project's CLI current",
+        "^6\\. Studio, and the HyperFrames desktop app"
+      ]
+    },
+    {
+      "file": "skills/hyperframes-cli/SKILL.md",
+      "heading": [
+        "^Remaining harness usage",
+        "^Commands you should not run"
+      ]
+    },
+    {
+      "file": "skills/hyperframes-registry/SKILL.md",
+      "heading": [
+        "^Report what the catalog does not have",
+        "^Contributing a new block or component"
+      ]
+    },
+    {
+      "file": "skills/hyperframes-cli/references/preview-render.md",
+      "heading": [
+        "^feedback \\(report after rendering\\)",
+        "^publish$"
+      ]
+    },
+    {
+      "file": "skills/hyperframes-cli/references/upgrade-info-misc.md",
+      "heading": [
+        "^upgrade$",
+        "^telemetry$",
+        "^Remaining harness usage"
+      ]
+    },
+    {
+      "file": "skills/hyperframes-cli/references/init-and-scaffold.md",
+      "heading": [
+        "^skills$"
+      ]
+    }
+  ],
+  "dropBlocks": [
+    {
+      "file": "skills/hyperframes-cli/SKILL.md",
+      "start": "^After verifying a successful render, send one feedback report",
+      "end": "^## Read the matching reference",
+      "keepEnd": true
+    },
+    {
+      "file": "skills/hyperframes-registry/SKILL.md",
+      "start": "^If the CLI cannot reach the configured registry",
+      "end": "^A registry the CLI cannot reach",
+      "keepEnd": true
+    },
+    {
+      "file": "skills/hyperframes-registry/references/discovery.md",
+      "start": "^If the CLI cannot reach",
+      "end": "^\\S",
+      "keepEnd": true,
+      "optional": true
+    }
+  ],
+  "moveSections": [
+    {
+      "target": "cutscene-audio",
+      "heading": "^Voiceover carve$",
+      "to": "references/voiceover-carve.md",
+      "summary": "Carve cuts only the bands a voice actually uses out of the music bed, instead of ducking the whole bed, so the music keeps its low end and top while the voice stays clear. The settings live on the bed and name the voices to listen to (as a sidechain does); never put a carve on a voice track. Carve against one group of voice clips, not a list of clip ids. A re-run replaces only its own filters and leaves hand-built effects and lanes alone."
+    }
+  ],
+  "patches": [
+    {
+      "file": [
+        "skills/product-launch-video/SKILL.md",
+        "skills/faceless-explainer/SKILL.md",
+        "skills/pr-to-video/SKILL.md"
+      ],
+      "regex": "^> \\*\\*media-use\\*\\*:[^\\n]*$",
+      "replace": "> **Media:** use the user's own images, logos, footage and music when they give them (put them under `assets/`), plus what the capture step finds. Sound effects come from the bundled library in `/cutscene-audio`. Cutscene has no stock-media catalog and never downloads media on its own."
+    },
+    {
+      "file": [
+        "skills/product-launch-video/SKILL.md",
+        "skills/faceless-explainer/SKILL.md",
+        "skills/pr-to-video/SKILL.md"
+      ],
+      "regex": "Resolve \\x60<MEDIA_DIR>\\x60[^\\n]*?the review gates still run\\.",
+      "replace": "Record the brief's key decisions (route, length, style preset, voice) in `.cutscene/project.md`, so later turns don't ask again. The review gates still run."
+    },
+    {
+      "file": [
+        "skills/product-launch-video/SKILL.md",
+        "skills/faceless-explainer/SKILL.md",
+        "skills/pr-to-video/SKILL.md"
+      ],
+      "regex": "\\*\\*Show sign-in status before proceeding past Setup\\*\\*[\\s\\S]*?Auth ownership and offline fallbacks:[^\\n]*\\n",
+      "replace": "**Sound runs locally.** Narration uses a local voice (Kokoro through `cutscene tts` by default, or a voice designed with `/cutscene-voice`), word timings come from local transcription, music is the user's own file, and sound effects come from the bundled library in `/cutscene-audio`. Nothing needs a sign-in or an API key.\n"
+    },
+    {
+      "file": [
+        "skills/product-launch-video/SKILL.md",
+        "skills/faceless-explainer/SKILL.md",
+        "skills/pr-to-video/SKILL.md"
+      ],
+      "regex": "; sign-in status was shown \\(signed in, or continuing offline\\)",
+      "replace": ""
+    },
+    {
+      "file": [
+        "skills/product-launch-video/SKILL.md",
+        "skills/faceless-explainer/SKILL.md",
+        "skills/pr-to-video/SKILL.md"
+      ],
+      "regex": "^\\*\\*Choose the narration (?:provider and )?voice from the user's ask before invoking\\.\\*\\*[^\\n]*$",
+      "replace": "**Choose the narration voice from the user's ask before invoking.** The default is Kokoro `am_michael` (male). For another preset voice pass `--voice <id>`: `af_heart`, `af_nova`, `af_sky` (female, US), `am_adam`, `am_michael` (male, US), `bf_emma`, `bf_isabella` (female, UK), `bm_george` (male, UK); `cutscene tts --list` prints them all. For a designed or cloned voice, make the lines with `/cutscene-voice` and pass `--provider cutscene-voice`. When the user explicitly picked a voice, record it in `.cutscene/project.md`; with no preference, reuse the voice recorded there before the default, and say which one you used."
+    },
+    {
+      "file": [
+        "skills/product-launch-video/SKILL.md",
+        "skills/faceless-explainer/SKILL.md",
+        "skills/pr-to-video/SKILL.md"
+      ],
+      "regex": "The audio script handles narration, word timings, BGM lookup from HeyGen's music library, and timing metadata\\.[^\\n]*?(?=When the host app's own tools)",
+      "replace": "The audio script handles narration (a local voice), word timings (local transcription) and timing metadata, through Cutscene's local sound engine in `/cutscene-audio`. BGM mood comes from the storyboard's `music:` field, but Cutscene has no music catalog: a mood with no music file is skipped and reported, never fetched. "
+    },
+    {
+      "file": [
+        "skills/product-launch-video/SKILL.md",
+        "skills/faceless-explainer/SKILL.md",
+        "skills/pr-to-video/SKILL.md"
+      ],
+      "find": "When the host app's own tools make the music or a sound effect,",
+      "replace": "When the user gives you a music or sound-effect file,"
+    },
+    {
+      "file": "skills/general-video/SKILL.md",
+      "regex": "^- \\*\\*Media:\\*\\*[^\\n]*$",
+      "replace": "- **Media:** music and sound effects: `/cutscene-audio`; narration and transcription: `/cutscene-voice`; captions: `/cutscene-captions`; 3D shots: `/cutscene-3d`. Images, logos and footage come from the user or from `cutscene capture <url>`; Cutscene does not search for or generate stock media."
+    },
+    {
+      "file": "skills/general-video/SKILL.md",
+      "regex": "^\\| Any media asset or operation, including narration, BGM, SFX, captions, grading, or transforms(\\s*)\\|[^\\n]*$",
+      "replace": "| Narration, music, SFX or captions$1| `/cutscene-voice` for narration, `/cutscene-audio` for music and SFX, `/cutscene-captions` for captions |"
+    },
+    {
+      "file": "skills/general-video/SKILL.md",
+      "regex": " ?First run \\x60npx hyperframes skills update <workflow-name>\\x60\\.",
+      "replace": ""
+    },
+    {
+      "file": "skills/hyperframes-cli/SKILL.md",
+      "find": "if the request names an asset, sound, image, voice or fast visual edit, resolve it through `/media-use` before proposing a plan.",
+      "replace": "if the request names a sound or music, use `/cutscene-audio`; a voice or voiceover, `/cutscene-voice`."
+    },
+    {
+      "file": "skills/hyperframes-cli/SKILL.md",
+      "find": "- A request naming an asset, sound, image, voice or fast visual edit resolves through `/media-use` before a plan is proposed.",
+      "replace": "- A request naming a sound or music uses `/cutscene-audio`; a voice or voiceover uses `/cutscene-voice`."
+    },
+    {
+      "file": "skills/hyperframes-cli/SKILL.md",
+      "find": " When the person asks what the download is, why this model, or what leaves the machine, point them to https://hyperframes.heygen.com/developers/catalog-search.",
+      "replace": ""
+    },
+    {
+      "file": "skills/hyperframes-cli/SKILL.md",
+      "find": "10. **Verify the output:**",
+      "replace": "9. **Verify the output:**"
+    },
+    {
+      "file": "skills/hyperframes-cli/SKILL.md",
+      "regex": "\\| \\x60init\\x60, \\x60capture\\x60, \\x60skills\\x60(\\s+)\\|",
+      "replace": "| `init`, `capture`$1          |"
+    },
+    {
+      "file": "skills/hyperframes-cli/SKILL.md",
+      "find": "`preview`, `play`, `render`, `publish`, Studio context, feedback",
+      "replace": "`preview`, `play`, `render`, Studio context"
+    },
+    {
+      "file": "skills/hyperframes-cli/SKILL.md",
+      "find": "`info`, `upgrade`, `compositions`",
+      "replace": "`info`, `compositions`"
+    },
+    {
+      "file": "skills/hyperframes-cli/SKILL.md",
+      "find": "Before `hyperframes present`, read `/slideshow`; before",
+      "replace": "Before"
+    },
+    {
+      "file": "skills/hyperframes-cli/SKILL.md",
+      "find": "`present` serves a navigable deck with presenter and audience synchronization. ",
+      "replace": ""
+    },
+    {
+      "file": "skills/hyperframes-cli/SKILL.md",
+      "find": "For TTS, transcription, captions, or background removal choices, use `/media-use`.",
+      "replace": "For TTS and transcription choices, use `/cutscene-voice`; for captions, `/cutscene-captions`."
+    },
+    {
+      "file": "skills/hyperframes-cli/SKILL.md",
+      "find": "`/media-use` owns which treatment a brief is asking for. ",
+      "replace": ""
+    },
+    {
+      "file": "skills/hyperframes-cli/references/compare-and-batch.md",
+      "find": " It does not apply the selected grade to the composition or replace `/media-use` provenance and LUT validation.",
+      "replace": " It does not apply the selected grade to the composition."
+    },
+    {
+      "file": "skills/hyperframes-cli/references/init-and-scaffold.md",
+      "find": "For voice/model selection see the `media-use` skill.",
+      "replace": "For voice and model selection see `/cutscene-voice`."
+    },
+    {
+      "file": "skills/hyperframes-cli/references/upgrade-info-misc.md",
+      "regex": "invoke the \\x60media-use\\x60 skill\\.",
+      "replace": "use `/cutscene-voice` (voices, transcripts) and `/cutscene-captions` (captions)."
+    },
+    {
+      "file": "skills/hyperframes-audio/SKILL.md",
+      "find": "`/media-use` owns sourcing,\ngeneration, and preprocessing.",
+      "replace": "`/cutscene-voice` owns voiceover\ngeneration and transcription; music comes from the user's own files."
+    },
+    {
+      "file": "skills/embedded-captions/SKILL.md",
+      "regex": "Plugin installs use the bundled, manifest-pinned CLI for matting, transcription,\\nand rendering; no source checkout is required\\.",
+      "replace": "Cutscene's CLI (`cutscene`, found by `scripts/hf-cli.cjs`) runs matting, transcription\nand rendering with the pinned engine; no source checkout is required."
+    },
+    {
+      "file": "skills/embedded-captions/SKILL.md",
+      "regex": "GSAP\\. Install these in the \\*\\*caption project\\*\\*, not inside the read-only plugin:",
+      "replace": "GSAP. Ask the user first (Puppeteer downloads a Chromium build of about 200 MB), then install them in the **caption project**, not inside the read-only skill folder:"
+    },
+    {
+      "file": "skills/embedded-captions/SKILL.md",
+      "regex": " An explicit built-checkout argument or \\x60HYPERFRAMES_ROOT\\x60\\nselects the contributor CLI instead of the plugin pin\\.",
+      "replace": ""
+    },
+    {
+      "file": "skills/embedded-captions/SKILL.md",
+      "regex": "^- \\*\\*HyperFrames CLI:\\*\\*[^\\n]*$",
+      "replace": "- **Cutscene CLI:** the caption scripts reach it through `scripts/hf-cli.cjs`, which returns Cutscene's `../cutscene/scripts/cli.mjs` (it forwards to the pinned engine)."
+    },
+    {
+      "file": "skills/embedded-captions/modes/standard/_anatomy.md",
+      "find": "- `media-use` — `remove-background` (the matte) + `transcribe` (word timings).",
+      "replace": "- `cutscene remove-background` (the matte) + `cutscene transcribe` (word timings)."
+    },
+    {
+      "file": "skills/embedded-captions/references/rail.md",
+      "find": "(`media-use` captions)",
+      "replace": "(cutscene-voice word timings)"
+    },
+    {
+      "file": "skills/motion-graphics/SKILL.md",
+      "regex": "^macOS Apple Silicon or Linux x64\\.[^\\n]*$",
+      "replace": "Node 22+ and FFmpeg; `cutscene doctor` checks both once."
+    },
+    {
+      "file": "skills/motion-graphics/SKILL.md",
+      "find": "| source ◇ | Bash — media-use resolve (**skip if `asset_needs` is empty**)         |",
+      "replace": "| source ◇ | Bash — user files or `cutscene capture` (**skip if `asset_needs` is empty**) |"
+    },
+    {
+      "file": "skills/motion-graphics/SKILL.md",
+      "regex": "^### Step 2 — Source ◇ \\(Bash: media-use, conditional\\)\\n\\nIf \\x60shot-plan\\.json\\.asset_needs\\x60 is non-empty[^\\n]*$",
+      "replace": "### Step 2 — Source ◇ (conditional)\n\nIf `shot-plan.json.asset_needs` is non-empty, gather real material: files the user gave you, or assets from `cutscene capture <url>`. Freeze each into the project's `assets/` and list it in `assets/index.md` (path, where it came from, licence). Cutscene does not search the web for images or generate them. If `asset_needs` is empty, **skip to Step 3**."
+    },
+    {
+      "file": "skills/motion-graphics/SKILL.md",
+      "find": "    assets/  assets/index.md  # media-use output (if sourced)",
+      "replace": "    assets/  assets/index.md  # sourced assets (if any)"
+    },
+    {
+      "file": "skills/motion-graphics/phases/source/guide.md",
+      "regex": "^[\\s\\S]*$",
+      "replace": "# Source phase (Cutscene)\n\nRuns **only when `shot-plan.json.asset_needs` is non-empty** (the form categories never reach here).\n\nCutscene has no stock-media search and no image generation, so each asset need is met by one of:\n\n- **User files.** Ask once for the logo, screenshot, photo or clip the plan needs; copy it into `assets/`.\n- **A captured site.** `cutscene capture <url> -o ./capture --json`, then pick from `capture/assets/` using `capture/extracted/asset-descriptions.md`.\n- **Asset-free.** If neither exists, switch the category to its asset-free layout and note it in `context.log`.\n\nFreeze every file under `assets/` (never hot-link) and write `assets/index.md`: one row per asset with its path, source (user / capture URL) and licence. The design phase reads that index.\n"
+    },
+    {
+      "file": "skills/figma/SKILL.md",
+      "regex": "^\\*\\*Usage beacon:\\*\\*[^\\n]*\\n",
+      "replace": ""
+    },
+    {
+      "file": [
+        "skills/general-video/scripts/frame-packets.mjs"
+      ],
+      "find": "animationDir: resolve(SKILL_DIR, \"../hyperframes-animation\"),\n  corePath: resolve(SKILL_DIR, \"../hyperframes/references/frame-worker-core.md\"),",
+      "replace": "animationDir: resolve(SKILL_DIR, \"../../cutscene-animate\"),\n  corePath: resolve(SKILL_DIR, \"../../cutscene/references/upstream/references/frame-worker-core.md\"),"
+    },
+    {
+      "file": [
+        "skills/product-launch-video/scripts/frame-packets.mjs",
+        "skills/faceless-explainer/scripts/frame-packets.mjs",
+        "skills/pr-to-video/scripts/frame-packets.mjs"
+      ],
+      "find": "animationDir: resolve(SKILL_DIR, \"../hyperframes-animation\"),\n  corePath: resolve(SKILL_DIR, \"../hyperframes/references/frame-worker-core.md\"),",
+      "replace": "animationDir: resolve(SKILL_DIR, \"../../../cutscene-animate\"),\n  corePath: resolve(SKILL_DIR, \"../../../cutscene/references/upstream/references/frame-worker-core.md\"),"
+    },
+    {
+      "file": [
+        "skills/product-launch-video/scripts/audio.mjs",
+        "skills/faceless-explainer/scripts/audio.mjs",
+        "skills/pr-to-video/scripts/audio.mjs"
+      ],
+      "find": "const DEFAULT_ENGINE = join(HERE, \"..\", \"..\", \"media-use\", \"audio\", \"scripts\", \"audio.mjs\");",
+      "replace": "// Cutscene: the local sound engine lives in cutscene-audio (Kokoro voice, local transcription, bundled SFX).\nconst DEFAULT_ENGINE = join(HERE, \"..\", \"..\", \"..\", \"..\", \"cutscene-audio\", \"scripts\", \"sound-engine.mjs\");"
+    },
+    {
+      "file": "skills/pr-to-video/scripts/preflight.mjs",
+      "find": "const result = spawn(\"npx\", [\"hyperframes\", \"--help\"], {\n    encoding: \"utf8\",\n    shell: process.platform === \"win32\",\n  });",
+      "replace": "const cli = process.env.CUTSCENE_CLI || fileURLToPath(new URL(\"../../../../cutscene/scripts/cli.mjs\", import.meta.url));\n  const result = spawn(process.execPath, [cli, \"--help\"], { encoding: \"utf8\" });"
+    },
+    {
+      "file": "skills/pr-to-video/scripts/preflight.mjs",
+      "find": "import { spawnSync } from \"node:child_process\";",
+      "replace": "import { spawnSync } from \"node:child_process\";\nimport { fileURLToPath } from \"node:url\";"
+    },
+    {
+      "file": "skills/media-use/scripts/audio-duck.mjs",
+      "find": "import { track } from \"./lib/telemetry.mjs\";\n",
+      "replace": ""
+    },
+    {
+      "file": "skills/media-use/scripts/audio-duck.mjs",
+      "find": "  await track(\"media_use_duck\", { sequential: !!args.sequential });\n",
+      "replace": ""
+    },
+    {
+      "file": "skills/media-use/scripts/audio-duck.mjs",
+      "find": "media-use audio-duck — generate",
+      "replace": "cutscene-audio audio-duck — generate"
+    },
+    {
+      "file": [
+        "skills/hyperframes-animation/scripts/package-loader.mjs",
+        "skills/hyperframes-creative/scripts/package-loader.mjs"
+      ],
+      "find": "  const version = readBundledHyperframesVersion();\n  if (version) return `${packageName}@${version}`;",
+      "replace": "  const version = readBundledHyperframesVersion() ?? readCutscenePin();\n  if (version) return `${packageName}@${version}`;"
+    },
+    {
+      "file": [
+        "skills/hyperframes-animation/scripts/package-loader.mjs",
+        "skills/hyperframes-creative/scripts/package-loader.mjs"
+      ],
+      "find": "function readBundledHyperframesVersion() {",
+      "replace": "// Cutscene: skills are installed beside skills/cutscene/, whose engine.json pins the engine.\nfunction readCutscenePin() {\n  try {\n    const pin = JSON.parse(readFileSync(join(HERE, \"..\", \"..\", \"cutscene\", \"engine.json\"), \"utf8\")).hyperframes;\n    return typeof pin === \"string\" && pin ? pin : null;\n  } catch {\n    return null;\n  }\n}\n\nfunction readBundledHyperframesVersion() {"
+    },
+    {
+      "file": [
+        "skills/hyperframes-animation/scripts/package-loader.mjs",
+        "skills/hyperframes-creative/scripts/package-loader.mjs"
+      ],
+      "regex": "  // Global skill installs have no hyperframes package\\.json[\\s\\S]*?return \\x60\\$\\{packageName\\}@latest\\x60;",
+      "replace": "  throw new Error(\n    `Cutscene could not find the pinned engine version for ${packageName}. Set ${VERSION_OVERRIDE_ENV}=<version> or check skills/cutscene/engine.json.`,\n  );"
+    },
+    {
+      "file": [
+        "skills/hyperframes-animation/scripts/animation-map.mjs",
+        "skills/hyperframes-creative/scripts/contrast-report.mjs"
+      ],
+      "regex": "\\n//\\s+@latest with a warning otherwise\\)\\.",
+      "replace": "\n//     the pin in skills/cutscene/engine.json otherwise)."
+    },
+    {
+      "file": "**/*.md",
+      "find": "the installed `/media-use` skill directory",
+      "replace": "the `memory/` folder inside the installed `/cutscene-design` skill",
+      "optional": true
+    },
+    {
+      "file": "skills/media-use/scripts/lib/media-home.mjs",
+      "find": "  return homedir();\n}",
+      "replace": "  // Cutscene: the media library lives under Cutscene home (contracts: <CUTSCENE_HOME>/media).\n  return join(process.env.CUTSCENE_HOME || join(homedir(), \".cutscene\"), \"media\");\n}"
+    },
+    {
+      "file": "**/*.md",
+      "regex": " — \\x60init\\x60 checks the installed skills against the latest on GitHub and updates the global set if any are out of date\\.",
+      "replace": "",
+      "optional": true
+    },
+    {
+      "file": "**/*.md",
+      "find": "run its intent layer (`references/intent-interview.md`)",
+      "replace": "run its intent layer (`references/upstream/references/intent-interview.md`)",
+      "optional": true
+    },
+    {
+      "file": [
+        "skills/product-launch-video/SKILL.md",
+        "skills/faceless-explainer/SKILL.md",
+        "skills/pr-to-video/SKILL.md"
+      ],
+      "find": " (Sign-in status was already shown in Step 0; the engine falls back automatically.)",
+      "replace": "",
+      "optional": true
+    },
+    {
+      "file": [
+        "skills/product-launch-video/SKILL.md",
+        "skills/faceless-explainer/SKILL.md",
+        "skills/pr-to-video/SKILL.md"
+      ],
+      "find": "`node <HYPERFRAMES_AUDIO_SKILL_DIR>/scripts/carve.mjs --comp ./index.html`",
+      "replace": "`node \"<this skill's folder>/../cutscene-audio/scripts/carve.mjs\" --comp ./index.html`",
+      "optional": true
+    },
+    {
+      "file": [
+        "skills/product-launch-video/SKILL.md",
+        "skills/faceless-explainer/SKILL.md",
+        "skills/pr-to-video/SKILL.md"
+      ],
+      "regex": "\\x60<HYPERFRAMES_AUDIO_SKILL_DIR>\\x60 is the installed \\x60hyperframes-audio\\x60 skill directory\\. ",
+      "replace": "",
+      "optional": true
+    },
+    {
+      "file": "**/*.md",
+      "regex": "\\(\\x60npm i -D @hyperframes/core\\x60, or \\x60bun add -D @hyperframes/core\\x60 in a Bun project\\)",
+      "replace": "(ask the user first, then `npm i -D --save-exact @hyperframes/core@{pin}`)",
+      "optional": true
+    },
+    {
+      "file": "**/*.md",
+      "regex": "\\(\\x60npm i -D\\n@hyperframes/core\\x60\\)",
+      "replace": "(ask the user first, then\n`npm i -D --save-exact @hyperframes/core@{pin}`)",
+      "optional": true
+    },
+    {
+      "file": "skills/hyperframes-animation/adapters/animate-text.md",
+      "regex": "When a beat needs a deterministic text animation, load the upstream skill alongside this one:\\n\\n\\x60\\x60\\x60bash\\n[\\s\\S]*?\\x60\\x60\\x60\\n\\nOr in a skill-aware agent runtime, the skill is invoked by name:\\n\\n\\x60\\x60\\x60\\n/animate-text\\n\\x60\\x60\\x60",
+      "replace": "When the user already has Pixel Point's `animate-text` skill installed, load it alongside this one (`/animate-text`). Cutscene does not install it for you: no licence is declared upstream. Without it, implement the effect inline (see \"When you don't need the upstream skill\" below)."
+    },
+    {
+      "file": "skills/embedded-captions/SKILL.md",
+      "find": "- **Transcription = WhisperX via `uvx`** (word-level timings + alignment; no manual install — `transcribe.cjs` drives `uvx whisperx`). Falls back to an existing word-level `transcript.json` if present.",
+      "replace": "- **Transcription = the engine's local Whisper** (`cutscene transcribe`, word-level timings; the first run asks before it downloads a speech model). WhisperX through `uvx` (pinned `whisperx==3.8.6`, tighter word alignment) runs only when `TRANSCRIBE_ENGINE=whisperx` is set: its first run downloads WhisperX, PyTorch and alignment models into uv's cache without checksums, so ask the user first. Falls back to an existing word-level `transcript.json` if present."
+    },
+    {
+      "file": "skills/embedded-captions/SKILL.md",
+      "find": "transcription runs WhisperX through `uvx` (word-level timings; falls back to an existing word-level `transcript.json`)",
+      "replace": "transcription uses the engine's local Whisper, or WhisperX through `uvx` only when `TRANSCRIBE_ENGINE=whisperx` is set (word-level timings; falls back to an existing word-level `transcript.json`)"
+    },
+    {
+      "file": "skills/embedded-captions/scripts/transcribe.cjs",
+      "find": "  const wantWx = (process.env.TRANSCRIBE_ENGINE || \"whisperx\") === \"whisperx\";",
+      "replace": "  // Cutscene: WhisperX is opt-in. `uvx` would otherwise download WhisperX, PyTorch and models\n  // (unpinned dependencies, no checksums) without asking; the engine's Whisper asks first.\n  const wantWx = process.env.TRANSCRIBE_ENGINE === \"whisperx\";"
+    },
+    {
+      "file": "skills/embedded-captions/scripts/transcribe.cjs",
+      "find": "      console.error(\"[transcribe] hyperframes whisper failed:\", e.message);",
+      "replace": "      // Cutscene: show the CLI's own JSON error too (for example NEEDS_CONSENT before a download).\n      console.error(\"[transcribe] hyperframes whisper failed:\", e.message, String(e.stdout || \"\").trim().split(/\\r?\\n/).pop() || \"\");"
+    },
+    {
+      "file": "skills/hyperframes-creative/references/typography.md",
+      "find": " **One caveat**: distributed/cloud (Lambda) renders disable system-font capture, so don't rely on a locally-installed-only font for those.",
+      "replace": ""
+    },
+    {
+      "file": "skills/hyperframes-cli/references/preview-render.md",
+      "find": ", unavailable on lambda/cloudrun",
+      "replace": ""
+    },
+    {
+      "file": "skills/hyperframes-cli/references/preview-render.md",
+      "find": "# preview, play, render, publish",
+      "replace": "# preview, play, render"
+    },
+    {
+      "file": "skills/hyperframes-cli/references/upgrade-info-misc.md",
+      "find": "# info, upgrade, compositions, timeline, docs, benchmark, telemetry, asset preprocessing",
+      "replace": "# info, compositions, timeline, docs, benchmark, asset preprocessing"
+    },
+    {
+      "file": "skills/hyperframes-cli/references/init-and-scaffold.md",
+      "find": "# init, capture, skills",
+      "replace": "# init, capture"
+    },
+    {
+      "file": "skills/hyperframes-creative/references/story-spine.md",
+      "find": "`/music-to-video` (the track drives the arc), ",
+      "replace": ""
+    },
+    {
+      "file": "skills/hyperframes-creative/references/story-spine.md",
+      "find": ", or `/slideshow` (the presenter owns the story)",
+      "replace": ""
+    },
+    {
+      "file": "skills/general-video/SKILL.md",
+      "find": "do not assume an unbundled display font exists in cloud rendering.",
+      "replace": "do not assume an unbundled display font exists at render time."
+    },
+    {
+      "file": "skills/general-video/SKILL.md",
+      "find": "generative video, map, publishing, or cross-workflow capability",
+      "replace": "map, or cross-workflow capability"
+    },
+    {
+      "file": "skills/hyperframes-cli/SKILL.md",
+      "find": "`benchmark`, telemetry, media preprocessing",
+      "replace": "`benchmark`, media preprocessing"
+    },
+    {
+      "file": "skills/hyperframes-cli/references/doctor-browser.md",
+      "find": " / cloud rendering where available",
+      "replace": "",
+      "optional": true
+    },
+    {
+      "file": "skills/hyperframes/SKILL.md",
+      "find": "preview, render, publish, or batch-render",
+      "replace": "preview, render, or batch-render",
+      "optional": true
+    },
+    {
+      "file": "skills/hyperframes/SKILL.md",
+      "find": "Studio, render, publish, or diagnostics",
+      "replace": "Studio, render, or diagnostics",
+      "optional": true
+    },
+    {
+      "file": "skills/hyperframes-creative/SKILL.md",
+      "find": "1. If a project has a design spec, **read it first**",
+      "replace": "1. Make or read this video's `.cutscene/look.json` first (the look system at the top of this file); its palette, fonts and motion character win over every preset default. If the project also has a design spec, **read it first**"
+    }
+  ],
+  "residue": {
+    "markdown": [
+      "hyperframes",
+      "heygen",
+      "@latest",
+      "plugin-cli",
+      "\\bcutscene\\s+(?:cloud|cloudrun|lambda|publish|auth|usage|feedback|upgrade|skills|events|open|catch-up|telemetry)\\b",
+      "\bcloudrun\b",
+      "\bcloud render",
+      "\bheygen\b"
+    ],
+    "code": [
+      "npx\\s+(?:--yes\\s+|-y\\s+)?hyperframes",
+      "@latest",
+      "\\bheygen\\s+auth",
+      "plugin-cli\\.mjs",
+      "api\\.heygen\\.com"
+    ],
+    "allow": [
+      "https?://hyperframes\\.heygen\\.com/schema/[\\w./-]+",
+      "hyperframes\\.json",
+      "@hyperframes/[\\w./-]+",
+      "~/\\.hyperframes\\b/?",
+      "\\.cache/hyperframes\\b",
+      "\\.hyperframes(?:ignore)?\\b",
+      "HYPERFRAMES_[A-Z0-9_]+",
+      "(?:window\\.)?__hf\\w*",
+      "(?:window\\.)?__hyperframes\\b[\\w.]*",
+      "</?hyperframes-player\\b",
+      "\\bhyperframes-player\\b",
+      "data-hf-[\\w-]+",
+      "hyperframes-localize-fonts",
+      "\\bhf[A-Z]\\w*",
+      "\\bhyperframes[A-Z]\\w*",
+      "--hyperframes\\b"
+    ],
+    "skipFiles": [
+      "**/CREDITS.md",
+      "**/OFL*.txt"
+    ]
+  },
+  "thirdParty": {
+    "intro": "Cutscene is built on HyperFrames, an open-source framework by HeyGen (Apache-2.0). Cutscene is independent and not affiliated with HeyGen. The engine itself is the `hyperframes` npm package at the version pinned in `skills/cutscene/engine.json`; it is installed on first use and is not part of this repository. The skills listed below were rebuilt from the HyperFrames skills by `tools/sync-hyperframes.mjs`: copied, renamed and adapted for Cutscene (every adapted file carries an \"Adapted from HyperFrames\" header). The HyperFrames licence is the Apache License 2.0, the same licence as Cutscene (`LICENSE`).",
+    "notSynced": [
+      {
+        "from": "music-to-video",
+        "why": "not in Cutscene v1"
+      },
+      {
+        "from": "slideshow",
+        "why": "not in Cutscene v1"
+      },
+      {
+        "from": "remotion-to-hyperframes",
+        "why": "not in Cutscene v1"
+      },
+      {
+        "from": "talking-head-recut",
+        "why": "ideas only; cutscene-edit is written separately"
+      },
+      {
+        "from": "media-use (voice, transcription, image, logo, grading parts)",
+        "why": "voice and transcription live in cutscene-voice; HeyGen catalog, image, logo and grading tools are not shipped in v1"
+      }
+    ],
+    "bundled": [
+      {
+        "files": "skills/cutscene-*/**",
+        "origin": "HyperFrames skills (HeyGen, Inc.)",
+        "license": "Apache-2.0",
+        "notes": "adapted; see the header in each file (Cutscene's own files are listed below)"
+      },
+      {
+        "files": "skills/cutscene/references/upstream/**",
+        "origin": "HyperFrames router and Studio skills",
+        "license": "Apache-2.0",
+        "notes": "reference knowledge for the router"
+      },
+      {
+        "files": "skills/cutscene-design/frame-presets/code-editorial/fonts/*.woff2",
+        "origin": "EB Garamond, Inter, JetBrains Mono",
+        "license": "SIL Open Font License 1.1",
+        "notes": "licence texts kept beside the fonts (OFL-*.txt)"
+      },
+      {
+        "files": [
+          "skills/cutscene-captions/modes/standard/fonts/files/*.woff2",
+          "skills/cutscene-captions/modes/standard/fonts/fonts.css",
+          "skills/cutscene-captions/modes/standard/fonts/licenses/*.txt"
+        ],
+        "origin": "Google Fonts families via @fontsource (latin subsets): Anton, Audiowide, Baloo 2, Bangers, Bodoni Moda, Caveat, Chakra Petch, Cinzel, Cormorant Garamond, Creepster, Fredoka, Inter, Monoton, Orbitron, Press Start 2P, Rajdhani, Saira Stencil One, Shippori Mincho, Sora, Space Grotesk, Teko, VT323 (SIL OFL 1.1); Permanent Marker, Special Elite (Apache-2.0)",
+        "license": "SIL Open Font License 1.1 / Apache-2.0",
+        "notes": "each family's licence text with its copyright line, as Fontsource ships it, is kept in modes/standard/fonts/licenses/ (OFL-<family>.txt, LICENSE-<family>.txt); see https://github.com/fontsource/font-files"
+      },
+      {
+        "files": "skills/cutscene-captions/assets/strokefonts/*.svg",
+        "origin": "Hershey vector fonts (Dr. A. V. Hershey, U.S. National Bureau of Standards)",
+        "license": "Hershey font use condition (free use; credit the origin)",
+        "notes": "single-stroke script fonts used for handwriting reveals"
+      }
+    ],
+    "runtime": [
+      "**GSAP** (GreenSock): loaded by compositions from a pinned CDN URL or provided by the engine. GSAP Standard License (https://gsap.com/standard-license), free for commercial use; not an OSI open-source licence.",
+      "**three.js** (MIT), **Lottie** (lottie-web, MIT), **Anime.js** (MIT), **TypeGPU** (MIT): optional runtime adapters documented in cutscene-animate; loaded by a composition only when it uses them.",
+      "**Registry blocks and components** installed with `cutscene add` are downloaded from the engine's online registry when the user asks for them; each block keeps its own licence files (for example three.js MIT, GSAP Standard License notices, OFL fonts, Poly Haven CC0 HDRIs).",
+      "**Kokoro-82M** (Apache-2.0) voices and the engine's local transcription and cut-out models are downloaded by the engine on first use of `cutscene tts` / `cutscene transcribe` / `cutscene remove-background`, only after the user agrees (`--yes`).",
+      "**Sound effects** (19 Pixabay files, Pixabay Content License, https://pixabay.com/service/license-summary/): not in this repository, because that licence does not allow sharing them as a standalone library. `skills/cutscene-audio/scripts/sound-engine.mjs` copies them, checksum-checked against `skills/cutscene-audio/sound/sfx/sha256.json`, from the installed engine package (`hyperframes`, which ships them) into a video project's `assets/sfx/` when a video uses them.",
+      "**Google Fonts**: compositions may link Google Fonts at render time; families keep their own licences (mostly SIL OFL 1.1)."
+    ],
+    "ideasOnly": [
+      "**OpenMontage** (calesthio/OpenMontage, AGPL-3.0): pipeline catalogue and routing studied for ideas; no code or text copied.",
+      "**eden-motion** (no licence): the HyperFrames + Blender plate idea only; nothing copied.",
+      "**VoiceStudio** (AGPL-3.0): used only over its local API when the user has it; nothing copied."
+    ]
+  }
+}

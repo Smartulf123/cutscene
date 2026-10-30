@@ -1,0 +1,77 @@
+# Cutscene CI: Node tests, skill checks and pin ages on Ubuntu and Windows, plus the Python
+# tests. Tests that need Blender, voice models, FFmpeg or the engine skip themselves when the
+# tool is missing, so this stays green on a plain runner.
+# Action versions are exact tags at least 14 days old (tools/check-pin-ages.mjs checks them).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  node:
+    name: Node 22 (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dev dependencies
+        run: npm ci
+      # Every tests/<owner>/ folder runs once: sync and preview as their own steps, the rest here.
+      - name: Tests (Vitest, all parts except sync and preview)
+        run: npx vitest run --exclude "tests/sync/**" --exclude "tests/preview/**"
+      - name: Tests (Vitest, preview)
+        run: npx vitest run tests/preview
+      - name: Tests (Vitest, sync)
+        run: npx vitest run tests/sync
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: Generated skills match the pinned engine
+        if: matrix.os == 'ubuntu-latest'
+        run: node tools/sync-hyperframes.mjs --check --strict
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: Validate skills
+        run: node tools/validate-skills.mjs
+      - name: Check pin ages
+        if: matrix.os == 'ubuntu-latest'
+        run: node tools/check-pin-ages.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+  python:
+    name: Python 3.12 (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: "3.12"
+      - name: Install pytest
+        run: python -m pip install pytest==9.1.1
+      - name: Tests (pytest)
+        shell: bash
+        # Exit code 5 means "no tests collected", which is fine while a part has none yet.
+        run: python -m pytest tests || [ $? -eq 5 ]

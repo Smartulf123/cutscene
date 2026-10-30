@@ -1,0 +1,147 @@
+<!doctype html>
+<!--
+  Cutscene 3D (Tier 1): title3d. Extruded, bevelled letters flip up one by one, the word swings
+  so light runs over the bevels, then holds facing the camera. Written by `cutscene 3d tier1`.
+  Adapted from HyperFrames registry block extruded-logo (Apache-2.0, HeyGen, Inc.); modified for Cutscene.
+-->
+<html lang="en" data-composition-variables='__CS3D_VARIABLES__'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=__CS3D_WIDTH__, height=__CS3D_HEIGHT__" />
+    <title>__CS3D_ID__</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js" integrity="sha384-sG0Hv1tP1lZCk9KQmrIbY/XNwi+OY84GQqhMscbnsoBFqAz8KNCil1kvfL3Hbbk2" crossorigin="anonymous"></script>
+    <style>
+      #cs3d-__CS3D_ID__ {
+        position: relative;
+        width: __CS3D_WIDTH__px;
+        height: __CS3D_HEIGHT__px;
+        overflow: hidden;
+      }
+      #cs3d-__CS3D_ID__-canvas {
+        position: absolute;
+        inset: 0;
+        width: __CS3D_WIDTH__px;
+        height: __CS3D_HEIGHT__px;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="cs3d-__CS3D_ID__"
+      data-composition-id="__CS3D_ID__"
+      data-start="0"
+      data-duration="__CS3D_DURATION__"
+      data-width="__CS3D_WIDTH__"
+      data-height="__CS3D_HEIGHT__"
+    >
+      <canvas
+        id="cs3d-__CS3D_ID__-canvas"
+        class="clip"
+        data-start="0"
+        data-duration="__CS3D_DURATION__"
+        data-track-index="1"
+      ></canvas>
+    </div>
+
+    <script>
+/*__CS3D_BOOT__*/
+    </script>
+
+    <script type="module">
+      import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.184.0/+esm";
+      import { Font } from "https://cdn.jsdelivr.net/npm/three@0.184.0/examples/jsm/loaders/FontLoader.js/+esm";
+      import { TTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.184.0/examples/jsm/loaders/TTFLoader.js/+esm";
+      import { TextGeometry } from "https://cdn.jsdelivr.net/npm/three@0.184.0/examples/jsm/geometries/TextGeometry.js/+esm";
+/*__CS3D_COMMON__*/
+      try {
+        scene.environment = studioEnvironment(color(C.rim, P.accent));
+        const camera = new THREE.PerspectiveCamera(C.fov || 26, W / H, 0.1, 100);
+        const key = new THREE.DirectionalLight(0xffffff, 2.4);
+        key.position.set(-5, 4, 6);
+        scene.add(key);
+        const rim = new THREE.DirectionalLight(new THREE.Color(color(C.rim, P.accent)), 4);
+        rim.position.set(0, 3, -6);
+        scene.add(rim);
+        scene.add(new THREE.HemisphereLight(0xffffff, new THREE.Color(P.bg), 0.7));
+
+        const font = new Font(await new TTFLoader().loadAsync(assetUrl(C.font)));
+        const faceMat = material(C.face, P.fg);
+        const sideMat = material(C.sides || { preset: "metal", color: "accent" }, P.accent);
+        const text = String(V.text || C.text || "CUTSCENE").slice(0, 40);
+        const SIZE = 1.5;
+        const depth = (C.depth ?? 0.3) * SIZE;
+        const word = new THREE.Group();
+        scene.add(word);
+        const letters = [];
+        let cursor = 0;
+        const glyphs = font.data.glyphs;
+        const scale = SIZE / font.data.resolution;
+        const tracking = (C.tracking ?? 0.02) * SIZE;
+        for (const ch of text) {
+          const g = glyphs[ch] || glyphs["?"];
+          const advance = ((g && g.ha) || font.data.resolution * 0.6) * scale;
+          if (ch.trim()) {
+            const geometry = new TextGeometry(ch, {
+              font,
+              size: SIZE,
+              depth,
+              curveSegments: 10,
+              bevelEnabled: true,
+              bevelThickness: (C.bevel ?? 0.024) * SIZE * 2,
+              bevelSize: (C.bevel ?? 0.024) * SIZE * 1.4,
+              bevelSegments: 5,
+            });
+            geometry.computeBoundingBox();
+            const b = geometry.boundingBox;
+            geometry.translate(-(b.min.x + b.max.x) / 2, 0, -depth / 2);
+            const pivot = new THREE.Group();
+            pivot.position.x = cursor + advance / 2;
+            // TextGeometry groups: 0 = front/back caps, 1 = sides and bevels
+            pivot.add(new THREE.Mesh(geometry, [faceMat, sideMat]));
+            word.add(pivot);
+            letters.push(pivot);
+          }
+          cursor += advance + tracking;
+        }
+        const width = Math.max(0.1, cursor - tracking);
+        for (const p of letters) p.position.x -= width / 2;
+        const capHeight = SIZE * 0.72;
+        const fit = Math.min(1, 7.2 / width);
+        word.scale.setScalar(fit);
+        word.position.y = -capHeight * fit * 0.5;
+
+        const composer = await makeComposer(camera);
+        const D = host.duration;
+        const stagger = Math.min(C.stagger ?? 0.07, (D * 0.6 - 0.9) / Math.max(1, letters.length - 1));
+        const letterDur = Math.min(C.letter_duration ?? 0.8, D * 0.5);
+
+        host.render = (t) => {
+          letters.forEach((p, i) => {
+            const t0 = 0.1 + i * Math.max(0, stagger);
+            const u = REVEAL_EASE((t - t0) / letterDur);
+            const grow = ease.expoOut((t - t0) / (letterDur * 0.45));
+            p.rotation.x = (1 - u) * (-Math.PI / 2);
+            p.position.y = (1 - clamp01(u)) * -0.2;
+            p.scale.setScalar(Math.max(0.0001, grow));
+          });
+          const k = CAMERA_EASE(t / (D * 0.85));
+          const swing = ((C.swing ?? 12) * Math.PI) / 180;
+          word.rotation.y = -swing * (1 - k);
+          const az = (-26 + 18 * k) * (Math.PI / 180);
+          const el = (12 - 5 * k) * (Math.PI / 180);
+          const dist = 13.5 * (1.12 - 0.12 * k);
+          camera.position.set(Math.sin(az) * dist * Math.cos(el), Math.sin(el) * dist, Math.cos(az) * dist * Math.cos(el));
+          camera.lookAt(0, 0, 0);
+          if (composer) composer.render();
+          else renderer.render(scene, camera);
+        };
+        host.render(host.clock.t);
+        host.ready();
+      } catch (error) {
+        console.error("[cutscene-3d] title3d failed to build", error);
+        host.fail(error);
+      }
+    </script>
+  </body>
+</html>

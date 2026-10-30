@@ -1,0 +1,117 @@
+/* Cutscene Studio theme.
+ *
+ * Loaded by Cutscene's preview front door after the Studio's own stylesheet. It overrides the
+ * Studio's design tokens (they are `light-dark(light, dark)` pairs; `data-theme="paper"` picks
+ * the light half) and hides chrome that belongs to another product. Unlayered on purpose, so it
+ * wins over the Studio's layered `@theme` tokens without `!important`.
+ *
+ * Palette: near-black surfaces, warm off-white text, a confident blue accent and a warm
+ * orange for the playhead (the "cut"). Text clears 4.5:1 and icons 3:1 on every surface.
+ *
+ * The Studio is part of HyperFrames, an open-source framework by HeyGen (Apache-2.0).
+ * Cutscene is independent and not affiliated with HeyGen.
+ */
+
+:root {
+  /* ------------------------------------------------------------ surfaces */
+  --color-bg-0: light-dark(#f4f3ee, #0b0d12);
+  --color-input: light-dark(#ffffff, #0e1117);
+  --color-surface: light-dark(#fbfaf7, #11141b);
+  --color-raised: light-dark(#ffffff, #181c25);
+
+  /* ---------------------------------------------------------------- text */
+  --color-text-0: light-dark(#0b0d12, #f4f3ee);
+  --color-text-2: light-dark(#3a3c43, #cfcdc5);
+  --color-text-muted: light-dark(#5e6068, #9c9b94);
+  --color-text-off: light-dark(#85878e, #74736d);
+
+  /* --------------------------------------------------------------- roles */
+  --color-accent: light-dark(#2f5fd0, #5b8def);
+  --color-accent-hover: light-dark(#2752b8, #7aa2f3);
+  --color-on-accent: light-dark(#ffffff, #0b0d12);
+  --color-accent-ink: light-dark(#2a55bd, #86a9f5);
+  --color-selection: light-dark(#c2410c, #ffd08a);
+  --color-playhead: light-dark(#e8551a, #ff7a45);
+  --color-container: light-dark(#b45309, #ffb454);
+
+  /* Anything that still reaches for the old brand gradient gets Cutscene's instead. */
+  --color-brand-gradient-from: #5b8def;
+  --color-brand-gradient-to: #ff7a45;
+  --color-framey: #5b8def;
+  --color-framey-ink: #0b0d12;
+
+  /* ------------------------------------------------------------ timeline */
+  --timeline-row-bg: light-dark(#fdfcf9, #141821);
+  --timeline-gutter-bg: light-dark(#efeee8, #0f1218);
+  --timeline-clip-band-bg: #0b0d12;
+  --timeline-clip-label-active: light-dark(#0b1f4a, rgba(244, 243, 238, 0.95));
+  --timeline-clip-selection: light-dark(#c2410c, rgba(255, 208, 138, 0.9));
+  --timeline-text-clip-dark-bg: #161a22;
+  --timeline-text-clip-light-bg: #ecebe5;
+  --timeline-beat: #ff7a45;
+  --timeline-transition-badge: light-dark(#ffffff, rgba(244, 243, 238, 0.98));
+  --timeline-transition-badge-ink: rgba(11, 13, 18, 0.92);
+  /* The playhead is drawn in the timeline accent: make it the warm "cut" colour. */
+  --timeline-accent: var(--color-playhead);
+  --timeline-playhead-glow: color-mix(in oklab, var(--color-playhead) 22%, transparent);
+
+  /* ------------------------------------------------------------ geometry */
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+
+  /* ---------------------------------------------------------------- type */
+  --font-sans: "Inter", "Segoe UI Variable Text", "Segoe UI", -apple-system, BlinkMacSystemFont,
+    Roboto, "Helvetica Neue", sans-serif;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--color-accent) 35%, transparent);
+}
+
+/* -------------------------------------------------------------- branding */
+
+/* The header wordmark: hide the original logo and draw the Cutscene mark and name. */
+svg[aria-label="Hyperframes"] {
+  display: none !important;
+}
+div:has(> svg[aria-label="Hyperframes"])::before {
+  content: "Cutscene";
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding-left: 26px;
+  background: url("/__cutscene/icon.svg") left center / 19px 19px no-repeat;
+  color: var(--color-text-0);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+:root[data-theme="paper"] div:has(> svg[aria-label="Hyperframes"])::before {
+  background-image: url("/__cutscene/icon-ink.svg");
+}
+
+/* Loading screen: the Cutscene mark instead of the original one. */
+.hf-loader-mark {
+  visibility: hidden;
+}
+.hf-loader-mark-frame {
+  background: url("/__cutscene/icon.svg") center / 58% no-repeat;
+}
+:root[data-theme="paper"] .hf-loader-mark-frame {
+  background-image: url("/__cutscene/icon-ink.svg");
+}
+.hf-loader-progress__fill {
+  background: linear-gradient(90deg, #5b8def, #ff7a45) !important;
+}
+.hf-topology-seal {
+  display: none !important;
+}
+
+/* Another product's feedback survey and desktop-app hand-off. Cutscene sends no telemetry. */
+[aria-label="Send feedback to the HyperFrames team"],
+[data-testid="header-open-in-desktop"],
+.hf-framey-trigger {
+  display: none !important;
+}

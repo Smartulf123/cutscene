@@ -1,0 +1,24 @@
+{
+  "name": "cutscene",
+  "owner": {
+    "name": "Smartulf123",
+    "url": "https://github.com/Smartulf123"
+  },
+  "description": "Cutscene: make and edit videos with your AI agent, with 3D and local AI voices.",
+  "plugins": [
+    {
+      "name": "cutscene",
+      "source": "./",
+      "description": "Make and edit videos with your AI agent: animated HTML compositions, 3D shots with Three.js or Blender, local AI voices you design or clone, captions, music and footage clean-up. Everything runs on your computer.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Smartulf123",
+        "url": "https://github.com/Smartulf123"
+      },
+      "homepage": "https://github.com/Smartulf123/cutscene",
+      "repository": "https://github.com/Smartulf123/cutscene",
+      "license": "Apache-2.0",
+      "category": "creativity"
+    }
+  ]
+}

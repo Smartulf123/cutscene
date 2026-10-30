@@ -1,0 +1,27 @@
+# Read-only reference copies and working folders (not part of Cutscene)
+/hyperframes/
+/hyperframes-student-kit/
+/_port/
+/check-reports/
+/.remember/
+/node_modules/
+
+# Large local test footage
+/fixtures/real/
+
+# Outputs and caches
+renders/
+*.log
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+coverage/
+
+# Internal planning notes (kept on this computer, not published)
+/PLAN.md
+/IMPLEMENTATION.md
+/docs/research/
+/.claude/

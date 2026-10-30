@@ -1,0 +1,9 @@
+Cutscene voice line b3
+File: assets/voice/b3.wav
+Text: "It animates, renders real three D, and speaks every line."
+Voice: narrator, designed from "female, young adult, american accent", seed 42
+Model: OmniVoice (k2-fsa/OmniVoice @ c5fdb5ccb189)
+Licence: CC-BY-NC-4.0 (NON-COMMERCIAL: do not use this file in paid or commercial work)
+Note: Weights are non-commercial (CC-BY-NC). The bundled audio tokenizer is under the Boson Higgs Audio 2 Community License. The OmniVoice code is Apache-2.0.
+Attribution: Voice generated with OmniVoice by k2-fsa (https://github.com/k2-fsa/OmniVoice). Model weights licensed CC-BY-NC-4.0 (non-commercial). Built with Higgs Materials licensed from Boson AI USA, Inc., Copyright Boson AI USA, Inc., All Rights Reserved and Meta Llama 3 licensed under the Meta Llama 3 Community License, Copyright Meta Platforms, Inc., All Rights Reserved.
+Made: 2026-10-30 with Cutscene (cutscene voice speak).

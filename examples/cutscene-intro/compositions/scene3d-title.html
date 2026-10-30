@@ -1,0 +1,204 @@
+<!doctype html>
+<!--
+  Cutscene 3D (Tier 1): title3d. Extruded, bevelled letters flip up one by one, the word swings
+  so light runs over the bevels, then holds facing the camera. Written by `cutscene 3d tier1`.
+  Adapted from HyperFrames registry block extruded-logo (Apache-2.0, HeyGen, Inc.); modified for Cutscene.
+-->
+<html lang="en" data-composition-variables='[{"id":"text","type":"string","role":"content","label":"Text","default":"Describe it.","maxLength":40}]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>scene3d-title</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js" integrity="sha384-sG0Hv1tP1lZCk9KQmrIbY/XNwi+OY84GQqhMscbnsoBFqAz8KNCil1kvfL3Hbbk2" crossorigin="anonymous"></script>
+    <style>
+      #cs3d-scene3d-title {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+      }
+      #cs3d-scene3d-title-canvas {
+        position: absolute;
+        inset: 0;
+        width: 1920px;
+        height: 1080px;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-pb9m"
+      id="cs3d-scene3d-title"
+      data-composition-id="scene3d-title"
+      data-start="0"
+      data-duration="3.4"
+      data-width="1920"
+      data-height="1080"
+    >
+      <canvas data-hf-id="hf-s83y"
+        id="cs3d-scene3d-title-canvas"
+        class="clip"
+        data-start="0"
+        data-duration="3.4"
+        data-track-index="1"
+      ></canvas>
+    </div>
+
+    <script>
+      // Cutscene 3D Tier 1 boot (classic script): config, per-instance variables, the paused clock.
+      // Seek-safe: every frame is render(t) from one linear GSAP clock; hf-seek re-renders that time.
+      (function () {
+        var ID = "scene3d-title";
+        var config = {"template":"title3d","id":"scene3d-title","width":1920,"height":1080,"duration":3.4,"seed":662107,"motion":"snappy","palette":{"bg":"#0B0D12","fg":"#F4F3EE","accent":"#FF7A45","accent2":"#5B8DEF"},"transparent":true,"bloom":false,"exposure":1,"face":{"preset":"glossy","color":"fg"},"sides":{"preset":"metal","color":"accent","roughness":0.22},"rim":"accent","depth":0.3,"bevel":0.024,"tracking":0.08,"swing":18,"stagger":0.05,"vars":{"text":"Describe it."},"font":"assets/3d/fonts/dm-serif-display-latin-400-normal.woff"};
+        var scoped = {};
+        try {
+          scoped =
+            (window.__hyperframes && window.__hyperframes.getVariables && window.__hyperframes.getVariables()) || {};
+        } catch (error) {
+          scoped = {};
+        }
+        Object.keys(config.vars || {}).forEach(function (k) {
+          if (scoped[k] !== undefined && scoped[k] !== "") config.vars[k] = scoped[k];
+        });
+        var root = document.getElementById("cs3d-" + ID);
+        var duration = Math.max(0.001, parseFloat(root && root.dataset.duration) || config.duration);
+        var clock = { t: 0 };
+        var host = { id: ID, config: config, duration: duration, clock: clock, render: null };
+        window.__cs3d = window.__cs3d || {};
+        window.__cs3d[ID] = host;
+        window.__hf = window.__hf || {};
+        window.__hf.buildReady = window.__hf.buildReady || {};
+        window.__hf.buildReady[ID] = new Promise(function (resolve, reject) {
+          host.ready = resolve;
+          host.fail = reject;
+        });
+        var tl = gsap.timeline({ paused: true });
+        tl.to(clock, {
+          t: duration,
+          duration: duration,
+          ease: "none",
+          onUpdate: function () {
+            if (host.render) host.render(clock.t);
+          },
+        });
+        window.__timelines = window.__timelines || {};
+        window.__timelines[ID] = tl;
+        host.timeline = tl;
+        window.addEventListener("hf-seek", function () {
+          if (host.render) host.render(tl.time());
+        });
+      })();
+
+    </script>
+
+    <script type="module">
+      import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.184.0/+esm";
+      import { Font } from "https://cdn.jsdelivr.net/npm/three@0.184.0/examples/jsm/loaders/FontLoader.js/+esm";
+      import { TTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.184.0/examples/jsm/loaders/TTFLoader.js/+esm";
+      import { TextGeometry } from "https://cdn.jsdelivr.net/npm/three@0.184.0/examples/jsm/geometries/TextGeometry.js/+esm";
+      // Shared Cutscene 3D runtime (compositions/assets/3d/cs3d-runtime.js), bound to this file.
+      const assetUrl = (path) =>
+        typeof __hyperframes !== "undefined" && __hyperframes.assetUrl ? __hyperframes.assetUrl(path) : path;
+      const host = window.__cs3d["scene3d-title"];
+      let S;
+      try {
+        S = (await import(assetUrl("assets/3d/cs3d-runtime.js"))).stage("scene3d-title", assetUrl);
+      } catch (error) {
+        console.error("[cutscene-3d] runtime failed to load", error);
+        host.fail(error);
+        throw error;
+      }
+      const { C, V, W, H, P, color, rng, clamp01, ease, REVEAL_EASE, CAMERA_EASE, renderer, scene } = S;
+      const { studioEnvironment, material, contactShadow, makeComposer } = S;
+
+      try {
+        scene.environment = studioEnvironment(color(C.rim, P.accent));
+        const camera = new THREE.PerspectiveCamera(C.fov || 26, W / H, 0.1, 100);
+        const key = new THREE.DirectionalLight(0xffffff, 2.4);
+        key.position.set(-5, 4, 6);
+        scene.add(key);
+        const rim = new THREE.DirectionalLight(new THREE.Color(color(C.rim, P.accent)), 4);
+        rim.position.set(0, 3, -6);
+        scene.add(rim);
+        scene.add(new THREE.HemisphereLight(0xffffff, new THREE.Color(P.bg), 0.7));
+
+        const font = new Font(await new TTFLoader().loadAsync(assetUrl(C.font)));
+        const faceMat = material(C.face, P.fg);
+        const sideMat = material(C.sides || { preset: "metal", color: "accent" }, P.accent);
+        const text = String(V.text || C.text || "CUTSCENE").slice(0, 40);
+        const SIZE = 1.5;
+        const depth = (C.depth ?? 0.3) * SIZE;
+        const word = new THREE.Group();
+        scene.add(word);
+        const letters = [];
+        let cursor = 0;
+        const glyphs = font.data.glyphs;
+        const scale = SIZE / font.data.resolution;
+        const tracking = (C.tracking ?? 0.02) * SIZE;
+        for (const ch of text) {
+          const g = glyphs[ch] || glyphs["?"];
+          const advance = ((g && g.ha) || font.data.resolution * 0.6) * scale;
+          if (ch.trim()) {
+            const geometry = new TextGeometry(ch, {
+              font,
+              size: SIZE,
+              depth,
+              curveSegments: 10,
+              bevelEnabled: true,
+              bevelThickness: (C.bevel ?? 0.024) * SIZE * 2,
+              bevelSize: (C.bevel ?? 0.024) * SIZE * 1.4,
+              bevelSegments: 5,
+            });
+            geometry.computeBoundingBox();
+            const b = geometry.boundingBox;
+            geometry.translate(-(b.min.x + b.max.x) / 2, 0, -depth / 2);
+            const pivot = new THREE.Group();
+            pivot.position.x = cursor + advance / 2;
+            // TextGeometry groups: 0 = front/back caps, 1 = sides and bevels
+            pivot.add(new THREE.Mesh(geometry, [faceMat, sideMat]));
+            word.add(pivot);
+            letters.push(pivot);
+          }
+          cursor += advance + tracking;
+        }
+        const width = Math.max(0.1, cursor - tracking);
+        for (const p of letters) p.position.x -= width / 2;
+        const capHeight = SIZE * 0.72;
+        const fit = Math.min(1, 7.2 / width);
+        word.scale.setScalar(fit);
+        word.position.y = -capHeight * fit * 0.5;
+
+        const composer = await makeComposer(camera);
+        const D = host.duration;
+        const stagger = Math.min(C.stagger ?? 0.07, (D * 0.6 - 0.9) / Math.max(1, letters.length - 1));
+        const letterDur = Math.min(C.letter_duration ?? 0.8, D * 0.5);
+
+        host.render = (t) => {
+          letters.forEach((p, i) => {
+            const t0 = 0.1 + i * Math.max(0, stagger);
+            const u = REVEAL_EASE((t - t0) / letterDur);
+            const grow = ease.expoOut((t - t0) / (letterDur * 0.45));
+            p.rotation.x = (1 - u) * (-Math.PI / 2);
+            p.position.y = (1 - clamp01(u)) * -0.2;
+            p.scale.setScalar(Math.max(0.0001, grow));
+          });
+          const k = CAMERA_EASE(t / (D * 0.85));
+          const swing = ((C.swing ?? 12) * Math.PI) / 180;
+          word.rotation.y = -swing * (1 - k);
+          const az = (-26 + 18 * k) * (Math.PI / 180);
+          const el = (12 - 5 * k) * (Math.PI / 180);
+          const dist = 13.5 * (1.12 - 0.12 * k);
+          camera.position.set(Math.sin(az) * dist * Math.cos(el), Math.sin(el) * dist, Math.cos(az) * dist * Math.cos(el));
+          camera.lookAt(0, 0, 0);
+          if (composer) composer.render();
+          else renderer.render(scene, camera);
+        };
+        host.render(host.clock.t);
+        host.ready();
+      } catch (error) {
+        console.error("[cutscene-3d] title3d failed to build", error);
+        host.fail(error);
+      }
+    </script>
+  </body>
+</html>

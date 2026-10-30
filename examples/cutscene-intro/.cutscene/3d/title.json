@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "id": "title",
+  "template": "title3d",
+  "tier": 1,
+  "engine": "auto",
+  "duration": 3.4,
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "quality": "final",
+  "look": ".cutscene/look.json",
+  "params": {
+    "text": "Describe it.",
+    "size": 1,
+    "depth": 0.3,
+    "bevel": 0.024,
+    "bevel_segments": 4,
+    "tracking": 0.08,
+    "reveal": "flip",
+    "reveal_start": 0.1,
+    "swing": 18,
+    "face": {
+      "preset": "glossy",
+      "color": "fg"
+    },
+    "sides": {
+      "preset": "metal",
+      "color": "accent",
+      "roughness": 0.22
+    },
+    "ground": false,
+    "stagger": 0.05
+  },
+  "camera": {
+    "move": "arc",
+    "lens": 50,
+    "dof": {
+      "fstop": 2.8
+    },
+    "drift": 0.15
+  },
+  "lighting": {
+    "rig": "studio"
+  },
+  "motion_blur": true,
+  "transparent": true,
+  "needs": [],
+  "beat": "b2",
+  "font": "assets/fonts/dm-serif-display-latin-400-normal.woff"
+}

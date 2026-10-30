@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "date": "2026-10-30T07:06:24.600Z",
+  "engine": "whisper",
+  "lines": [
+    {
+      "id": "b3",
+      "file": "assets/voice/b3.wav",
+      "line": "It animates, renders real three D, and speaks every line.",
+      "verified": true,
+      "heard": "It animates, renders real 3D, and speaks every line.",
+      "wer": 0,
+      "issues": [],
+      "warnings": [],
+      "words": [
+        {
+          "w": "It",
+          "start": 0,
+          "end": 0.32,
+          "p": 0.926
+        },
+        {
+          "w": "animates,",
+          "start": 0.32,
+          "end": 0.84,
+          "p": 0.998
+        },
+        {
+          "w": "renders",
+          "start": 0.96,
+          "end": 1.3,
+          "p": 0.999
+        },
+        {
+          "w": "real",
+          "start": 1.3,
+          "end": 1.5,
+          "p": 0.964
+        },
+        {
+          "w": "three",
+          "start": 1.5,
+          "end": 1.94,
+          "p": 0.957
+        },
+        {
+          "w": "D,",
+          "start": 1.5,
+          "end": 1.94,
+          "p": 0.957
+        },
+        {
+          "w": "and",
+          "start": 2.12,
+          "end": 2.18,
+          "p": 0.994
+        },
+        {
+          "w": "speaks",
+          "start": 2.18,
+          "end": 2.44,
+          "p": 0.996
+        },
+        {
+          "w": "every",
+          "start": 2.44,
+          "end": 2.74,
+          "p": 0.996
+        },
+        {
+          "w": "line.",
+          "start": 2.74,
+          "end": 2.98,
+          "p": 0.996
+        }
+      ],
+      "transcribe_seconds": 9.76
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+<!doctype html>
+<!--
+  Cutscene 3D (Tier 1): flythrough. The camera flies through a tunnel of rings and chrome bits.
+  Written by `cutscene 3d tier1`.
+  Adapted from HyperFrames registry block wireframe-portal-title (Apache-2.0, HeyGen, Inc.); modified for Cutscene.
+-->
+<html lang="en" data-composition-variables='__CS3D_VARIABLES__'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=__CS3D_WIDTH__, height=__CS3D_HEIGHT__" />
+    <title>__CS3D_ID__</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js" integrity="sha384-sG0Hv1tP1lZCk9KQmrIbY/XNwi+OY84GQqhMscbnsoBFqAz8KNCil1kvfL3Hbbk2" crossorigin="anonymous"></script>
+    <style>
+      #cs3d-__CS3D_ID__ {
+        position: relative;
+        width: __CS3D_WIDTH__px;
+        height: __CS3D_HEIGHT__px;
+        overflow: hidden;
+      }
+      #cs3d-__CS3D_ID__-canvas {
+        position: absolute;
+        inset: 0;
+        width: __CS3D_WIDTH__px;
+        height: __CS3D_HEIGHT__px;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="cs3d-__CS3D_ID__"
+      data-composition-id="__CS3D_ID__"
+      data-start="0"
+      data-duration="__CS3D_DURATION__"
+      data-width="__CS3D_WIDTH__"
+      data-height="__CS3D_HEIGHT__"
+    >
+      <canvas
+        id="cs3d-__CS3D_ID__-canvas"
+        class="clip"
+        data-start="0"
+        data-duration="__CS3D_DURATION__"
+        data-track-index="1"
+      ></canvas>
+    </div>
+
+    <script>
+/*__CS3D_BOOT__*/
+    </script>
+
+    <script type="module">
+      import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.184.0/+esm";
+/*__CS3D_COMMON__*/
+      try {
+        scene.environment = studioEnvironment(color(C.rim, P.accent));
+        if (!C.transparent) scene.fog = new THREE.Fog(new THREE.Color(P.bg), 6, 34);
+        const camera = new THREE.PerspectiveCamera(48, W / H, 0.05, 120);
+        scene.add(new THREE.HemisphereLight(0xffffff, new THREE.Color(P.bg), 0.6));
+        const rand = rng(C.seed);
+        const LENGTH = 80;
+        const rings = [];
+        const colors = [P.accent, P.accent2, P.fg];
+        const path = (z) => new THREE.Vector3(Math.sin(z * 0.08) * 1.2, Math.cos(z * 0.06) * 0.7, z);
+        for (let i = 0; i < 26; i++) {
+          const z = -i * (LENGTH / 26);
+          const glow = i % 3 === 0;
+          const mat = glow
+            ? new THREE.MeshStandardMaterial({ color: 0x0b0b10, emissive: new THREE.Color(colors[i % colors.length]), emissiveIntensity: 2.2 })
+            : material({ preset: i % 2 ? "metal" : "glossy", color: colors[i % colors.length] }, P.accent);
+          const ring = new THREE.Mesh(new THREE.TorusGeometry(2.6 + Math.sin(i * 0.7) * 0.4, glow ? 0.05 : 0.12, 24, 160), mat);
+          ring.position.copy(path(z));
+          ring.userData.spin = (rand() - 0.5) * 0.8;
+          scene.add(ring);
+          rings.push(ring);
+        }
+        const bits = [];
+        for (let i = 0; i < 70; i++) {
+          const m = new THREE.Mesh(
+            new THREE.OctahedronGeometry(0.08 + rand() * 0.14, 0),
+            material({ preset: "chrome", color: colors[i % 3] }, P.accent),
+          );
+          const a = rand() * Math.PI * 2;
+          const r = 1 + rand() * 1.6;
+          const z = -rand() * LENGTH;
+          const c = path(z);
+          m.position.set(c.x + Math.cos(a) * r, c.y + Math.sin(a) * r, z);
+          m.userData.spin = rand() * 3;
+          scene.add(m);
+          bits.push(m);
+        }
+        const composer = await makeComposer(camera);
+        const D = host.duration;
+        host.render = (t) => {
+          const k = ease.sineInOut(t / D);
+          const z = 6 - k * (LENGTH - 14);
+          camera.position.copy(path(z));
+          camera.lookAt(path(z - 6));
+          camera.rotateZ(Math.sin(t * 0.7) * 0.05);
+          for (const r of rings) r.rotation.z = r.userData.spin * t;
+          for (const b of bits) b.rotation.set(b.userData.spin * t, b.userData.spin * t * 0.7, 0);
+          if (composer) composer.render();
+          else renderer.render(scene, camera);
+        };
+        host.render(host.clock.t);
+        host.ready();
+      } catch (error) {
+        console.error("[cutscene-3d] flythrough failed to build", error);
+        host.fail(error);
+      }
+    </script>
+  </body>
+</html>

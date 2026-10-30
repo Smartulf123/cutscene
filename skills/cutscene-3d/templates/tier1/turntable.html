@@ -1,0 +1,119 @@
+<!doctype html>
+<!--
+  Cutscene 3D (Tier 1): turntable. A glTF product (or the built-in can) turns on a seamless loop under studio reflections.
+  Written by `cutscene 3d tier1`.
+  Adapted from HyperFrames registry block product-turntable (Apache-2.0, HeyGen, Inc.); modified for Cutscene.
+-->
+<html lang="en" data-composition-variables='__CS3D_VARIABLES__'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=__CS3D_WIDTH__, height=__CS3D_HEIGHT__" />
+    <title>__CS3D_ID__</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js" integrity="sha384-sG0Hv1tP1lZCk9KQmrIbY/XNwi+OY84GQqhMscbnsoBFqAz8KNCil1kvfL3Hbbk2" crossorigin="anonymous"></script>
+    <style>
+      #cs3d-__CS3D_ID__ {
+        position: relative;
+        width: __CS3D_WIDTH__px;
+        height: __CS3D_HEIGHT__px;
+        overflow: hidden;
+      }
+      #cs3d-__CS3D_ID__-canvas {
+        position: absolute;
+        inset: 0;
+        width: __CS3D_WIDTH__px;
+        height: __CS3D_HEIGHT__px;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="cs3d-__CS3D_ID__"
+      data-composition-id="__CS3D_ID__"
+      data-start="0"
+      data-duration="__CS3D_DURATION__"
+      data-width="__CS3D_WIDTH__"
+      data-height="__CS3D_HEIGHT__"
+    >
+      <canvas
+        id="cs3d-__CS3D_ID__-canvas"
+        class="clip"
+        data-start="0"
+        data-duration="__CS3D_DURATION__"
+        data-track-index="1"
+      ></canvas>
+    </div>
+
+    <script>
+/*__CS3D_BOOT__*/
+    </script>
+
+    <script type="module">
+      import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.184.0/+esm";
+      import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.184.0/examples/jsm/loaders/GLTFLoader.js/+esm";
+/*__CS3D_COMMON__*/
+      try {
+        scene.environment = studioEnvironment(color(C.rim, P.accent));
+        renderer.toneMappingExposure = (C.exposure || 1) * 1.2;
+        const camera = new THREE.PerspectiveCamera(24, W / H, 0.1, 100);
+        camera.position.set(0, 2.1, 9.4);
+        camera.lookAt(0, 1.0, 0);
+        const key = new THREE.DirectionalLight(0xffffff, 1.8);
+        key.position.set(-3.5, 5, 4);
+        scene.add(key);
+        const rim = new THREE.DirectionalLight(new THREE.Color(color(C.rim, P.accent)), 2.4);
+        rim.position.set(4, 3, -4);
+        scene.add(rim);
+        scene.add(new THREE.HemisphereLight(0xffffff, new THREE.Color(P.bg), 0.4));
+        scene.add(contactShadow(3.0, 3.0, 0.5));
+
+        const turntable = new THREE.Group();
+        scene.add(turntable);
+        async function product() {
+          if (C.model) {
+            // A model that fails to load fails the render; it never swaps in a different product.
+            const gltf = await new GLTFLoader().loadAsync(assetUrl(C.model));
+            const object = gltf.scene;
+            const box = new THREE.Box3().setFromObject(object);
+            const size = box.getSize(new THREE.Vector3());
+            const center = box.getCenter(new THREE.Vector3());
+            const s = Math.min(2.3 / size.y, 2.6 / Math.max(size.x, size.z));
+            object.scale.setScalar(s);
+            object.position.set(-center.x * s, -box.min.y * s, -center.z * s);
+            const wrap = new THREE.Group();
+            wrap.add(object);
+            return wrap;
+          }
+          // Built-in can: a lathe profile with a label band in the accent colour.
+          const can = new THREE.Group();
+          const metal = new THREE.MeshStandardMaterial({ color: 0xd4d7dc, metalness: 1, roughness: 0.22 });
+          const profile = [
+            [0, 0.1], [0.46, 0.06], [0.6, 0], [0.66, 0.06], [0.67, 0.16], [0.67, 2.02], [0.63, 2.14],
+            [0.56, 2.24], [0.555, 2.29], [0.575, 2.31], [0.56, 2.33], [0.5, 2.3], [0, 2.27],
+          ].map(([x, y]) => new THREE.Vector2(x, y));
+          can.add(new THREE.Mesh(new THREE.LatheGeometry(profile, 128), metal));
+          const label = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.674, 0.674, 1.8, 128, 1, true),
+            material(C.face || { preset: "glossy", color: "accent" }, P.accent),
+          );
+          label.position.y = 1.1;
+          can.add(label);
+          return can;
+        }
+        turntable.add(await product());
+        const composer = await makeComposer(camera);
+        const turns = Math.max(1, Math.min(4, Math.round(Number(C.turns) || 1)));
+        host.render = (t) => {
+          turntable.rotation.y = -0.5 + (t / host.duration) * turns * Math.PI * 2;
+          if (composer) composer.render();
+          else renderer.render(scene, camera);
+        };
+        host.render(host.clock.t);
+        host.ready();
+      } catch (error) {
+        console.error("[cutscene-3d] turntable failed to build", error);
+        host.fail(error);
+      }
+    </script>
+  </body>
+</html>

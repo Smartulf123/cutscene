@@ -1,0 +1,5 @@
+# Dev-only settings for Cutscene's Python tests (voice and Blender helpers).
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-ra"

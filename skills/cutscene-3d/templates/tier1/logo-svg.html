@@ -1,0 +1,134 @@
+<!doctype html>
+<!--
+  Cutscene 3D (Tier 1): logo-svg. An SVG logo, extruded and bevelled, spins in and settles facing the camera.
+  Written by `cutscene 3d tier1`.
+  Adapted from HyperFrames registry block extruded-logo (Apache-2.0, HeyGen, Inc.); modified for Cutscene.
+-->
+<html lang="en" data-composition-variables='__CS3D_VARIABLES__'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=__CS3D_WIDTH__, height=__CS3D_HEIGHT__" />
+    <title>__CS3D_ID__</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js" integrity="sha384-sG0Hv1tP1lZCk9KQmrIbY/XNwi+OY84GQqhMscbnsoBFqAz8KNCil1kvfL3Hbbk2" crossorigin="anonymous"></script>
+    <style>
+      #cs3d-__CS3D_ID__ {
+        position: relative;
+        width: __CS3D_WIDTH__px;
+        height: __CS3D_HEIGHT__px;
+        overflow: hidden;
+      }
+      #cs3d-__CS3D_ID__-canvas {
+        position: absolute;
+        inset: 0;
+        width: __CS3D_WIDTH__px;
+        height: __CS3D_HEIGHT__px;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="cs3d-__CS3D_ID__"
+      data-composition-id="__CS3D_ID__"
+      data-start="0"
+      data-duration="__CS3D_DURATION__"
+      data-width="__CS3D_WIDTH__"
+      data-height="__CS3D_HEIGHT__"
+    >
+      <canvas
+        id="cs3d-__CS3D_ID__-canvas"
+        class="clip"
+        data-start="0"
+        data-duration="__CS3D_DURATION__"
+        data-track-index="1"
+      ></canvas>
+    </div>
+
+    <script>
+/*__CS3D_BOOT__*/
+    </script>
+
+    <script type="module">
+      import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.184.0/+esm";
+      import { SVGLoader } from "https://cdn.jsdelivr.net/npm/three@0.184.0/examples/jsm/loaders/SVGLoader.js/+esm";
+/*__CS3D_COMMON__*/
+      try {
+        scene.environment = studioEnvironment(color(C.rim, P.accent));
+        const camera = new THREE.PerspectiveCamera(26, W / H, 0.1, 100);
+        const key = new THREE.DirectionalLight(0xffffff, 2.2);
+        key.position.set(-5, 5, 6);
+        scene.add(key);
+        const rim = new THREE.DirectionalLight(new THREE.Color(color(C.rim, P.accent)), 3.5);
+        rim.position.set(2, 3, -6);
+        scene.add(rim);
+        scene.add(new THREE.HemisphereLight(0xffffff, new THREE.Color(P.bg), 0.6));
+
+        const data = await new SVGLoader().loadAsync(assetUrl(C.svg));
+        const sideMat = material(C.sides || { preset: "chrome" }, "#C9D3E6");
+        const faceMat = material(C.face, P.accent);
+        const parts = new THREE.Group();
+        data.paths.forEach((path, i) => {
+          const fill = path.userData && path.userData.style && path.userData.style.fill;
+          if (fill === "none") return;
+          const face = C.keepSvgColors && fill
+            ? new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setStyle(fill), roughness: 0.2, clearcoat: 0.6 })
+            : faceMat;
+          for (const shape of SVGLoader.createShapes(path)) {
+            const mesh = new THREE.Mesh(new THREE.ShapeGeometry(shape), face);
+            mesh.userData.shape = shape;
+            mesh.userData.order = i;
+            parts.add(mesh);
+          }
+        });
+        // Measure in SVG units, then extrude with depth/bevel scaled to the logo's size.
+        const raw = new THREE.Box3().setFromObject(parts);
+        const rawSize = raw.getSize(new THREE.Vector3());
+        const unit = Math.max(rawSize.x, rawSize.y * 1.4) / 3.2;
+        for (const mesh of [...parts.children]) {
+          mesh.geometry.dispose();
+          mesh.geometry = new THREE.ExtrudeGeometry(mesh.userData.shape, {
+            depth: (C.depth ?? 0.42) * unit,
+            curveSegments: 24,
+            bevelEnabled: true,
+            bevelThickness: (C.bevel ?? 0.03) * unit,
+            bevelSize: (C.bevel ?? 0.03) * unit * 0.7,
+            bevelSegments: 5,
+          });
+          mesh.material = [mesh.material, sideMat];
+          mesh.position.z = mesh.userData.order * 0.002 * unit;
+        }
+        // SVG y points down: flip, centre, scale to ~3.2 units wide.
+        parts.scale.y = -1;
+        const box = new THREE.Box3().setFromObject(parts);
+        const center = box.getCenter(new THREE.Vector3());
+        parts.position.set(-center.x, -center.y, -center.z);
+        const logo = new THREE.Group();
+        logo.add(parts);
+        const fit = 1 / unit;
+        scene.add(logo);
+
+        const composer = await makeComposer(camera);
+        const D = host.duration;
+        host.render = (t) => {
+          const u = REVEAL_EASE((t - 0.1) / Math.min(1.1, D * 0.6));
+          const grow = ease.expoOut((t - 0.1) / Math.min(0.55, D * 0.3));
+          logo.rotation.y = (1 - u) * -1.9;
+          logo.scale.setScalar(Math.max(0.0001, grow) * fit);
+          const k = CAMERA_EASE(t / (D * 0.85));
+          const az = (-16 + 4 * k) * (Math.PI / 180);
+          const el = (10 - 1 * k) * (Math.PI / 180);
+          const dist = 10.5 * (1.22 - 0.22 * k);
+          camera.position.set(Math.sin(az) * dist * Math.cos(el), Math.sin(el) * dist, Math.cos(az) * dist * Math.cos(el));
+          camera.lookAt(0, 0, 0);
+          if (composer) composer.render();
+          else renderer.render(scene, camera);
+        };
+        host.render(host.clock.t);
+        host.ready();
+      } catch (error) {
+        console.error("[cutscene-3d] logo-svg failed to build", error);
+        host.fail(error);
+      }
+    </script>
+  </body>
+</html>

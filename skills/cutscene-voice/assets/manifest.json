@@ -1,0 +1,427 @@
+{
+  "version": 1,
+  "about": "Pins for Cutscene's local voice environment. Everything installs under <CUTSCENE_HOME>/voice/ and nothing goes on PATH. Python packages resolve only to releases uploaded before `python.uploaded_prior_to` (at least 14 days old); the exact versions and SHA-256 of every installed package are written to <CUTSCENE_HOME>/voice/lock.json.",
+  "pins": [
+    {
+      "name": "pip",
+      "version": "26.2.1",
+      "url": "https://files.pythonhosted.org/packages/f3/6e/1736e5b4ae2b778ef2f81c47d797de9f891d4d8acb047a24ca37a60294dd/pip-26.2.1-py3-none-any.whl",
+      "sha256": "71138adf1f4ca900cdb7d289c21b7494329f2332b6d85f0e1c42108c0384ed3e",
+      "size": 1816632,
+      "license": "MIT",
+      "source": "pypi"
+    },
+    {
+      "name": "torch",
+      "version": "2.11.0+cpu",
+      "url": "https://download.pytorch.org/whl/cpu/torch-2.11.0%2Bcpu-cp312-cp312-win_amd64.whl",
+      "sha256": "1abeaa46fa7532ed35ed79146f4de5d7a9d4b30462c98052ea4ddfe781ea3eca",
+      "size": 114469197,
+      "license": "BSD-3-Clause",
+      "source": "https://download.pytorch.org/whl/cpu/torch/",
+      "published": "2026-03-23"
+    },
+    {
+      "name": "torchaudio",
+      "version": "2.11.0+cpu",
+      "url": "https://download.pytorch.org/whl/cpu/torchaudio-2.11.0%2Bcpu-cp312-cp312-win_amd64.whl",
+      "sha256": "95d517bd1a0a28dacd1c37550ced95cab64f3a7a4ef9b8219b41049388a71163",
+      "size": 326400,
+      "license": "BSD-2-Clause",
+      "source": "https://download.pytorch.org/whl/cpu/torchaudio/",
+      "published": "2026-03-23"
+    },
+    {
+      "name": "soundfile",
+      "version": "0.14.0",
+      "url": "https://pypi.org/project/soundfile/0.14.0/",
+      "license": "BSD-3-Clause",
+      "source": "pypi",
+      "group": "base"
+    },
+    {
+      "name": "transformers",
+      "version": "5.19.0",
+      "url": "https://pypi.org/project/transformers/5.19.0/",
+      "license": "Apache-2.0",
+      "source": "pypi",
+      "group": "base"
+    },
+    {
+      "name": "pytest",
+      "version": "9.1.1",
+      "url": "https://pypi.org/project/pytest/9.1.1/",
+      "license": "MIT",
+      "source": "pypi",
+      "group": "base"
+    },
+    {
+      "name": "omnivoice",
+      "version": "0.2.1",
+      "url": "https://pypi.org/project/omnivoice/0.2.1/",
+      "license": "Apache-2.0",
+      "source": "pypi",
+      "group": "omnivoice",
+      "sha256": "23f113ef51116a16308b55c4c2ac9c08efca7dfb594802f5c8adfb7523313ccc"
+    },
+    {
+      "name": "faster-whisper",
+      "version": "1.2.1",
+      "url": "https://pypi.org/project/faster-whisper/1.2.1/",
+      "license": "MIT",
+      "source": "pypi",
+      "group": "whisper",
+      "sha256": "79a66ad50688c0b794dd501dc340a736992a6342f7f95e5811be60b5224a26a7"
+    },
+    {
+      "name": "voxcpm",
+      "version": "2.0.3",
+      "url": "https://pypi.org/project/voxcpm/2.0.3/",
+      "license": "Apache-2.0",
+      "source": "pypi",
+      "group": "voxcpm2",
+      "sha256": "24da58a30d094a9e9a7ead450ae9cffda0d31eaeba620b61ad99179dd87e486b"
+    },
+    {
+      "name": "k2-fsa/OmniVoice",
+      "version": "c5fdb5ccb189668d56333f77ba2629f4cd7535f4",
+      "url": "https://huggingface.co/k2-fsa/OmniVoice/tree/c5fdb5ccb189668d56333f77ba2629f4cd7535f4",
+      "size": 3267467171,
+      "license": "CC-BY-NC-4.0",
+      "source": "huggingface",
+      "model": "omnivoice"
+    },
+    {
+      "name": "mobiuslabsgmbh/faster-whisper-large-v3-turbo",
+      "version": "0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf",
+      "url": "https://huggingface.co/mobiuslabsgmbh/faster-whisper-large-v3-turbo/tree/0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf",
+      "size": 1621667428,
+      "license": "MIT",
+      "source": "huggingface",
+      "model": "whisper"
+    },
+    {
+      "name": "openbmb/VoxCPM2",
+      "version": "32279effe8c19989596f05d353d1447f51d9e915",
+      "url": "https://huggingface.co/openbmb/VoxCPM2/tree/32279effe8c19989596f05d353d1447f51d9e915",
+      "size": 4960730347,
+      "license": "Apache-2.0",
+      "source": "huggingface",
+      "model": "voxcpm2"
+    }
+  ],
+  "python": {
+    "requires": ">=3.10,<3.14",
+    "uploaded_prior_to": "2026-10-15T00:00:00Z",
+    "index": "https://pypi.org/simple",
+    "pip": {
+      "name": "pip",
+      "version": "26.2.1",
+      "url": "https://files.pythonhosted.org/packages/f3/6e/1736e5b4ae2b778ef2f81c47d797de9f891d4d8acb047a24ca37a60294dd/pip-26.2.1-py3-none-any.whl",
+      "sha256": "71138adf1f4ca900cdb7d289c21b7494329f2332b6d85f0e1c42108c0384ed3e",
+      "size": 1816632,
+      "license": "MIT",
+      "source": "https://pypi.org/project/pip/26.2.1/"
+    },
+    "torch_index": "https://download.pytorch.org/whl/cpu",
+    "torch_wheels": [
+      {
+        "name": "torch",
+        "version": "2.11.0+cpu",
+        "platform": "win_amd64",
+        "python": "cp312",
+        "url": "https://download.pytorch.org/whl/cpu/torch-2.11.0%2Bcpu-cp312-cp312-win_amd64.whl",
+        "sha256": "1abeaa46fa7532ed35ed79146f4de5d7a9d4b30462c98052ea4ddfe781ea3eca",
+        "size": 114469197,
+        "license": "BSD-3-Clause",
+        "source": "https://download.pytorch.org/whl/cpu/torch/"
+      },
+      {
+        "name": "torchaudio",
+        "version": "2.11.0+cpu",
+        "platform": "win_amd64",
+        "python": "cp312",
+        "url": "https://download.pytorch.org/whl/cpu/torchaudio-2.11.0%2Bcpu-cp312-cp312-win_amd64.whl",
+        "sha256": "95d517bd1a0a28dacd1c37550ced95cab64f3a7a4ef9b8219b41049388a71163",
+        "size": 326400,
+        "license": "BSD-2-Clause",
+        "source": "https://download.pytorch.org/whl/cpu/torchaudio/"
+      }
+    ],
+    "groups": {
+      "base": [
+        {
+          "name": "soundfile",
+          "version": "0.14.0",
+          "license": "BSD-3-Clause",
+          "source": "https://pypi.org/project/soundfile/0.14.0/"
+        },
+        {
+          "name": "transformers",
+          "version": "5.19.0",
+          "license": "Apache-2.0",
+          "source": "https://pypi.org/project/transformers/5.19.0/"
+        },
+        {
+          "name": "pytest",
+          "version": "9.1.1",
+          "license": "MIT",
+          "source": "https://pypi.org/project/pytest/9.1.1/"
+        }
+      ],
+      "omnivoice": [
+        {
+          "name": "omnivoice",
+          "version": "0.2.1",
+          "sha256": "23f113ef51116a16308b55c4c2ac9c08efca7dfb594802f5c8adfb7523313ccc",
+          "license": "Apache-2.0",
+          "source": "https://pypi.org/project/omnivoice/0.2.1/"
+        }
+      ],
+      "whisper": [
+        {
+          "name": "faster-whisper",
+          "version": "1.2.1",
+          "sha256": "79a66ad50688c0b794dd501dc340a736992a6342f7f95e5811be60b5224a26a7",
+          "license": "MIT",
+          "source": "https://pypi.org/project/faster-whisper/1.2.1/"
+        }
+      ],
+      "voxcpm2": [
+        {
+          "name": "voxcpm",
+          "version": "2.0.3",
+          "sha256": "24da58a30d094a9e9a7ead450ae9cffda0d31eaeba620b61ad99179dd87e486b",
+          "license": "Apache-2.0",
+          "source": "https://pypi.org/project/voxcpm/2.0.3/"
+        }
+      ]
+    },
+    "estimates": {
+      "about": "Rough sizes per group, measured on Windows with Python 3.12 (torch counts toward base). VoxCPM2's are an estimate: it was not installed on the test PC.",
+      "base": {
+        "download_bytes": 200000000,
+        "disk_bytes": 900000000
+      },
+      "omnivoice": {
+        "download_bytes": 170000000,
+        "disk_bytes": 700000000
+      },
+      "whisper": {
+        "download_bytes": 60000000,
+        "disk_bytes": 150000000
+      },
+      "voxcpm2": {
+        "download_bytes": 500000000,
+        "disk_bytes": 1500000000,
+        "estimate_only": true
+      }
+    }
+  },
+  "models": {
+    "omnivoice": {
+      "title": "OmniVoice",
+      "kind": "tts",
+      "repo": "k2-fsa/OmniVoice",
+      "revision": "c5fdb5ccb189668d56333f77ba2629f4cd7535f4",
+      "source": "https://huggingface.co/k2-fsa/OmniVoice",
+      "python_group": "omnivoice",
+      "license": "CC-BY-NC-4.0",
+      "license_note": "Weights are non-commercial (CC-BY-NC). The bundled audio tokenizer is under the Boson Higgs Audio 2 Community License. The OmniVoice code is Apache-2.0.",
+      "commercial_use": false,
+      "attribution": "Voice generated with OmniVoice by k2-fsa (https://github.com/k2-fsa/OmniVoice). Model weights licensed CC-BY-NC-4.0 (non-commercial). Built with Higgs Materials licensed from Boson AI USA, Inc., Copyright Boson AI USA, Inc., All Rights Reserved and Meta Llama 3 licensed under the Meta Llama 3 Community License, Copyright Meta Platforms, Inc., All Rights Reserved.",
+      "languages": "600+ languages (best: English, Chinese)",
+      "design": "attribute tags only: gender, age, pitch, whisper, accent",
+      "sample_rate": 24000,
+      "files": [
+        {
+          "path": "config.json",
+          "size": 2238,
+          "sha256": "5e359117e13b420c5e0c925d4aba650d624767131f1d1746928f8b850d5dc372"
+        },
+        {
+          "path": "model.safetensors",
+          "size": 2450344112,
+          "sha256": "730839316de585f4c8298ec0e1712efc10fb19c6fa4e36eb741cb8d51ebcf6aa"
+        },
+        {
+          "path": "tokenizer.json",
+          "size": 11423986,
+          "sha256": "408f669b7e2b045fdf54201d815bd364e6667dbd845115da81239c40bc6dcfd1"
+        },
+        {
+          "path": "tokenizer_config.json",
+          "size": 533,
+          "sha256": "49f78845596a82bf15c83673794bdf9f76f812b11f60ab6a2239d9be65b00676"
+        },
+        {
+          "path": "chat_template.jinja",
+          "size": 4168,
+          "sha256": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8"
+        },
+        {
+          "path": "README.md",
+          "size": 9424,
+          "sha256": "b5d645a1874baa96a460a0e3a7d5a262811d682d04ce235878a16d5fed287fd3"
+        },
+        {
+          "path": "audio_tokenizer/config.json",
+          "size": 2531,
+          "sha256": "eefb20806f7104e77c9a5277c9df0f9bb8826b08eb1d4e8ab2b9829b6ef9fac1"
+        },
+        {
+          "path": "audio_tokenizer/model.safetensors",
+          "size": 805665628,
+          "sha256": "fe7c5e8785e0a05833e1bfc3e002ec7f55af21e306b2e7154a448c1f54ccfb0d"
+        },
+        {
+          "path": "audio_tokenizer/preprocessor_config.json",
+          "size": 206,
+          "sha256": "ae61eea88558608ee2fa86d2aec9fce8d99a5ff75d09cb7651ccce21ae1d9084"
+        },
+        {
+          "path": "audio_tokenizer/LICENSE",
+          "size": 9171,
+          "sha256": "ac933dc084d119bd20401956b90d11ae87c248b2da62622cd580d82cdf2fa049"
+        },
+        {
+          "path": "audio_tokenizer/README.md",
+          "size": 5174,
+          "sha256": "0336368f8274a5ed09f54cee8d56a851ecee96026d9f391a6735762c16608a60"
+        }
+      ]
+    },
+    "whisper": {
+      "title": "faster-whisper large-v3-turbo (int8 on the CPU)",
+      "kind": "asr",
+      "repo": "mobiuslabsgmbh/faster-whisper-large-v3-turbo",
+      "repo_note": "faster-whisper's own name for \"large-v3-turbo\"; the repo now redirects to dropbox-dash/faster-whisper-large-v3-turbo.",
+      "revision": "0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf",
+      "source": "https://huggingface.co/mobiuslabsgmbh/faster-whisper-large-v3-turbo",
+      "python_group": "whisper",
+      "license": "MIT",
+      "commercial_use": true,
+      "attribution": "Transcribed with Whisper large-v3-turbo (OpenAI, MIT) through faster-whisper (SYSTRAN, MIT).",
+      "languages": "99 languages",
+      "compute_type": "int8",
+      "files": [
+        {
+          "path": "config.json",
+          "size": 2263,
+          "sha256": "b0253ea6c0d3bea6b1e19e91a02acfd3b53f4467362efcb5a3e6b16c9b3a9b7e"
+        },
+        {
+          "path": "model.bin",
+          "size": 1617884929,
+          "sha256": "e76620f83d5f5b69efd3d87e3dc180c1bd21df9fbebacfd4335e5e1efcc018da"
+        },
+        {
+          "path": "preprocessor_config.json",
+          "size": 340,
+          "sha256": "7ccc62c6f2765af1f3b46c00c9b5894426835a05021c8b9c01eecb6dfb542711"
+        },
+        {
+          "path": "tokenizer.json",
+          "size": 2710337,
+          "sha256": "297b13372ac43916285644fb9687add3cc62ee2a1adb60da3dc25cc94c1871fd"
+        },
+        {
+          "path": "vocabulary.json",
+          "size": 1068114,
+          "sha256": "c69260f2ab26d659b7c398f9a2b2b48ed0df16c3b47d7326782fd9cba71690c1"
+        },
+        {
+          "path": "README.md",
+          "size": 1445,
+          "sha256": "b3068692728faed23580cce5cd569fc47ff76c690c032b2641ffd5554ea64d8f"
+        }
+      ]
+    },
+    "voxcpm2": {
+      "title": "VoxCPM2",
+      "kind": "tts",
+      "repo": "openbmb/VoxCPM2",
+      "revision": "32279effe8c19989596f05d353d1447f51d9e915",
+      "source": "https://huggingface.co/openbmb/VoxCPM2",
+      "python_group": "voxcpm2",
+      "license": "Apache-2.0",
+      "commercial_use": true,
+      "attribution": "Voice generated with VoxCPM2 by OpenBMB (https://github.com/OpenBMB/VoxCPM), Apache-2.0.",
+      "languages": "30 languages, including English and Norwegian",
+      "design": "free-text description in brackets, e.g. (young woman, warm)",
+      "on_demand": true,
+      "files": [
+        {
+          "path": "config.json",
+          "size": 4336,
+          "sha256": "405f0dcd92f7feba6011ed4eac5c8d4f74cba9712f07fd5cfa3063bbdd95402c"
+        },
+        {
+          "path": "model.safetensors",
+          "size": 4580080592,
+          "sha256": "f7f964cfa9da23653baec6e6f7750719977ad944ed9f95fe52fe3a620506891d"
+        },
+        {
+          "path": "audiovae.pth",
+          "size": 376951122,
+          "sha256": "94b5d51e107e0507d4acc976cfdadb64edd6fd06d1f751dadbf2fd1594274bf1"
+        },
+        {
+          "path": "tokenizer.json",
+          "size": 3676772,
+          "sha256": "f8984687e4a92a3503d521396d454b7d68e9fdaab2a0288eb3536c7c1aa4bc20"
+        },
+        {
+          "path": "tokenizer_config.json",
+          "size": 5059,
+          "sha256": "e78a3ebb48a0b9437efd1823b6b726c823da89e49dd8bcc90c02419d9baa772b"
+        },
+        {
+          "path": "special_tokens_map.json",
+          "size": 1632,
+          "sha256": "068594063e37662c02b21acf42ebb334ef6a74fb810e68a2368f88f08351de76"
+        },
+        {
+          "path": "tokenization_voxcpm2.py",
+          "size": 2895,
+          "sha256": "84489ea32b6ee0cae22ed5480cacb6df85c46624c3119be9a2021c3649a12729"
+        },
+        {
+          "path": "README.md",
+          "size": 7939,
+          "sha256": "c18d2ffbfb2f0aec770481c967842aee6c200cde65f6b033efd892a849986fda"
+        }
+      ]
+    }
+  },
+  "presets": {
+    "kokoro": {
+      "title": "Kokoro-82M (through Cutscene's built-in tts)",
+      "license": "Apache-2.0",
+      "commercial_use": true,
+      "attribution": "Voice generated with Kokoro-82M by hexgrad (https://github.com/hexgrad/kokoro), Apache-2.0.",
+      "languages": "English (American and British) plus a few preset voices in es, fr, it, ja, zh, hi, pt",
+      "voices": [
+        "af_heart",
+        "af_nova",
+        "af_sky",
+        "am_adam",
+        "am_michael",
+        "bf_emma",
+        "bf_isabella",
+        "bm_george",
+        "ef_dora",
+        "ff_siwis",
+        "jf_alpha",
+        "zf_xiaobei"
+      ]
+    },
+    "voicestudio": {
+      "title": "VoiceStudio (local app, optional)",
+      "license": "depends on the engine VoiceStudio runs (OmniVoice weights are CC-BY-NC-4.0; VoxCPM2 is Apache-2.0)",
+      "commercial_use": null,
+      "attribution": "Voice generated through the user's local VoiceStudio app (https://github.com/debpalash/VoiceStudio).",
+      "url": "http://127.0.0.1:3900"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+# Work files the tools rebuild; the example keeps only its sources and finished assets.
+.hyperframes/
+*/.cutscene/3d/*/frames/
+*/.cutscene/3d/*/stills/
+*/.cutscene/stills/
+*/.cutscene/voice/takes/
+.thumbnails/
+*/.thumbnails/
+*/.transcode-cache/
+*/.cutscene/3d/*/resolved.json
