@@ -62,6 +62,13 @@ describe("mix", () => {
     expect(g).toContain("[1:a]aresample=48000,aformat=channel_layouts=stereo,atrim=0:0.5,afade=t=out:st=0.46:d=0.04,volume=0.5,adelay=464|464[e0]");
     expect(g).toContain("[b][e0][e1]amix=inputs=3:normalize=0:duration=first,apad=whole_dur=6,atrim=0:6[m]");
   });
+  it("only lets numbers into the mix graph", () => {
+    const sneaky = "1[x];movie=secret.wav" as unknown as number;
+    const g = mixGraph({ bedGain: sneaky, events: [{ t: 1, gain: sneaky, max: sneaky }], length: 6 });
+    expect(g).not.toContain("movie");
+    expect(g).toContain("volume=0.9[b]");
+    expect(g).toContain("stereo,volume=0.5,adelay=1000|1000[e0]");
+  });
   it("reads FFmpeg's loudnorm summary", () => {
     const j = parseLoudnormJson('[Parsed_loudnorm_0] \n{\n "input_i" : "-17.93",\n "input_tp" : "-4.2",\n "input_lra" : "3.1",\n "input_thresh" : "-28.1",\n "target_offset" : "0.1"\n}');
     expect(j.input_i).toBe("-17.93");

@@ -194,15 +194,19 @@ export function cutSheet(o) {
  * @returns graph ending in [m]; inputs: 0 = bed, 1..n = events in order
  */
 export function mixGraph(o) {
-    const parts = [`[0:a]aresample=48000,aformat=channel_layouts=stereo,volume=${o.bedGain ?? 0.9}[b]`];
+    // Values come from JSON files, so only finite numbers reach the filter graph; anything else gets the default.
+    const num = (v, fallback) => (Number.isFinite(Number(v ?? fallback)) ? Number(v ?? fallback) : fallback);
+    const length = num(o.length, 0);
+    const parts = [`[0:a]aresample=48000,aformat=channel_layouts=stereo,volume=${num(o.bedGain, 0.9)}[b]`];
     const labels = ["[b]"];
     o.events.forEach((e, i) => {
-        const trim = e.max ? `atrim=0:${e.max},afade=t=out:st=${Math.max(0, e.max - 0.04)}:d=0.04,` : "";
-        const msT = Math.max(0, Math.round(e.t * 1000));
-        parts.push(`[${i + 1}:a]aresample=48000,aformat=channel_layouts=stereo,${trim}volume=${e.gain ?? 0.5},adelay=${msT}|${msT}[e${i}]`);
+        const max = num(e.max, 0);
+        const trim = max ? `atrim=0:${max},afade=t=out:st=${Math.max(0, max - 0.04)}:d=0.04,` : "";
+        const msT = Math.max(0, Math.round(num(e.t, 0) * 1000));
+        parts.push(`[${i + 1}:a]aresample=48000,aformat=channel_layouts=stereo,${trim}volume=${num(e.gain, 0.5)},adelay=${msT}|${msT}[e${i}]`);
         labels.push(`[e${i}]`);
     });
-    parts.push(`${labels.join("")}amix=inputs=${labels.length}:normalize=0:duration=first,apad=whole_dur=${o.length},atrim=0:${o.length}[m]`);
+    parts.push(`${labels.join("")}amix=inputs=${labels.length}:normalize=0:duration=first,apad=whole_dur=${length},atrim=0:${length}[m]`);
     return parts.join(";");
 }
 /** The loudnorm summary JSON at the end of FFmpeg's stderr. */

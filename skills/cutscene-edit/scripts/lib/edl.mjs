@@ -235,6 +235,10 @@ export function asEdl(obj, path = "the edit list") {
     if (!obj || !Array.isArray(obj.keep_ranges) || !Number.isFinite(Number(obj.source_duration))) {
         throw new EditError("BAD_EDL", `${path} is not an edit list (it needs keep_ranges and source_duration).`, "Use an *.edl.json written by a Cutscene edit tool.");
     }
+    // The tool name becomes part of output file names, so it must not carry a path.
+    if (obj.tool !== undefined && !(typeof obj.tool === "string" && /^[\w-]{1,40}$/.test(obj.tool))) {
+        throw new EditError("BAD_EDL", `${path} names its tool as ${JSON.stringify(obj.tool)}, which isn't a plain tool name.`, "Use an *.edl.json written by a Cutscene edit tool.");
+    }
     if (obj.keep_ranges.length && obj.keep_ranges[0].out_start === undefined) {
         // A kit EDL: add the output positions.
         let out = 0;

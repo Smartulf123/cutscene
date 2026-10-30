@@ -125,4 +125,10 @@ describe("asEdl", () => {
   it("rejects something that is not an EDL", () => {
     expect(() => asEdl({ words: [] })).toThrow(/not an edit list/);
   });
+  it("rejects a tool name that could point outside the folder", () => {
+    const edl = { source_duration: 5, keep_ranges: [{ start: 0, end: 5 }] };
+    expect(asEdl({ ...edl, tool: "cut-silences" }).tool).toBe("cut-silences");
+    expect(() => asEdl({ ...edl, tool: "../../evil" })).toThrow(/plain tool name/);
+    expect(() => asEdl({ ...edl, tool: 7 })).toThrow(/plain tool name/);
+  });
 });
