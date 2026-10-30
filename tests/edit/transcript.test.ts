@@ -99,14 +99,14 @@ describe("planSilenceCuts (kit rules)", () => {
     expect(cuts[0]).toMatchObject({ start: 0, kind: "head" });
     expect(cuts[0].end).toBeCloseTo(0.78);
     expect(cuts.at(-1)).toMatchObject({ end: 8, kind: "tail" });
-    expect(cuts.at(-1).start).toBeCloseTo(6.74);
+    expect(cuts.at(-1)!.start).toBeCloseTo(6.74);
   });
   it("keeps a breath scaled by context, biased toward the phrase before", () => {
-    const sentence = cuts.find((c) => c.kind === "pause" && c.pause === 1);
+    const sentence = cuts.find((c) => c.kind === "pause" && c.pause === 1)!;
     expect(sentence.kept).toBe(0.2);
     expect(sentence.start).toBeCloseTo(2 + 0.2 * 0.55);
     expect(sentence.end).toBeCloseTo(3 - 0.2 * 0.45);
-    const long = cuts.find((c) => c.kind === "pause" && c.pause > 2);
+    const long = cuts.find((c) => c.kind === "pause" && c.pause! > 2)!;
     expect(long.kept).toBe(0.24);
   });
   it("leaves pauses under the gap alone", () => {

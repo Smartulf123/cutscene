@@ -2,6 +2,9 @@ import { readFileSync } from "node:fs";
 import { gunzipSync, gzipSync } from "node:zlib";
 import { describe, expect, it } from "vitest";
 import { parseArgs } from "../../skills/cutscene-edit/scripts/lib/cli.mjs";
+import type { EditError, OptSpec } from "../../skills/cutscene-edit/scripts/lib/cli.mjs";
+import type { Pin } from "../../skills/cutscene-edit/scripts/lib/install.mjs";
+import type { LoadedTranscript } from "../../skills/cutscene-edit/scripts/lib/workflow.mjs";
 import { parseEbur128, parseSilences, quietestTenth } from "../../skills/cutscene-edit/scripts/lib/media.mjs";
 import { isNetworkPath, stemOf } from "../../skills/cutscene-edit/scripts/lib/paths.mjs";
 import { pinFor, platformKey, sizeText, untar } from "../../skills/cutscene-edit/scripts/lib/install.mjs";
@@ -11,7 +14,7 @@ import { compareWords } from "../../skills/cutscene-edit/scripts/commands/review
 import { silenceThreshold } from "../../skills/cutscene-edit/scripts/commands/cut.mjs";
 
 describe("arguments", () => {
-  const spec = { gap: { type: "number" }, apply: { type: "boolean" }, out: { type: "string", alias: "o" }, refine: { type: "boolean", default: true } };
+  const spec = { gap: { type: "number" }, apply: { type: "boolean" }, out: { type: "string", alias: "o" }, refine: { type: "boolean", default: true } } satisfies Record<string, OptSpec>;
   it("parses flags, values, aliases, negation and positionals", () => {
     const r = parseArgs(["t.json", "--gap", "0.4", "--apply", "-o", "x.mp4", "--no-refine", "--json"], spec);
     expect(r.positional).toEqual(["t.json"]);
@@ -23,8 +26,8 @@ describe("arguments", () => {
     try {
       parseArgs(["--gap", "soon"], spec);
     } catch (e) {
-      expect(e.exitCode).toBe(2);
-      expect(e.code).toBe("WRONG_USAGE");
+      expect((e as EditError).exitCode).toBe(2);
+      expect((e as EditError).code).toBe("WRONG_USAGE");
     }
   });
 });
@@ -62,8 +65,8 @@ describe("paths", () => {
   });
   it("refuses a network source path recorded inside a transcript or edit list", async () => {
     const { sourceMedia } = await import("../../skills/cutscene-edit/scripts/lib/workflow.mjs");
-    expect(() => sourceMedia({ transcript: { source: "\\\\server\\share\\take.mp4" }, parent: null })).toThrow(/network paths/);
-    expect(() => sourceMedia({ transcript: {}, parent: { source: "//server/share/take.mp4" } })).toThrow(/network paths/);
+    expect(() => sourceMedia({ transcript: { source: "\\\\server\\share\\take.mp4" }, parent: null } as unknown as LoadedTranscript, undefined)).toThrow(/network paths/);
+    expect(() => sourceMedia({ transcript: {}, parent: { source: "//server/share/take.mp4" } } as unknown as LoadedTranscript, undefined)).toThrow(/network paths/);
   });
   it("strips Cutscene's own suffixes from names", () => {
     expect(stemOf("C:/x/raw take.mp4")).toBe("raw take");
@@ -74,7 +77,7 @@ describe("paths", () => {
 });
 
 describe("downloads", () => {
-  const manifest = JSON.parse(readFileSync(new URL("../../skills/cutscene-edit/assets/manifest.json", import.meta.url), "utf8"));
+  const manifest = JSON.parse(readFileSync(new URL("../../skills/cutscene-edit/assets/manifest.json", import.meta.url), "utf8")) as { pins: Pin[] };
   it("pins every download exactly, with a SHA-256, size, licence and source (contracts §9)", () => {
     for (const p of manifest.pins) {
       expect(p.version).toMatch(/^[\w.+-]+$/);
@@ -87,7 +90,7 @@ describe("downloads", () => {
   });
   it("only pins versions at least 14 days old", () => {
     const today = new Date("2026-10-29T00:00:00Z").getTime();
-    for (const p of manifest.pins) expect((today - new Date(p.published).getTime()) / 86_400_000).toBeGreaterThanOrEqual(14);
+    for (const p of manifest.pins) expect((today - new Date(p.published!).getTime()) / 86_400_000).toBeGreaterThanOrEqual(14);
   });
   it("has auto-editor for every common platform", () => {
     for (const k of ["win32-x64", "win32-arm64", "darwin-arm64", "darwin-x64", "linux-x64", "linux-arm64"]) expect(pinFor("auto-editor", k)?.version).toBe("31.7.2");
@@ -95,7 +98,7 @@ describe("downloads", () => {
     expect(sizeText(44701696)).toBe("42.6 MB");
   });
   it("unpacks an npm-style tarball", () => {
-    const header = (name, size) => {
+    const header = (name: string, size: number): Buffer => {
       const h = Buffer.alloc(512);
       h.write(name, 0);
       h.write("0000644\0", 100);

@@ -5,10 +5,11 @@ import { findHighlights, sentences } from "../../skills/cutscene-edit/scripts/li
 import { KEYS_PER_PASS, chunkKeys, cropSize, cropXExpr, mainFaceCentres, parseAspect, positionAt, reframeKeys, simplify, visibleWidth } from "../../skills/cutscene-edit/scripts/lib/reframe.mjs";
 import { bestLag, envelope, normalizedOnsets } from "../../skills/cutscene-edit/scripts/lib/sync.mjs";
 import { cleanupFilter, humFilters } from "../../skills/cutscene-edit/scripts/lib/cleanup.mjs";
+import type { FaceFrames, FaceSample, ReframeKey } from "../../skills/cutscene-edit/scripts/lib/reframe.mjs";
 
 /** Sentences spoken back to back, 0.35 s a word, 0.6 s between sentences. */
-function talk(lines) {
-  const out = [];
+function talk(lines: string[]): { text: string; start: number; end: number }[] {
+  const out: { text: string; start: number; end: number }[] = [];
   let t = 0;
   for (const line of lines) {
     for (const w of line.split(" ")) {
@@ -42,9 +43,9 @@ describe("highlights", () => {
 
 const SOURCE = 16 / 9;
 const PORTRAIT = 9 / 16;
-const face = (cx, size = 0.15) => ({ x: cx - size / 2, y: 0.2, w: size, h: size * 1.8, score: 0.95 });
-const track = (centres, fps = 4) => ({ fps, frames: centres.map((c) => (c === null ? [] : [face(c)])) });
-function inCrop(keys, centre, t) {
+const face = (cx: number, size: number = 0.15): FaceSample => ({ x: cx - size / 2, y: 0.2, w: size, h: size * 1.8, score: 0.95 });
+const track = (centres: (number | null)[], fps: number = 4): FaceFrames => ({ fps, frames: centres.map((c) => (c === null ? [] : [face(c)])) });
+function inCrop(keys: ReframeKey[], centre: number, t: number): number {
   const v = visibleWidth(SOURCE, PORTRAIT);
   const left = positionAt(keys, t) * (1 - v);
   return (centre - left) / v;
@@ -86,7 +87,7 @@ describe("auto-reframe", () => {
     expect(e).toBe("lt(max(t\\,0)\\,0.000)*0.00+gte(max(t\\,0)\\,0.000)*lt(max(t\\,0)\\,1.000)*(0.00+(100.00-0.00)*(max(t\\,0)-0.000)/1.000)+gte(max(t\\,0)\\,1.000)*100.00");
     expect(cropXExpr([], 100)).toBe("50.00");
     // Evaluate it the way FFmpeg would: piecewise linear between keyframes.
-    const js = (t) => Function("t", `const max=Math.max, lt=(a,b)=>+(a<b), gte=(a,b)=>+(a>=b); return ${e.replace(/\\,/g, ",")};`)(t);
+    const js = (t: number): number => Function("t", `const max=Math.max, lt=(a,b)=>+(a<b), gte=(a,b)=>+(a>=b); return ${e.replace(/\\,/g, ",")};`)(t);
     expect(js(0.5)).toBeCloseTo(50);
     expect(js(2)).toBeCloseTo(100);
   });
@@ -95,7 +96,7 @@ describe("auto-reframe", () => {
     const w = chunkKeys(keys, 40, 30);
     expect(w.length).toBeGreaterThan(1);
     expect(w[0].from).toBe(0);
-    expect(w.at(-1).to).toBe(40);
+    expect(w.at(-1)!.to).toBe(40);
     for (let i = 1; i < w.length; i++) expect(w[i].from).toBe(w[i - 1].to);
     for (const x of w) {
       expect(x.keys.length).toBeLessThanOrEqual(KEYS_PER_PASS + 2);
@@ -108,7 +109,7 @@ describe("auto-reframe", () => {
 });
 
 /** Speech-like bursts: noise switched on and off at random. */
-function bursts(seconds, rate, seed) {
+function bursts(seconds: number, rate: number, seed: number): Float32Array {
   let x = seed;
   const rnd = () => (x = (x * 1103515245 + 12345) % 2147483648) / 2147483648;
   const out = new Float32Array(seconds * rate);
