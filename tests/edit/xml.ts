@@ -1,16 +1,15 @@
 // A small XML well-formedness check for tests (no dependencies): every tag closes in order,
 // attributes are quoted, and ampersands are entities.
 
-/** @returns {{ok: boolean, error?: string, root?: string, tags: Record<string, number>}} */
-export function checkXml(text) {
-  const tags = {};
+export function checkXml(text: string): { ok: boolean; error?: string; root?: string | null; tags: Record<string, number> } {
+  const tags: Record<string, number> = {};
   let s = String(text).replace(/^﻿/, "");
   s = s.replace(/<\?xml[^?]*\?>/, "").replace(/<!DOCTYPE[^>]*>/i, "").replace(/<!--[\s\S]*?-->/g, "").replace(/<!\[CDATA\[[\s\S]*?\]\]>/g, "");
-  const stack = [];
-  let root = null;
+  const stack: string[] = [];
+  let root: string | null = null;
   const re = /<(\/?)([A-Za-z_][\w:.-]*)((?:\s+[\w:.-]+\s*=\s*(?:"[^"]*"|'[^']*'))*)\s*(\/?)>/g;
   let last = 0;
-  let m;
+  let m: RegExpExecArray | null;
   while ((m = re.exec(s))) {
     const between = s.slice(last, m.index);
     if (between.includes("<")) return { ok: false, error: `stray "<" near: ${between.slice(between.indexOf("<"), between.indexOf("<") + 40)}`, tags };

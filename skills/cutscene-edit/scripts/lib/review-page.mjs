@@ -1,78 +1,65 @@
-// The cut review page: one self-contained HTML file that shows kept and cut regions on a
-// waveform timeline, the transcript with cut words struck through, and lets you hear every cut
-// and every join. Idea from Herk Edit Kit scripts/build-edl-review.mjs (MIT + Herk Edit Kit Use
-// Permission, Copyright (c) 2026 Nate Herk and kit contributors); this page, its design and its
-// player logic are Cutscene's own (Apache-2.0).
-
+// Built from src/skills/cutscene-edit/scripts/lib/review-page.mts by `npm run build`. Edit that file, not this one.
 /**
  * Peaks for the waveform: `bins` values in 0..1 from mono samples.
- * @param {Float32Array} samples
- * @param {number} bins
  */
 export function peaks(samples, bins = 1600) {
-  const out = new Array(bins).fill(0);
-  if (!samples.length) return out;
-  const per = samples.length / bins;
-  for (let b = 0; b < bins; b++) {
-    let m = 0;
-    const s = Math.floor(b * per);
-    const e = Math.min(samples.length, Math.floor((b + 1) * per));
-    for (let i = s; i < e; i++) {
-      const v = Math.abs(samples[i]);
-      if (v > m) m = v;
+    const out = new Array(bins).fill(0);
+    if (!samples.length)
+        return out;
+    const per = samples.length / bins;
+    for (let b = 0; b < bins; b++) {
+        let m = 0;
+        const s = Math.floor(b * per);
+        const e = Math.min(samples.length, Math.floor((b + 1) * per));
+        for (let i = s; i < e; i++) {
+            const v = Math.abs(samples[i]);
+            if (v > m)
+                m = v;
+        }
+        out[b] = m;
     }
-    out[b] = m;
-  }
-  const max = Math.max(1e-6, ...out);
-  return out.map((v) => Math.round(Math.pow(v / max, 0.7) * 1000) / 1000);
+    const max = Math.max(1e-6, ...out);
+    return out.map((v) => Math.round(Math.pow(v / max, 0.7) * 1000) / 1000);
 }
-
 /**
  * Where each cut lands in the edited video (the join), from the EDL.
- * @param {import("./edl.mjs").Edl} edl
  */
 export function joinsFor(edl) {
-  return edl.delete_ranges.map((d) => {
-    const next = edl.keep_ranges.find((k) => k.start >= d.end - 1e-6);
-    return { ...d, out: next ? next.out_start : edl.edited_duration };
-  });
+    return edl.delete_ranges.map((d) => {
+        const next = edl.keep_ranges.find((k) => k.start >= d.end - 1e-6);
+        return { ...d, out: next ? next.out_start : edl.edited_duration };
+    });
 }
-
 /** Mark words whose middle falls inside a cut. */
 export function markCutWords(words, edl) {
-  return words.map((w) => {
-    const mid = (w.start + w.end) / 2;
-    const cut = edl.delete_ranges.some((d) => mid >= d.start && mid < d.end);
-    return { t: w.text, s: Math.round(w.start * 1000) / 1000, e: Math.round(w.end * 1000) / 1000, c: cut ? 1 : 0 };
-  });
+    return words.map((w) => {
+        const mid = (w.start + w.end) / 2;
+        const cut = edl.delete_ranges.some((d) => mid >= d.start && mid < d.end);
+        return { t: w.text, s: Math.round(w.start * 1000) / 1000, e: Math.round(w.end * 1000) / 1000, c: cut ? 1 : 0 };
+    });
 }
-
-const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
-
-/**
- * @param {{title: string, edl: import("./edl.mjs").Edl, edlName: string, originalSrc: string|null, editedSrc: string|null, words: {t: string, s: number, e: number, c: number}[], peaks: number[], candidates?: any[]}} d
- */
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 export function buildReviewHtml(d) {
-  const joins = joinsFor(d.edl);
-  const data = {
-    duration: d.edl.source_duration,
-    edited: d.edl.edited_duration,
-    fps: d.edl.fps,
-    deletes: joins.map((j) => ({ s: j.start, e: j.end, out: j.out, r: (j.reasons ?? []).join("; ") })),
-    keeps: d.edl.keep_ranges.map((k) => ({ s: k.start, e: k.end })),
-    words: d.words,
-    peaks: d.peaks,
-    candidates: (d.candidates ?? []).map((c) => ({ id: c.id, type: c.type, rec: c.recommend, conf: c.confidence, s: (c.source_cut ?? c.cut).start, e: (c.source_cut ?? c.cut).end, removes: c.removes, keeps: c.keeps, note: c.note })),
-    hasEdited: !!d.editedSrc,
-  };
-  const json = JSON.stringify(data).replace(/</g, "\\u003c");
-  const pct = d.edl.source_duration ? ((d.edl.removed / d.edl.source_duration) * 100).toFixed(1) : "0";
-  const fmt = (s) => {
-    const m = Math.floor(s / 60);
-    return `${m}:${(s - m * 60).toFixed(1).padStart(4, "0")}`;
-  };
-  const toolName = { "cut-silences": "Silences", "apply-cuts": "Mistakes", "rough-cut": "Rough cut" }[d.edl.tool] ?? d.edl.tool;
-  return `<!doctype html>
+    const joins = joinsFor(d.edl);
+    const data = {
+        duration: d.edl.source_duration,
+        edited: d.edl.edited_duration,
+        fps: d.edl.fps,
+        deletes: joins.map((j) => ({ s: j.start, e: j.end, out: j.out, r: (j.reasons ?? []).join("; ") })),
+        keeps: d.edl.keep_ranges.map((k) => ({ s: k.start, e: k.end })),
+        words: d.words,
+        peaks: d.peaks,
+        candidates: (d.candidates ?? []).map((c) => ({ id: c.id, type: c.type, rec: c.recommend, conf: c.confidence, s: (c.source_cut ?? c.cut).start, e: (c.source_cut ?? c.cut).end, removes: c.removes, keeps: c.keeps, note: c.note })),
+        hasEdited: !!d.editedSrc,
+    };
+    const json = JSON.stringify(data).replace(/</g, "\\u003c");
+    const pct = d.edl.source_duration ? ((d.edl.removed / d.edl.source_duration) * 100).toFixed(1) : "0";
+    const fmt = (s) => {
+        const m = Math.floor(s / 60);
+        return `${m}:${(s - m * 60).toFixed(1).padStart(4, "0")}`;
+    };
+    const toolName = { "cut-silences": "Silences", "apply-cuts": "Mistakes", "rough-cut": "Rough cut" }[d.edl.tool] ?? d.edl.tool;
+    return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Cut review · ${esc(d.title)}</title>
 <style>

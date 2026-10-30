@@ -2,7 +2,7 @@
 import { describe, expect, it } from "vitest";
 import { buildEdl } from "../../skills/cutscene-edit/scripts/lib/edl.mjs";
 import { captionGroups, fileUrl, fromAutoEditorV1, placedClips, rational, toAutoEditorV1, toFcpxml, toOtio, toSrt, toXmeml } from "../../skills/cutscene-edit/scripts/lib/interchange.mjs";
-import { checkXml } from "./xml.mjs";
+import { checkXml } from "./xml.ts";
 
 const edl = buildEdl({ deletes: [{ start: 2.51, end: 10 }, { start: 15, end: 20 }], duration: 20, fps: 30, tool: "apply-cuts", source: "C:\\Users\\me\\My Videos\\take.mp4" });
 const media = { path: "C:\\Users\\me\\My Videos\\take & <1>.mp4", name: "take & <1>", width: 1920, height: 1080, hasVideo: true, hasAudio: true, channels: 2, sampleRate: 48000 };
@@ -53,7 +53,7 @@ describe("editor export", () => {
     expect(c.tags.clipitem).toBe(4);
   });
   it("writes OpenTimelineIO with a video and an audio track", () => {
-    const o = JSON.parse(toOtio(edl, media));
+    const o = JSON.parse(toOtio(edl, media)) as { OTIO_SCHEMA: string; tracks: { children: { kind: string; children: { source_range: { start_time: { value: number } } }[] }[] } };
     expect(o.OTIO_SCHEMA).toBe("Timeline.1");
     expect(o.tracks.children.map((t) => t.kind)).toEqual(["Video", "Audio"]);
     expect(o.tracks.children[0].children[1].source_range.start_time.value).toBe(300);

@@ -2,10 +2,11 @@
 // cutscene-edit finder (adds restart, repeat and filler detection).
 import { describe, expect, it } from "vitest";
 import { approvedRanges, findCutCandidates, token } from "../../skills/cutscene-edit/scripts/lib/mistakes.mjs";
+import type { Candidate, MWord } from "../../skills/cutscene-edit/scripts/lib/mistakes.mjs";
 
 /** Words from text, 0.3 s each, with `gap` seconds of silence at each "|". */
-function speak(text, gap = 1.2) {
-  const out = [];
+function speak(text: string, gap: number = 1.2): MWord[] {
+  const out: MWord[] = [];
   let t = 0;
   for (const part of text.split("|")) {
     for (const w of part.trim().split(/\s+/)) {
@@ -16,7 +17,7 @@ function speak(text, gap = 1.2) {
   }
   return out;
 }
-const find = (text, gap, o) => findCutCandidates(speak(text, gap), o).candidates;
+const find = (text: string, gap?: number, o?: { fillers?: boolean }): Candidate[] => findCutCandidates(speak(text, gap), o).candidates;
 
 describe("spoken mistakes", () => {
   it("finds a stutter and removes the first word", () => {
@@ -39,7 +40,7 @@ describe("spoken mistakes", () => {
     const words = speak("Well I told someone in the past being the first or anything like that is a huge being the first or anything like that is a huge responsibility and an honor.", 0);
     const second = words.findIndex((w, i) => i > 10 && w.text === "being");
     words[second].pauseBefore = 1.5;
-    const r = findCutCandidates(words).candidates.find((m) => m.type !== "stutter");
+    const r = findCutCandidates(words).candidates.find((m) => m.type !== "stutter")!;
     expect(r.type).toBe("restart");
     expect(r.removes).toBe("being the first or anything like that is a huge");
     expect(r.keeps).toMatch(/^being the first .* honor\.$/);
@@ -61,14 +62,14 @@ describe("spoken mistakes", () => {
   });
 
   it("finds a false start and keeps the clean take", () => {
-    const fs = find("Today I want to show | Today I want to show you how editing with AI works.").find((x) => x.type === "restart" || x.type === "false_start");
+    const fs = find("Today I want to show | Today I want to show you how editing with AI works.").find((x) => x.type === "restart" || x.type === "false_start")!;
     expect(fs.words).toEqual([0, 1, 2, 3, 4]);
     expect(fs.keeps).toBe("Today I want to show you how editing with AI works.");
   });
 
   it("finds a retake said again later", () => {
     const m = find("The editor cuts every silence in the recording automatically for you. | Wait, let me say that again. | The editor cuts every silence in your recording automatically.");
-    const r = m.find((x) => x.type === "retake" || x.type === "false_start");
+    const r = m.find((x) => x.type === "retake" || x.type === "false_start")!;
     expect(r.removes).toMatch(/^The editor cuts every silence in the recording automatically for you\. Wait, let me say that again\.$/);
     expect(r.recommend).toBe("cut");
   });
@@ -113,7 +114,7 @@ describe("spoken mistakes", () => {
 });
 
 describe("approvedRanges", () => {
-  const candidates = [{ id: "c001", type: "stutter", removes: "the", cut: { start: 1, end: 1.3 } }];
+  const candidates = [{ id: "c001", type: "stutter", removes: "the", cut: { start: 1, end: 1.3 } }] as Candidate[];
   it("accepts approved ids", () => {
     expect(approvedRanges({ approve: ["c001"] }, candidates)).toEqual([{ start: 1, end: 1.3, reason: "stutter: the" }]);
   });

@@ -25,7 +25,7 @@ describe("beat sync", () => {
     expect(s.get("b3")).toBe(0.5); // "b1 + 0.5" = from b1's start
   });
   it("flags late, early, missing and good anchors", () => {
-    const files = { "c/b1.html": '<div data-anchor="today we">', "c/b2.html": '<div data-anchor="build">' };
+    const files: Record<string, string> = { "c/b1.html": '<div data-anchor="today we">', "c/b2.html": '<div data-anchor="build">' };
     const rows = checkBeatSync(parseIndex(html), words, (src) => files[src] ?? null);
     expect(rows.map((r) => r.status)).toEqual(["OK", "LATE", "EARLY"]);
     expect(rows[1].detail).toMatch(/data-start="0\.10"/);
@@ -109,7 +109,7 @@ describe("validate-plan", () => {
 });
 
 describe("validate-footage", () => {
-  const h = (c) => c.repeat(64);
+  const h = (c: string): string => c.repeat(64);
   it("passes unique scenes", () => {
     expect(validateFootage([{ scene: "s1", sourceSceneId: "a", sha256: h("a"), sourceStart: 0, sourceEnd: 1 }, { scene: "s2", sourceSceneId: "b", sha256: h("a"), sourceStart: 1, sourceEnd: 2 }]).ok).toBe(true);
   });
