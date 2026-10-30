@@ -3,7 +3,9 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "."
+    "outDir": ".",
+    "declaration": true,
+    "rootDirs": ["src/overlays", "src/skills"]
   },
   "include": ["src/**/*.mts", "src/**/*.cts"],
   "exclude": []

@@ -1,15 +1,13 @@
+// Built from src/skills/cutscene/scripts/lib/paths.mts by `npm run build`. Edit that file, not this one.
 // Where Cutscene keeps things: the Cutscene home (~/.cutscene), the skills folder and the
 // scripts inside it. Node built-ins only.
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-
 /** Cutscene's own version. Kept in step with the plugin manifests (a test checks this). */
 export const CUTSCENE_VERSION = "0.1.0";
-
 const here = dirname(fileURLToPath(import.meta.url));
-
 /** skills/cutscene/scripts */
 export const SCRIPTS_DIR = resolve(here, "..");
 /** skills/cutscene */
@@ -20,84 +18,74 @@ export const SKILLS_ROOT = resolve(here, "..", "..", "..");
 export const CLI_PATH = join(SCRIPTS_DIR, "cli.mjs");
 /** The engine pin file. */
 export const ENGINE_JSON = join(SKILL_DIR, "engine.json");
-
 /**
  * The Cutscene home folder: `CUTSCENE_HOME` when set, otherwise `~/.cutscene`.
- * @param {NodeJS.ProcessEnv} [env]
  */
 export function cutsceneHome(env = process.env) {
-  const override = env.CUTSCENE_HOME && env.CUTSCENE_HOME.trim();
-  if (override) return resolve(override);
-  return join(homedir(), ".cutscene");
+    const override = env.CUTSCENE_HOME && env.CUTSCENE_HOME.trim();
+    if (override)
+        return resolve(override);
+    return join(homedir(), ".cutscene");
 }
-
 /** Every well-known folder or file inside the Cutscene home. */
 export function homePaths(home = cutsceneHome()) {
-  return {
-    home,
-    config: join(home, "config.json"),
-    engine: join(home, "engine"),
-    media: join(home, "media"),
-    voice: join(home, "voice"),
-    assets: join(home, "assets"),
-    logs: join(home, "logs"),
-  };
+    return {
+        home,
+        config: join(home, "config.json"),
+        engine: join(home, "engine"),
+        media: join(home, "media"),
+        voice: join(home, "voice"),
+        assets: join(home, "assets"),
+        logs: join(home, "logs"),
+    };
 }
-
 /** Folder the pinned engine is installed into: `<home>/engine/<pin>`. */
 export function engineDir(pin, home = cutsceneHome()) {
-  return join(home, "engine", pin);
+    return join(home, "engine", pin);
 }
-
 /** The parts `cutscene <part>` dispatches to. */
 export const PARTS = ["voice", "3d", "edit"];
-
 /**
  * Entry script of a part: `skills/cutscene-<part>/scripts/<part>.mjs`, next to this skill.
- * @param {string} part
- * @param {string} [skillsRoot]
  */
 export function partScript(part, skillsRoot = SKILLS_ROOT) {
-  return join(skillsRoot, `cutscene-${part}`, "scripts", `${part}.mjs`);
+    return join(skillsRoot, `cutscene-${part}`, "scripts", `${part}.mjs`);
 }
-
 /** The preview entry script (built by the preview owner). */
 export function previewScript(scriptsDir = SCRIPTS_DIR) {
-  return join(scriptsDir, "preview.mjs");
+    return join(scriptsDir, "preview.mjs");
 }
-
 /** True for Windows/UNC network paths (`\\server\share`, `//server/share`), which Cutscene refuses. */
 export function isNetworkPath(p) {
-  if (typeof p !== "string") return false;
-  // Any two leading slashes count, mixed ones too: Windows reads /\server\share as a share.
-  return /^[\\/]{2}[^\\/]/.test(p.trim());
+    if (typeof p !== "string")
+        return false;
+    // Any two leading slashes count, mixed ones too: Windows reads /\server\share as a share.
+    return /^[\\/]{2}[^\\/]/.test(p.trim());
 }
-
 /**
  * Resolve a user-given path against a base folder and refuse network paths.
- * @returns {string} absolute path
+ * @returns absolute path
  */
 export function resolveUserPath(p, base = process.cwd()) {
-  if (isNetworkPath(p)) {
-    const err = new Error(`Cutscene doesn't work with network paths (${p}).`);
-    err.code = "NETWORK_PATH";
-    err.hint = "Copy the files to a folder on this computer and use that path instead.";
-    throw err;
-  }
-  return isAbsolute(p) ? resolve(p) : resolve(base, p);
+    if (isNetworkPath(p)) {
+        const err = new Error(`Cutscene doesn't work with network paths (${p}).`);
+        err.code = "NETWORK_PATH";
+        err.hint = "Copy the files to a folder on this computer and use that path instead.";
+        throw err;
+    }
+    return isAbsolute(p) ? resolve(p) : resolve(base, p);
 }
-
 /** True when `child` is `parent` or inside it. */
 export function isInside(child, parent) {
-  const rel = relative(resolve(parent), resolve(child));
-  return rel === "" || (!rel.startsWith("..") && !isAbsolute(rel));
+    const rel = relative(resolve(parent), resolve(child));
+    return rel === "" || (!rel.startsWith("..") && !isAbsolute(rel));
 }
-
 /** True when a file or folder exists. */
 export function exists(p) {
-  try {
-    return existsSync(p);
-  } catch {
-    return false;
-  }
+    try {
+        return existsSync(p);
+    }
+    catch {
+        return false;
+    }
 }

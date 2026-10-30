@@ -2,10 +2,11 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { blenderCandidates, checkEditTools, checkKokoro, checkNode, checkVoiceStudio, compareVersions, formatDoctor, parseVersion, summarize } from "../../skills/cutscene/scripts/doctor.mjs";
+import type { Check } from "../../skills/cutscene/scripts/doctor.mjs";
 import { planSetup } from "../../skills/cutscene/scripts/setup.mjs";
-import { cleanup, tempDir } from "./helpers.mjs";
+import { cleanup, tempDir } from "./helpers.ts";
 
-let root;
+let root: string;
 beforeAll(() => {
   root = tempDir();
 });
@@ -97,7 +98,7 @@ describe("footage tools", () => {
 });
 
 describe("report", () => {
-  const checks = [
+  const checks: Check[] = [
     { id: "node", name: "Node.js 22+", group: "needed", ok: true, status: "ok", detail: "22.1.0" },
     { id: "engine", name: "Video engine", group: "needed", ok: false, status: "missing", detail: "Not installed", fix: "Run `cutscene setup --yes`." },
     { id: "browser", name: "Render browser", group: "needed", ok: false, status: "missing", detail: "Needs the video engine" },

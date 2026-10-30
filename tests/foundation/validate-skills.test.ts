@@ -3,15 +3,23 @@ import { execFileSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { brandFindings, markdownLinks, parseFrontmatter, userPathFindings, validateSkills } from "../../tools/validate-skills.mjs";
-import { REPO, cleanup, tempDir } from "./helpers.mjs";
+import { REPO, cleanup, tempDir } from "./helpers.ts";
 
-let root;
-const write = (rel, text) => {
+/** A validator finding, as far as these tests read it. */
+interface Finding {
+  rule: string;
+  file: string;
+  message: string;
+  line?: number;
+}
+
+let root: string;
+const write = (rel: string, text: string) => {
   const file = join(root, rel);
   mkdirSync(dirname(file), { recursive: true });
   writeFileSync(file, text);
 };
-const skill = (name, body = "# Body\n", fm = `name: ${name}\ndescription: Use this to test the validator on a small fixture skill. Does NOT do anything real.`) =>
+const skill = (name: string, body = "# Body\n", fm = `name: ${name}\ndescription: Use this to test the validator on a small fixture skill. Does NOT do anything real.`) =>
   write(`skills/${name}/SKILL.md`, `---\n${fm}\n---\n\n${body}`);
 
 beforeEach(() => {
@@ -19,7 +27,7 @@ beforeEach(() => {
 });
 afterEach(() => cleanup(root));
 
-const rules = (r) => r.errors.map((e) => `${e.rule}:${e.file}`);
+const rules = (r: { errors: Finding[] }) => r.errors.map((e: Finding) => `${e.rule}:${e.file}`);
 
 describe("validateSkills on fixtures", () => {
   it("passes a clean skill with working links", () => {
@@ -37,7 +45,7 @@ describe("validateSkills on fixtures", () => {
     skill("Bad_Name", "", "name: Bad_Name\ndescription: Use this to test the validator on a small fixture skill, does NOT pass.");
     write("skills/cutscene-empty/README.md", "no skill here");
     const r = validateSkills({ root });
-    const msgs = r.errors.map((e) => `${e.file} ${e.message}`).join("\n");
+    const msgs = r.errors.map((e: Finding) => `${e.file} ${e.message}`).join("\n");
     expect(msgs).toMatch(/cutscene-a\/SKILL.md name "cutscene-b" must match the folder/);
     expect(msgs).toMatch(/cutscene-a\/SKILL.md description is too short/);
     expect(msgs).toMatch(/cutscene-c\/SKILL.md frontmatter may only hold name and description \(found "license"\)/);
@@ -54,7 +62,7 @@ describe("validateSkills on fixtures", () => {
   it("finds broken links but ignores links in code and to the web", () => {
     skill("cutscene-links", "[gone](references/missing.md)\n[web](https://example.com)\n`[code](nope.md)`\n```\n[fenced](nope.md)\n```\n");
     const r = validateSkills({ root });
-    expect(r.errors.filter((e) => e.rule === "link")).toHaveLength(1);
+    expect(r.errors.filter((e: Finding) => e.rule === "link")).toHaveLength(1);
     expect(r.errors[0].message).toContain("references/missing.md");
   });
 
@@ -62,7 +70,7 @@ describe("validateSkills on fixtures", () => {
     skill("cutscene", "[upstream](references/upstream/)\n");
     const r = validateSkills({ root });
     expect(r.errors).toEqual([]);
-    expect(r.warnings.some((w) => w.rule === "link")).toBe(true);
+    expect(r.warnings.some((w: Finding) => w.rule === "link")).toBe(true);
   });
 
   it("flags engine commands shown to users, but not attribution or the upstream folder", () => {
@@ -71,9 +79,9 @@ describe("validateSkills on fixtures", () => {
     write("skills/cutscene/references/upstream/router.md", "Run npx hyperframes preview.\n");
     write("skills/hyperframes-thing/SKILL.md", "---\nname: hyperframes-thing\ndescription: Use this to test the validator on a badly named skill. Does NOT pass.\n---\n");
     const r = validateSkills({ root });
-    const brand = r.errors.filter((e) => e.rule === "brand");
-    expect(brand.map((e) => e.line)).toEqual([7, 8, 9]);
-    expect(brand.every((e) => e.file === "skills/cutscene-brand/SKILL.md")).toBe(true);
+    const brand = r.errors.filter((e: Finding) => e.rule === "brand");
+    expect(brand.map((e: Finding) => e.line)).toEqual([7, 8, 9]);
+    expect(brand.every((e: Finding) => e.file === "skills/cutscene-brand/SKILL.md")).toBe(true);
     expect(rules(r)).toContain("name:skills/hyperframes-thing");
   });
 
@@ -82,25 +90,25 @@ describe("validateSkills on fixtures", () => {
     write("skills/cutscene/references/upstream/x.md", "npm i gsap@latest\n");
     write("skills/cutscene/scripts/a.mjs", "// fetch three@latest\n");
     const r = validateSkills({ root });
-    expect(r.errors.filter((e) => e.rule === "pin").map((e) => e.file).sort()).toEqual(["skills/cutscene/references/upstream/x.md", "skills/cutscene/scripts/a.mjs"]);
+    expect(r.errors.filter((e: Finding) => e.rule === "pin").map((e: Finding) => e.file).sort()).toEqual(["skills/cutscene/references/upstream/x.md", "skills/cutscene/scripts/a.mjs"]);
   });
 
   it("forbids absolute paths into a user's home folder", () => {
     skill("cutscene-paths", "Put it in C:\\Users\\jane\\Videos or /home/alice/x, not C:\\Users\\<you>\\Videos.\n");
     const r = validateSkills({ root });
-    expect(r.errors.filter((e) => e.rule === "user-path")).toHaveLength(2);
+    expect(r.errors.filter((e: Finding) => e.rule === "user-path")).toHaveLength(2);
   });
 
   it("runs from the command line with --root and --json", () => {
     skill("cutscene-cli", "[gone](nope.md)\n");
-    let out;
+    let out: { status: number; stdout: string } | undefined;
     try {
       execFileSync(process.execPath, [join(REPO, "tools", "validate-skills.mjs"), "--root", root, "--json"], { encoding: "utf8", windowsHide: true });
     } catch (err) {
-      out = err;
+      out = err as { status: number; stdout: string };
     }
-    expect(out.status).toBe(1);
-    expect(JSON.parse(out.stdout).errors[0].rule).toBe("link");
+    expect(out!.status).toBe(1);
+    expect(JSON.parse(out!.stdout).errors[0].rule).toBe("link");
   });
 });
 
@@ -110,7 +118,7 @@ describe("helpers", () => {
     expect(parseFrontmatter("no frontmatter")).toBeNull();
   });
   it("lists relative links", () => {
-    expect(markdownLinks("[a](b.md) [c](http://x) [d](#e) ![i](img.png)\n[ref]: refs/x.md").map((l) => l.target)).toEqual(["b.md", "img.png", "refs/x.md"]);
+    expect(markdownLinks("[a](b.md) [c](http://x) [d](#e) ![i](img.png)\n[ref]: refs/x.md").map((l: { target: string }) => l.target)).toEqual(["b.md", "img.png", "refs/x.md"]);
   });
   it("tells commands from paths", () => {
     expect(brandFindings("cd ~/.cache/hyperframes/chrome").errors).toEqual([]);

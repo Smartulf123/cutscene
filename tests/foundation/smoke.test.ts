@@ -5,7 +5,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { engineStatus } from "../../skills/cutscene/scripts/lib/engine.mjs";
 import { cutsceneHome } from "../../skills/cutscene/scripts/lib/paths.mjs";
-import { SKILL, cleanup, runCli, tempDir } from "./helpers.mjs";
+import { SKILL, cleanup, runCli, tempDir } from "./helpers.ts";
 
 const home = cutsceneHome();
 const engine = engineStatus({ home });

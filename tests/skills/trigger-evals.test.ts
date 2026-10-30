@@ -6,16 +6,24 @@ import { describe, expect, it } from "vitest";
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
+/** One request in trigger-evals.json and the skill it should trigger. */
+interface TriggerEval {
+  query: string;
+  expected: string;
+  not?: string[];
+  keywords: string[];
+}
+
 const SKILLS = join("skills");
 const names = readdirSync(SKILLS).filter((d) => existsSync(join(SKILLS, d, "SKILL.md")));
-const description = (name) => {
+const description = (name: string): string => {
   const text = readFileSync(join(SKILLS, name, "SKILL.md"), "utf8").replace(/\r\n/g, "\n");
-  const fm = /^---\n([\s\S]*?)\n---/.exec(text)[1];
-  const m = /^description:\s*(>\s*\n((?:\s+.*\n?)+)|(.*))$/m.exec(fm);
+  const fm = /^---\n([\s\S]*?)\n---/.exec(text)![1];
+  const m = /^description:\s*(>\s*\n((?:\s+.*\n?)+)|(.*))$/m.exec(fm)!;
   const raw = m[2] ? m[2].split("\n").map((l) => l.trim()).join(" ") : m[3];
   return raw.trim().replace(/^"|"$/g, "").replace(/\\"/g, '"').replace(/\s+/g, " ");
 };
-const { evals } = JSON.parse(readFileSync(join("tests", "skills", "trigger-evals.json"), "utf8"));
+const { evals }: { evals: TriggerEval[] } = JSON.parse(readFileSync(join("tests", "skills", "trigger-evals.json"), "utf8"));
 
 describe("skill descriptions", () => {
   it("cover all eleven skills, each with when-to-use and what-not", () => {
@@ -58,13 +66,13 @@ describe("trigger eval set", () => {
     }
   });
 
-  it.each(evals.map((e) => [e.expected, e.query, e]))("%s mentions the trigger words for: %s", (skill, _q, e) => {
+  it.each(evals.map((e): [string, string, TriggerEval] => [e.expected, e.query, e]))("%s mentions the trigger words for: %s", (skill, _q, e) => {
     const d = description(skill).toLowerCase();
     for (const k of e.keywords) expect(d, `${skill} should mention "${k}"`).toContain(k.toLowerCase());
   });
 
   it("converts to skill-creator's per-skill format (should_trigger)", () => {
-    const perSkill = (n) => evals.map((e) => ({ query: e.query, should_trigger: e.expected === n }));
+    const perSkill = (n: string) => evals.map((e) => ({ query: e.query, should_trigger: e.expected === n }));
     for (const n of names) {
       const set = perSkill(n);
       expect(set.some((x) => x.should_trigger), n).toBe(true);

@@ -3,9 +3,9 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { GITIGNORE_LINES, finishProject, writeGitignore } from "../../skills/cutscene/scripts/cli.mjs";
-import { cleanup, tempDir } from "./helpers.mjs";
+import { cleanup, tempDir } from "./helpers.ts";
 
-let dir;
+let dir: string;
 beforeEach(() => {
   dir = tempDir("cutscene-gitignore-");
 });

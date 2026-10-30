@@ -4,10 +4,23 @@ import { join } from "node:path";
 import { CUTSCENE_VERSION } from "../../skills/cutscene/scripts/lib/paths.mjs";
 import { readPin } from "../../skills/cutscene/scripts/lib/engine.mjs";
 import { parseFrontmatter } from "../../tools/validate-skills.mjs";
-import { REPO } from "./helpers.mjs";
+import { REPO } from "./helpers.ts";
 
-const read = (rel) => readFileSync(join(REPO, rel), "utf8");
-const json = (rel) => JSON.parse(read(rel));
+/** The manifest fields these tests read (each manifest has some of them). */
+interface Manifest {
+  name: string;
+  version: string;
+  license: string;
+  repository: string;
+  author: { name: string };
+  owner: { name: string };
+  plugins: Record<string, unknown>[];
+  skills: string;
+  interface: { displayName: string };
+}
+
+const read = (rel: string) => readFileSync(join(REPO, rel), "utf8");
+const json = (rel: string): Manifest => JSON.parse(read(rel));
 
 const MANIFESTS = [".claude-plugin/plugin.json", ".claude-plugin/marketplace.json", ".codex-plugin/plugin.json", ".cursor-plugin/plugin.json", "gemini-extension.json"];
 

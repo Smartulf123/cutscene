@@ -1,7 +1,9 @@
 // Unit tests for the preview front door, against a fake Studio (no engine needed).
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import http from "node:http";
+import type { IncomingHttpHeaders } from "node:http";
 import net from "node:net";
+import type { AddressInfo } from "node:net";
 import {
   checkRequest,
   downstreamHeaders,
@@ -28,24 +30,39 @@ const STOCK_HTML = `<!doctype html>
 
 const COMPOSITION_HTML = `<!doctype html><html><head><title>My video</title></head><body>clip</body></html>`;
 
-function freePort() {
+/** Options for `request`. */
+interface RequestOptions {
+  method?: string;
+  path?: string;
+  headers?: Record<string, string>;
+  body?: string;
+}
+
+/** What `request` resolves with. */
+interface Reply {
+  status: number | undefined;
+  headers: IncomingHttpHeaders;
+  body: string;
+}
+
+function freePort(): Promise<number> {
   return new Promise((resolve) => {
     const s = net.createServer();
     s.listen(0, "127.0.0.1", () => {
-      const { port } = s.address();
+      const { port } = s.address() as AddressInfo;
       s.close(() => resolve(port));
     });
   });
 }
 
 /** Low-level request so we control every header (fetch won't let us set Host or Origin freely). */
-function request(port, { method = "GET", path = "/", headers = {}, body } = {}) {
+function request(port: number, { method = "GET", path = "/", headers = {}, body }: RequestOptions = {}): Promise<Reply> {
   return new Promise((resolve, reject) => {
     const req = http.request(
       { host: "127.0.0.1", port, method, path, headers: { host: `127.0.0.1:${port}`, ...headers }, agent: false },
       (res) => {
-        const chunks = [];
-        res.on("data", (c) => chunks.push(c));
+        const chunks: Buffer[] = [];
+        res.on("data", (c: Buffer) => chunks.push(c));
         res.on("end", () => resolve({ status: res.statusCode, headers: res.headers, body: Buffer.concat(chunks).toString("utf8") }));
       },
     );
@@ -57,7 +74,7 @@ function request(port, { method = "GET", path = "/", headers = {}, body } = {}) 
 
 describe("checkRequest (pure rules)", () => {
   const P = 3002;
-  const req = (method, headers, url = "/") => ({ method, url, headers: { host: `127.0.0.1:${P}`, ...headers } });
+  const req = (method: string, headers: Record<string, string>, url = "/") =>({ method, url, headers: { host: `127.0.0.1:${P}`, ...headers } });
 
   it("refuses a foreign Host (DNS rebinding)", () => {
     expect(checkRequest({ method: "GET", url: "/", headers: { host: "evil.example:3002" } }, P)).toMatchObject({ ok: false, status: 403, reason: "host" });
@@ -163,18 +180,18 @@ describe("rewriteStudioHtml", () => {
 });
 
 describe("front door against a fake Studio", () => {
-  let upstream;
-  let upPort;
-  let door;
-  let port;
-  const seen = [];
+  let upstream: http.Server;
+  let upPort: number;
+  let door: http.Server;
+  let port: number;
+  const seen: { method?: string; url?: string; headers: IncomingHttpHeaders }[] = [];
   let ready = true;
-  let sseRelease = null;
+  let sseRelease: (() => void) | null = null;
 
   beforeAll(async () => {
     upstream = http.createServer((req, res) => {
       seen.push({ method: req.method, url: req.url, headers: req.headers });
-      if (req.url === "/" || req.url.startsWith("/#") || req.url === "/editor") {
+      if (req.url === "/" || req.url!.startsWith("/#") || req.url === "/editor") {
         res.writeHead(200, { "content-type": "text/html; charset=UTF-8" });
         return res.end(STOCK_HTML);
       }
@@ -195,7 +212,7 @@ describe("front door against a fake Studio", () => {
         };
         return;
       }
-      if (req.method === "POST" && req.url.startsWith("/api/projects/demo/files/")) {
+      if (req.method === "POST" && req.url!.startsWith("/api/projects/demo/files/")) {
         let body = "";
         req.on("data", (c) => (body += c));
         req.on("end", () => {
@@ -214,12 +231,12 @@ describe("front door against a fake Studio", () => {
       socket.on("end", () => socket.destroy());
       socket.on("error", () => {});
     });
-    await new Promise((r) => upstream.listen(0, "127.0.0.1", r));
-    upPort = upstream.address().port;
+    await new Promise<void>((r) => upstream.listen(0, "127.0.0.1", r));
+    upPort = (upstream.address() as AddressInfo).port;
 
     port = await freePort();
     door = createFrontDoor({ port, upstream: () => (ready ? { host: "127.0.0.1", port: upPort } : null), health: () => ({ instance: "t" }) });
-    await new Promise((r) => door.listen(port, "127.0.0.1", r));
+    await new Promise<void>((r) => door.listen(port, "127.0.0.1", r));
   });
 
   afterAll(async () => {
@@ -312,7 +329,7 @@ describe("front door against a fake Studio", () => {
   });
 
   it("streams Server-Sent Events without buffering", async () => {
-    const got = [];
+    const got: string[] = [];
     const done = new Promise((resolve, reject) => {
       const req = http.get(
         { host: "127.0.0.1", port, path: "/api/events", headers: { host: `127.0.0.1:${port}` }, agent: false },
@@ -340,8 +357,8 @@ describe("front door against a fake Studio", () => {
   });
 
   it("proxies WebSocket upgrades from the same origin and refuses foreign ones", async () => {
-    const upgrade = (origin) =>
-      new Promise((resolve) => {
+    const upgrade = (origin: string) =>
+      new Promise<string>((resolve) => {
         const s = net.connect(port, "127.0.0.1", () => {
           s.write(
             `GET /ws HTTP/1.1\r\nHost: 127.0.0.1:${port}\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nOrigin: ${origin}\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\n\r\n`,

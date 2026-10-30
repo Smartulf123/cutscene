@@ -2,20 +2,37 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { ageDays, checkPins, classify, collectPins, isExactVersion } from "../../tools/check-pin-ages.mjs";
-import { cleanup, tempDir } from "./helpers.mjs";
+import { cleanup, tempDir } from "./helpers.ts";
 
-let root;
-const write = (rel, data) => {
+let root: string;
+const write = (rel: string, data: unknown) => {
   const file = join(root, rel);
   mkdirSync(dirname(file), { recursive: true });
   writeFileSync(file, typeof data === "string" ? data : JSON.stringify(data, null, 2));
 };
 const NOW = new Date("2026-10-29T19:00:00Z");
 
+/** The part of a fetch Response the pin checker reads. */
+interface FakeResponse {
+  ok: boolean;
+  status: number;
+  json: () => Promise<unknown>;
+}
+type FakeFetch = (url: string, opts?: unknown) => Promise<FakeResponse>;
+
+/** One pin's result, as far as these tests read it. */
+interface PinResult {
+  name: string;
+  status: string;
+  from?: string;
+  message?: string;
+  note?: string;
+}
+
 /** A fake registry: answers from a table and records the URLs asked for. */
-function fakeFetch(table) {
-  const asked = [];
-  const impl = async (url) => {
+function fakeFetch(table: Record<string, unknown>) {
+  const asked: string[] = [];
+  const impl: FakeFetch = async (url) => {
     asked.push(url);
     const hit = Object.entries(table).find(([k]) => url.includes(k));
     if (!hit) return { ok: false, status: 404, json: async () => ({}) };
@@ -43,7 +60,7 @@ afterEach(() => cleanup(root));
 describe("collectPins", () => {
   it("reads the engine, package.json, manifests and workflows", () => {
     const pins = collectPins(root);
-    const ids = pins.map((p) => `${p.kind}:${p.name}@${p.version}`);
+    const ids = pins.map((p: { kind: string; name: string; version: string }) => `${p.kind}:${p.name}@${p.version}`);
     expect(ids).toEqual([
       "npm:hyperframes@0.8.162",
       "npm:vitest@4.1.12",
@@ -78,18 +95,18 @@ describe("checkPins", () => {
       "pypi.org/pypi/pytest/9.1.1": { urls: [{ upload_time_iso_8601: "2026-06-19T10:58:31Z" }] },
     });
     const report = await checkPins({ root, now: NOW, fetchImpl: impl, env: {} });
-    const status = Object.fromEntries(report.results.map((r) => [r.name, r.status]));
+    const status = Object.fromEntries(report.results.map((r: PinResult) => [r.name, r.status]));
     expect(status).toEqual({ hyperframes: "ok", vitest: "too-new", torch: "ok", omnivoice: "ok", blender: "too-new", "actions/checkout": "ok", pytest: "ok" });
     expect(report.ok).toBe(false);
-    expect(report.results.find((r) => r.name === "blender").from).toBe("recorded");
-    expect(report.results.find((r) => r.name === "vitest").message).toMatch(/9 days ago/);
+    expect(report.results.find((r: PinResult) => r.name === "blender")!.from).toBe("recorded");
+    expect(report.results.find((r: PinResult) => r.name === "vitest")!.message).toMatch(/9 days ago/);
     expect(asked.every((u) => u.startsWith("https://"))).toBe(true);
   });
 
   it("rejects unpinned versions", async () => {
     write("package.json", { devDependencies: { vitest: "^4.1.12" } });
     const report = await checkPins({ root, now: NOW, offline: true });
-    expect(report.results.find((r) => r.name === "vitest").status).toBe("unpinned");
+    expect(report.results.find((r: PinResult) => r.name === "vitest")!.status).toBe("unpinned");
     expect(report.ok).toBe(false);
   });
 
@@ -97,7 +114,7 @@ describe("checkPins", () => {
     const { impl, asked } = fakeFetch({});
     const report = await checkPins({ root, now: NOW, offline: true, fetchImpl: impl });
     expect(asked).toEqual([]);
-    const byName = Object.fromEntries(report.results.map((r) => [r.name, r]));
+    const byName = Object.fromEntries(report.results.map((r: PinResult) => [r.name, r]));
     expect(byName.omnivoice.status).toBe("ok");
     expect(byName.blender.status).toBe("too-new");
     expect(byName.hyperframes.status).toBe("unknown");
@@ -116,13 +133,13 @@ describe("checkPins", () => {
     };
     for (const strict of [false, true]) {
       const report = await checkPins({ root, now: NOW, env: {}, strict, retryDelayMs: 0, fetchImpl: down });
-      const engine = report.results.find((r) => r.name === "hyperframes");
+      const engine = report.results.find((r: PinResult) => r.name === "hyperframes")!;
       expect(engine.status).toBe("network");
       expect(engine.message).toMatch(/not an age problem/);
       expect(engine.message).toMatch(/--offline/);
       expect(report.unchecked).toBe(4);
       // A recorded date is used when the lookup fails, and says so.
-      const ov = report.results.find((r) => r.name === "omnivoice");
+      const ov = report.results.find((r: PinResult) => r.name === "omnivoice")!;
       expect(ov.status).toBe("ok");
       expect(ov.note).toMatch(/recorded date/);
       // Network trouble alone never fails the run, even with --strict.
@@ -139,8 +156,8 @@ describe("checkPins", () => {
       "api.github.com/repos/actions/checkout/releases/tags/v7.0.1": { published_at: "2026-07-20T15:10:05Z" },
       "pypi.org/pypi/pytest/9.1.1": { urls: [{ upload_time_iso_8601: "2026-06-19T10:58:31Z" }] },
     });
-    const seen = new Map();
-    const flaky = async (url, opts) => {
+    const seen = new Map<string, number>();
+    const flaky = async (url: string, opts?: unknown) => {
       const n = (seen.get(url) || 0) + 1;
       seen.set(url, n);
       if (url.includes("pypi.org") && n === 1) throw new Error("socket hang up");
@@ -148,7 +165,7 @@ describe("checkPins", () => {
       return impl(url, opts);
     };
     const report = await checkPins({ root, now: NOW, env: {}, strict: true, retryDelayMs: 0, fetchImpl: flaky });
-    expect(report.results.find((r) => r.name === "pytest").status).toBe("ok");
+    expect(report.results.find((r: PinResult) => r.name === "pytest")!.status).toBe("ok");
     expect(report.ok).toBe(true);
     expect(report.unchecked).toBe(0);
   });
@@ -157,7 +174,7 @@ describe("checkPins", () => {
     const { impl, asked } = fakeFetch({ "registry.npmjs.org/vitest": { time: { "4.1.12": "2026-10-25T00:00:00Z" } } });
     const report = await checkPins({ root, now: NOW, env: {}, retryDelayMs: 0, fetchImpl: impl });
     expect(asked.filter((u) => u.includes("pypi.org/pypi/pytest")).length).toBe(1);
-    expect(report.results.find((r) => r.name === "vitest").status).toBe("too-new");
+    expect(report.results.find((r: PinResult) => r.name === "vitest")!.status).toBe("too-new");
     expect(report.ok).toBe(false);
   });
 

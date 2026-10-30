@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { beatsPath, readBeats, updateBeat, updateBeatSheet, validateBeats, writeBeats } from "../../skills/cutscene/scripts/lib/beats.mjs";
-import { cleanup, tempDir } from "./helpers.mjs";
+import { cleanup, tempDir } from "./helpers.ts";
 
 const SAMPLE = `{
   "version": 1,
@@ -27,8 +27,8 @@ const SAMPLE = `{
 }
 `;
 
-let dir;
-let file;
+let dir: string;
+let file: string;
 beforeEach(() => {
   dir = tempDir();
   file = beatsPath(dir);
@@ -121,9 +121,9 @@ describe("updateBeat", () => {
     expect(text).toContain('"x-note": "keep me"');
     expect(text).toContain('{ "id": "b2", "start": 2.4, "end": 5.0, "x-tag": 7 }');
     const sheet = readBeats(file);
-    expect(sheet.beats[0].voice.verified).toBe(true);
+    expect(sheet.beats[0].voice!.verified).toBe(true);
     expect(sheet.beats[0]["x-note"]).toBe("keep me");
-    expect(sheet["x-studio"].zoom).toBe(1.5);
+    expect((sheet["x-studio"] as { zoom: number }).zoom).toBe(1.5);
     // Only the new field was inserted.
     const before = SAMPLE.split('"x-note": "keep me"')[0];
     expect(text.startsWith(before)).toBe(true);
@@ -140,7 +140,7 @@ describe("updateBeat", () => {
     updateBeat(file, "b2", { shot3d: { tier: 1, file: "assets/3d/b2.webm" } });
     const text = readFileSync(file, "utf8");
     expect(text).toContain('"x-tag": 7, "shot3d": {"tier":1,"file":"assets/3d/b2.webm"} }');
-    expect(readBeats(file).beats[1].shot3d.tier).toBe(1);
+    expect(readBeats(file).beats[1].shot3d!.tier).toBe(1);
   });
 
   it("removes a field with null", () => {
@@ -167,7 +167,7 @@ describe("updateBeat", () => {
     expect(text).toBe(expected);
     const b = readBeats(file).beats[0];
     expect("line" in b).toBe(false);
-    expect(b.voice.verified).toBe(true);
+    expect(b.voice!.verified).toBe(true);
   });
 
   it("removes the last fields, several at once, and fields on compact beats, byte for byte", () => {
@@ -214,7 +214,7 @@ describe("updateBeat", () => {
     updateBeat(file, "b1", { shot3d: { tier: 2 } });
     const text = readFileSync(file, "utf8");
     expect(text.includes("\n") && !/[^\r]\n/.test(text)).toBe(true);
-    expect(readBeats(file).beats[0].shot3d.tier).toBe(2);
+    expect(readBeats(file).beats[0].shot3d!.tier).toBe(2);
   });
 });
 
@@ -223,7 +223,7 @@ describe("updateBeatSheet", () => {
     updateBeatSheet(file, { voices: { narrator: { model: "kokoro", seed: 42 } } });
     const text = readFileSync(file, "utf8");
     expect(text).toContain('"x-studio": { "zoom": 1.50, "lanes": [1, 2, 3] },');
-    expect(readBeats(file).voices.narrator.seed).toBe(42);
+    expect(readBeats(file).voices!.narrator.seed).toBe(42);
     expect(existsSync(`${file}.lock`)).toBe(false);
   });
 });

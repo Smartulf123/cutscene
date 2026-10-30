@@ -10,11 +10,54 @@ export const REPO = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..")
 export const SKILL = join(REPO, "skills", "cutscene");
 export const PIN = "0.8.162";
 
-export function tempDir(prefix = "cutscene-test-") {
+/** A download listed in a NEEDS_CONSENT reply or a setup plan. */
+export interface CliDownload {
+  id: string;
+  name: string;
+  size: string;
+  license: string;
+  source: string;
+  version?: string;
+  [key: string]: unknown;
+}
+
+/**
+ * The fields the tests read from a command's `--json` output. Which of them a reply has depends on
+ * the command; the tests check the values with expect().
+ */
+export interface CliJson {
+  ok: boolean;
+  error: { code: string; message: string; hint: string };
+  details: { expected: string; downloads: CliDownload[] };
+  downloads: CliDownload[];
+  version: string;
+  engine: string;
+  args: string[];
+  env: Record<string, string>;
+  output: string[];
+  message: string;
+  cwd: string;
+  lint: { errorCount: number };
+  project: string;
+  name: string;
+  files: string[];
+  _meta?: unknown;
+  [key: string]: unknown;
+}
+
+export interface CliResult {
+  code: number;
+  stdout: string;
+  stderr: string;
+  /** stdout parsed as JSON (undefined when it isn't one JSON document) */
+  json: CliJson;
+}
+
+export function tempDir(prefix: string = "cutscene-test-"): string {
   return mkdtempSync(join(tmpdir(), prefix));
 }
 
-export function cleanup(dir) {
+export function cleanup(dir: string): void {
   try {
     rmSync(dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   } catch {
@@ -26,7 +69,7 @@ export function cleanup(dir) {
  * Copy the cutscene skill (without the preview, which another owner builds) into
  * <root>/skills/cutscene so tests control what sits next to it.
  */
-export function copySkill(root, { withPreview = false } = {}) {
+export function copySkill(root: string, { withPreview = false }: { withPreview?: boolean } = {}): { skillsRoot: string; cli: string } {
   const dest = join(root, "skills", "cutscene");
   cpSync(SKILL, dest, {
     recursive: true,
@@ -66,7 +109,7 @@ if (args.includes("--json")) {
 `;
 
 /** Make a Cutscene home with a fake engine installed at the pin. */
-export function fakeHome(root, { engine = true } = {}) {
+export function fakeHome(root: string, { engine = true }: { engine?: boolean } = {}): string {
   const home = join(root, "home");
   mkdirSync(home, { recursive: true });
   if (engine) {
@@ -79,7 +122,7 @@ export function fakeHome(root, { engine = true } = {}) {
 }
 
 /** A fake part script that prints its arguments and the Cutscene variables. */
-export function fakePart(skillsRoot, part) {
+export function fakePart(skillsRoot: string, part: string): void {
   const dir = join(skillsRoot, `cutscene-${part}`, "scripts");
   mkdirSync(dir, { recursive: true });
   writeFileSync(
@@ -90,9 +133,8 @@ export function fakePart(skillsRoot, part) {
 
 /**
  * Run the CLI and collect its output.
- * @returns {Promise<{code: number, stdout: string, stderr: string, json?: any}>}
  */
-export function runCli(cli, args, { home, cwd, env = {}, timeout = 60_000 } = {}) {
+export function runCli(cli: string, args: string[], { home, cwd, env = {}, timeout = 60_000 }: { home?: string; cwd?: string; env?: NodeJS.ProcessEnv; timeout?: number } = {}): Promise<CliResult> {
   return new Promise((resolvePromise) => {
     execFile(
       process.execPath,
@@ -106,7 +148,7 @@ export function runCli(cli, args, { home, cwd, env = {}, timeout = 60_000 } = {}
         } catch {
           json = undefined;
         }
-        resolvePromise({ code, stdout, stderr, json });
+        resolvePromise({ code, stdout, stderr, json: json as CliJson });
       },
     );
   });
