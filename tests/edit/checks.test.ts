@@ -106,6 +106,13 @@ describe("validate-plan", () => {
     plan.events = [{ time: 0, visual: "s0" }];
     expect(validatePlan(plan, transcript, edl).errors.join(" ")).toMatch(/Nothing new happens/);
   });
+  it("reports a caption group with no words instead of crashing", () => {
+    const { plan, transcript, edl } = goodPlan();
+    plan.captions.push({ start: 2, end: 2.5, words: [] });
+    const r = validatePlan(plan, transcript, edl);
+    expect(r.ok).toBe(false);
+    expect(r.errors).toContain("Caption group 2 has no words.");
+  });
 });
 
 describe("validate-footage", () => {
