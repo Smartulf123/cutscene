@@ -18,18 +18,22 @@ import { voiceStatus } from "../../skills/cutscene-voice/scripts/lib/status.mjs"
 import { isNetworkPath, projectFile, resolveUserPath, safeName } from "../../skills/cutscene-voice/scripts/lib/paths.mjs";
 import { kokoroCache, kokoroSpeak } from "../../skills/cutscene-voice/scripts/lib/kokoro.mjs";
 import { chooseModel, estimateRun } from "../../skills/cutscene-voice/scripts/lib/commands.mjs";
+import type { PlanItem } from "../../skills/cutscene-voice/scripts/lib/setup.mjs";
+
+/** The one JSON object voice.mjs prints under --json (only the fields these tests read). */
+type CliJson = { ok: boolean; error: { code: string; message: string; hint: string }; plan: { items: PlanItem[] }; dry_run?: boolean; commands: string[] };
 
 const VOICE = fileURLToPath(new URL("../../skills/cutscene-voice/scripts/voice.mjs", import.meta.url));
-let tmp;
+let tmp: string;
 beforeAll(() => {
   tmp = mkdtempSync(join(tmpdir(), "cutscene-voice-test-"));
 });
 afterAll(() => rmSync(tmp, { recursive: true, force: true }));
 
 /** Run voice.mjs as the user would, with an empty CUTSCENE_HOME. */
-function cli(args, env = {}) {
+function cli(args: string[], env: Record<string, string> = {}) {
   const r = spawnSync(process.execPath, [VOICE, ...args], { encoding: "utf8", env: { ...process.env, CUTSCENE_HOME: join(tmp, "home"), CUTSCENE_VOICESTUDIO_URL: "http://127.0.0.1:9", ...env } });
-  return { code: r.status, stdout: r.stdout, stderr: r.stderr, json: (() => { try { return JSON.parse(r.stdout.trim().split(/\r?\n/).pop()); } catch { return null; } })() };
+  return { code: r.status, stdout: r.stdout, stderr: r.stderr, json: (() => { try { return JSON.parse(r.stdout.trim().split(/\r?\n/).pop()!) as CliJson; } catch { return null; } })()! };
 }
 
 const SHEET = `{
@@ -48,7 +52,7 @@ const SHEET = `{
 }
 `;
 
-function makeProject(name) {
+function makeProject(name: string) {
   const dir = join(tmp, name);
   mkdirSync(join(dir, ".cutscene"), { recursive: true });
   writeFileSync(join(dir, ".cutscene", "beats.json"), SHEET);
@@ -56,7 +60,7 @@ function makeProject(name) {
 }
 
 /** A tiny 16-bit mono WAV with a sine tone. */
-function writeTone(file, { seconds = 0.5, rate = 24000, freq = 440, amp = 0.3 } = {}) {
+function writeTone(file: string, { seconds = 0.5, rate = 24000, freq = 440, amp = 0.3 }: { seconds?: number; rate?: number; freq?: number; amp?: number } = {}) {
   const n = Math.round(seconds * rate);
   const buf = Buffer.alloc(44 + n * 2);
   buf.write("RIFF", 0);
@@ -214,8 +218,8 @@ describe("WAV and loudness", () => {
     const log = `[Parsed_loudnorm_1 @ 0x1]\n{\n\t"input_i" : "-27.31",\n\t"input_tp" : "-9.02",\n\t"input_lra" : "3.10",\n\t"input_thresh" : "-37.6",\n\t"output_i" : "-16.1",\n\t"target_offset" : "0.12"\n}\n`;
     const m = parseLoudnorm(log);
     expect(m).toMatchObject({ input_i: -27.31, input_tp: -9.02, target_offset: 0.12 });
-    expect(loudnormFilter(m)).toContain("measured_I=-27.31");
-    expect(loudnormFilter(m)).toContain("linear=true");
+    expect(loudnormFilter(m!)).toContain("measured_I=-27.31");
+    expect(loudnormFilter(m!)).toContain("linear=true");
     expect(parseLoudnorm("no json here")).toBeNull();
   });
 });
@@ -241,7 +245,7 @@ describe("setup", () => {
     expect(r.code).toBe(1);
     expect(r.json.error.code).toBe("NEEDS_CONSENT");
     expect(r.json.plan.items.map((i) => i.id)).toEqual(["environment", "omnivoice", "whisper"]);
-    const om = r.json.plan.items.find((i) => i.id === "omnivoice");
+    const om = r.json.plan.items.find((i) => i.id === "omnivoice")!;
     expect(om).toMatchObject({ license: "CC-BY-NC-4.0", commercial_use: false });
     expect(om.download_bytes).toBeGreaterThan(3e9);
     expect(existsSync(join(tmp, "home", "voice", "venv"))).toBe(false);
@@ -297,7 +301,7 @@ describe("VoiceStudio absent", () => {
 });
 
 describe("model choice", () => {
-  const status = (installed, vs = false) => ({ models: ["omnivoice", "whisper", "voxcpm2"].map((id) => ({ id, installed: installed.includes(id) })), voicestudio: { running: vs } });
+  const status = (installed: string[], vs = false) => ({ models: ["omnivoice", "whisper", "voxcpm2"].map((id) => ({ id, installed: installed.includes(id) })), voicestudio: { running: vs } });
   it("prefers installed local models, then VoiceStudio, then Kokoro", () => {
     expect(chooseModel(undefined, status(["omnivoice"]))).toBe("omnivoice");
     expect(chooseModel(undefined, status(["voxcpm2"]))).toBe("voxcpm2");
@@ -305,11 +309,11 @@ describe("model choice", () => {
     expect(chooseModel(undefined, status([]))).toBe("kokoro");
   });
   it("explains what to install", () => {
-    const hintOf = (fn) => {
+    const hintOf = (fn: () => unknown) => {
       try {
         fn();
       } catch (err) {
-        return `${err.message} ${err.hint}`;
+        return `${(err as VoiceError).message} ${(err as VoiceError).hint}`;
       }
       return "";
     };
@@ -337,7 +341,7 @@ describe("one-shot speak (sound engine form)", async () => {
     expect(pickOneShotVoice({ wanted: "nobody", voices, presets }).error).toBe("nobody");
     expect(pickOneShotVoice({ voices, presets }).speaker).toBe("narrator");
     expect(pickOneShotVoice({ voices: {}, presets, describe: "male" }).design).toBe(true);
-    expect(pickOneShotVoice({ voices: {}, presets }).voice.preset).toBe("af_heart");
+    expect(pickOneShotVoice({ voices: {}, presets }).voice!.preset).toBe("af_heart");
   });
   it("needs --out and a non-empty line", () => {
     const r = cli(["speak", "--text-file", join(tmp, "nope.txt"), "--out", join(tmp, "x.wav"), "--json"]);
