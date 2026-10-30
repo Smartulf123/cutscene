@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-3d/templates/tier1/cs3d-runtime.ts by `npm run build`. Edit that file, not this one.
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.184.0/+esm";
 /** A material in the shot config: a preset and a colour (palette token or "#RRGGBB"). */
 interface MaterialSpec {

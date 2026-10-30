@@ -180,14 +180,21 @@ export async function writeTier1({ template, spec, projectDir, look, font, yes =
   }
 
   const html = readFileSync(join(TIER1_DIR, `${template}.html`), "utf8");
-  const boot = readFileSync(join(TIER1_DIR, "_boot.js"), "utf8");
-  const common = readFileSync(join(TIER1_DIR, "_preamble.js"), "utf8");
-  copied.push(copyInto(join(TIER1_DIR, "cs3d-runtime.js"), assetDir));
+  const boot = builtScript("_boot.js");
+  const common = builtScript("_preamble.js");
+  const runtime = join(assetDir, "cs3d-runtime.js");
+  writeFileSync(runtime, builtScript("cs3d-runtime.js"));
+  copied.push(runtime);
   const text = renderTemplate({ html, boot, common, id, config, variables: variablesFor(template, config) });
   const file = join(compDir, `${id}.html`);
   writeFileAtomic(file, text);
   const snippet = hostSnippet({ id, config, start, track });
   return { file, compositionId: id, snippet, copied, warnings, config };
+}
+
+/** A browser script built from src/, without the build's "edit the source" line, which means nothing inside a user's project. */
+function builtScript(name: string): string {
+  return readFileSync(join(TIER1_DIR, name), "utf8").replace(/^\/\/ Built from .*\n/, "");
 }
 
 /** The clip to paste into index.html (inside the root composition). */

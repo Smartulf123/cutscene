@@ -15,27 +15,62 @@ npm ci
 npm test
 ```
 
-Set `CUTSCENE_VOICE_REAL=0` to skip the slow test that runs real voice models.
+`npm test` builds the TypeScript first. Set `CUTSCENE_VOICE_REAL=0` to skip the slow test that runs
+real voice models.
+
+## TypeScript
+
+Cutscene's own code is TypeScript, in `src/`. Skills are installed straight from this repo and
+run with plain `node`, so each source file is built to the same path without `src/`, and the
+built file is committed:
+
+| You edit | Built to (committed, don't edit) |
+|---|---|
+| `src/skills/cutscene/scripts/cli.mts` | `skills/cutscene/scripts/cli.mjs` |
+| `src/tools/sync-hyperframes.mts` | `tools/sync-hyperframes.mjs` |
+| `src/overlays/cutscene-design/scripts/look.mts` | `overlays/cutscene-design/scripts/look.mjs` |
+
+```bash
+npm run build
+```
+
+Every built file starts with a line naming its source, and has a declaration file (`.d.mts`)
+next to it with its types. CI fails if either is out of date. Tests are TypeScript too
+(`tests/**/*.test.ts`); they import the built files, and `npm run typecheck` checks them.
+
+The code that runs inside a 3D video, in the browser, is in `src/skills/cutscene-3d/templates/tier1/`
+and builds to `.js` with browser types (`tsconfig.browser.json`). Three.js and GSAP come from the
+page, so their types are small declaration files next to that code.
+
+Some code stays in other languages on purpose: the videos and design references are HTML (that
+is what the engine renders), the Blender and voice scripts are Python (Blender and the voice
+models only run Python), and the generated skills keep the engine's JavaScript.
 
 ## Where things live
 
 | Folder | What |
 |---|---|
-| `skills/cutscene/` | The router skill and the `cutscene` command (`scripts/cli.mjs`) |
-| `skills/cutscene-3d/`, `-voice/`, `-edit/` | Cutscene's own skills; edit them directly |
+| `src/` | The TypeScript source for everything Cutscene wrote |
+| `skills/cutscene/` | The router skill and the `cutscene` command (`scripts/cli.mjs`, built) |
+| `skills/cutscene-3d/`, `-voice/`, `-edit/` | Cutscene's own skills; edit the `SKILL.md` and Python here, the scripts in `src/` |
 | `skills/cutscene-compose/`, `-animate/`, `-design/`, `-captions/`, `-audio/`, `-render/`, `-promo/` | **Generated** from the pinned engine source; don't edit them by hand |
 | `overlays/` | Cutscene's changes to the generated skills ([how it works](overlays/README.md)) |
-| `tools/` | The sync, the skill validator and the pin-age check |
+| `tools/` | The build, the sync, the skill validator and the pin-age check (built from `src/tools/`) |
 | `tests/` | Vitest tests, one folder per part |
 | `examples/` | Example projects |
 
-To change a generated skill, edit its overlay (or `tools/sync-map.json` for small text changes),
-then run `node tools/sync-hyperframes.mjs` to rebuild it.
+To change a generated skill, edit its overlay (code overlays live in `src/overlays/`; the rest in
+`overlays/`), or `tools/sync-map.json` for small text changes. Then run `npm run build` and
+`node tools/sync-hyperframes.mjs` to rebuild it.
 
 ## Before you open a pull request
 
 ```bash
 npm test
+```
+
+```bash
+npm run typecheck
 ```
 
 ```bash

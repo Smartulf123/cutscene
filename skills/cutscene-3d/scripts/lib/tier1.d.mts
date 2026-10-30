@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-3d/scripts/lib/tier1.mts by `npm run build`. Edit that file, not this one.
 import type { Look, Palette, ShotSpec } from "./spec.mjs";
 /** The config baked into a Tier 1 shot (read by templates/tier1/_boot.js and cs3d-runtime.js). */
 export interface Tier1Config {

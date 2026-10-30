@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- **TypeScript.** Cutscene's own code and tests are now TypeScript, in `src/` and `tests/`. Each
+  file is built to the same `.mjs` path as before, so skills still run with plain `node` on Node 22
+  and nothing changes for users.
+
 ## 0.1.0 (2026-10-30)
 
 First public release.

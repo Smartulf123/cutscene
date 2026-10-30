@@ -20,10 +20,11 @@ skills/cutscene-3d/scripts/**/*.mjs linguist-generated
 skills/cutscene-3d/templates/tier1/*.js linguist-generated
 skills/cutscene-edit/scripts/**/*.mjs linguist-generated
 skills/cutscene-voice/scripts/**/*.mjs linguist-generated
-# Declaration files the build writes next to each built file (src/ has none of its own)
+# Declaration files the build writes next to each built file (the hand-written ones in src/ stay source)
 *.d.mts linguist-generated
 *.d.cts linguist-generated
 *.d.ts linguist-generated
+src/**/*.d.ts -linguist-generated
 
 # Generated from the pinned HyperFrames source by tools/sync-hyperframes.mjs
 skills/cutscene/references/upstream/** linguist-generated

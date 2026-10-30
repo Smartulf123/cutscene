@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-3d/scripts/lib/tier.mts by `npm run build`. Edit that file, not this one.
 import type { Params, ShotSpec } from "./spec.mjs";
 /** Seconds per frame by engine ("BLENDER_EEVEE", "CYCLES") and quality ("draft", "final"). */
 export type PerFrame = Record<string, Record<"draft" | "final", number>>;

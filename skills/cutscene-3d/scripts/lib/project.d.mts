@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-3d/scripts/lib/project.mts by `npm run build`. Edit that file, not this one.
 /** An error with a stable code and a plain-language fix (contracts §3). */
 export interface CutsceneError extends Error {
     code: string;

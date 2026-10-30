@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-3d/scripts/lib/encode.mts by `npm run build`. Edit that file, not this one.
 import type { SpawnSyncOptionsWithStringEncoding } from "node:child_process";
 /** PNG RGBA sequence -> VP9 WebM with real alpha (the engine reads alpha_mode=1). */
 export declare function encodeArgs({ framesDir, fps, out, crf, pattern, start }: {

@@ -157,9 +157,10 @@ describe("Tier 1 writer", () => {
       expect(html, t).toContain(`data-composition-id="scene3d-${t}"`);
       expect(html, t).toMatch(/data-duration="3"/);
       expect(html, t).toContain("three@0.184.0");
+      expect(html, t).not.toContain("Built from src/");
       expect(r.snippet).toContain(`data-composition-src="compositions/scene3d-${t}.html"`);
     }
-    expect(existsSync(join(dir, "compositions", "assets", "3d", "cs3d-runtime.js"))).toBe(true);
+    expect(readFileSync(join(dir, "compositions", "assets", "3d", "cs3d-runtime.js"), "utf8")).toMatch(/^\/\/ Cutscene 3D Tier 1 runtime/);
     expect(existsSync(join(dir, "compositions", "assets", "3d", "fonts", "Geist-Bold.ttf"))).toBe(true);
     expect(existsSync(join(dir, "compositions", "assets", "3d", "logos", "logo-svg.svg"))).toBe(true);
   });

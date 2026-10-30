@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-3d/scripts/lib/blender.mts by `npm run build`. Edit that file, not this one.
 /** A Blender version as `blender --version` prints it. */
 export interface BlenderVersion {
     major: number;

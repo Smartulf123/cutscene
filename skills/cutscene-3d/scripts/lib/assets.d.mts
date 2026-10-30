@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-3d/scripts/lib/assets.mts by `npm run build`. Edit that file, not this one.
 import type { BinaryLike } from "node:crypto";
 /** One pinned download in assets/manifest.json. */
 export interface ManifestItem {

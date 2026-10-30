@@ -1,3 +1,4 @@
+// Built from src/skills/cutscene-3d/scripts/lib/spec.mts by `npm run build`. Edit that file, not this one.
 export declare const SKILL_DIR: string;
 export declare const BUNDLED_FONT: string;
 export declare const DEMO_SVG: string;
