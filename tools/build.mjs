@@ -5,6 +5,7 @@
 // installed straight from this repo and run with plain `node`, on any Node 22.
 //
 // Each built file gets a first line that points back to its source, so nobody edits the copy.
+// Next to it goes a declaration file (.d.mts) with its types, which the tests read.
 //
 // Usage: node tools/build.mjs [--check] [--json]
 //   --check   build, then fail if a built file changed (CI uses this to catch a forgotten build)
@@ -18,6 +19,7 @@ const SRC = join(ROOT, "src");
 /** Compiler projects that write files, in build order. Missing ones are skipped. */
 const PROJECTS = ["tsconfig.json", "tsconfig.browser.json"];
 const OUT_EXT = { ".mts": ".mjs", ".cts": ".cjs", ".ts": ".js" };
+const DTS_EXT = { ".mts": ".d.mts", ".cts": ".d.cts", ".ts": ".d.ts" };
 const posix = (p) => p.split(sep).join("/");
 /** All TypeScript sources under src/, as absolute paths (type-only .d.ts files excluded). */
 function sources(dir = SRC) {
@@ -38,6 +40,12 @@ export function outputFor(src) {
     const rel = relative(SRC, src);
     const ext = rel.match(/\.[mc]?ts$/)[0];
     return join(ROOT, rel.slice(0, -ext.length) + OUT_EXT[ext]);
+}
+/** Where a source file's declaration file is written. */
+export function declarationFor(src) {
+    const rel = relative(SRC, src);
+    const ext = rel.match(/\.[mc]?ts$/)[0];
+    return join(ROOT, rel.slice(0, -ext.length) + DTS_EXT[ext]);
 }
 /** The first line of a built file (after a shebang, if any). */
 export function headerFor(src) {
@@ -63,7 +71,8 @@ function main(argv) {
     const check = argv.includes("--check");
     const json = argv.includes("--json");
     const srcs = sources();
-    const before = new Map(srcs.map((s) => [s, existsSync(outputFor(s)) ? readFileSync(outputFor(s), "utf8") : null]));
+    const read = (p) => (existsSync(p) ? readFileSync(p, "utf8") : null);
+    const before = new Map(srcs.flatMap((s) => [outputFor(s), declarationFor(s)].map((p) => [p, read(p)])));
     const errors = [];
     for (const p of PROJECTS) {
         if (!existsSync(join(ROOT, p)))
@@ -80,10 +89,14 @@ function main(argv) {
             missing.push(posix(relative(ROOT, s)));
             continue;
         }
-        const code = withHeader(readFileSync(out, "utf8"), headerFor(s));
-        writeFileSync(out, code);
-        if (before.get(s) !== code)
-            changed.push(posix(relative(ROOT, out)));
+        for (const p of [out, declarationFor(s)]) {
+            if (!existsSync(p))
+                continue;
+            const code = withHeader(readFileSync(p, "utf8"), headerFor(s));
+            writeFileSync(p, code);
+            if (before.get(p) !== code)
+                changed.push(posix(relative(ROOT, p)));
+        }
     }
     const ok = errors.length === 0 && missing.length === 0 && (!check || changed.length === 0);
     if (json) {

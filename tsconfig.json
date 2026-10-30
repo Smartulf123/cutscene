@@ -1,9 +1,11 @@
 {
-  "$comment": "Builds src/**/*.mts and *.cts into the same path without src/ (src/skills/x.mts -> skills/x.mjs). Run npm run build; never edit the built files.",
+  "$comment": "Builds src/**/*.mts and *.cts into the same path without src/ (src/skills/x.mts -> skills/x.mjs), with a .d.mts next to each so tests get the types. Run npm run build; never edit the built files. rootDirs lets an overlay import a skill's file by the path it has once synced into skills/.",
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "."
+    "outDir": ".",
+    "declaration": true,
+    "rootDirs": ["src/overlays", "src/skills"]
   },
   "include": ["src/**/*.mts", "src/**/*.cts"],
   "exclude": []
