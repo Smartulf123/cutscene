@@ -37,7 +37,6 @@ export interface BeatsFile {
 export interface SpecFileFields {
   params?: { svg?: unknown; model?: unknown } | null;
   font?: unknown;
-  lighting?: { hdri?: unknown } | null;
   look?: unknown;
 }
 
@@ -68,7 +67,7 @@ export function cutsceneError(code: string, message: string, hint = "", exitCode
 }
 
 /**
- * The spec fields that name files Blender or the browser will open. A network path there would
+ * The spec fields that name files Cutscene copies into the video. A network path there would
  * make Windows contact another computer (and offer it the user's sign-in), so specs may not use
  * one. Returns the first offending field as "params.svg", or null.
  */
@@ -77,7 +76,6 @@ export function specNetworkField(spec: SpecFileFields | null | undefined): strin
     "params.svg": spec?.params?.svg,
     "params.model": spec?.params?.model,
     font: spec?.font,
-    "lighting.hdri": spec?.lighting?.hdri,
     look: spec?.look,
   };
   for (const [name, value] of Object.entries(fields)) if (isNetworkPath(value)) return name;
@@ -104,18 +102,9 @@ export function findProject(start: string = process.cwd()): string {
 
 /** Paths for one shot inside a project. */
 export function shotPaths(projectDir: string, id: string) {
-  const work = join(projectDir, ".cutscene", "3d");
   return {
     project: projectDir,
-    spec: join(work, `${id}.json`),
-    work: join(work, id),
-    resolved: join(work, id, "resolved.json"),
-    stills: join(work, id, "stills"),
-    frames: join(work, id, "frames"),
-    log: join(work, id, "render.log"),
-    sheet: join(work, id, "stills", "contact-sheet.png"),
-    webm: join(projectDir, "assets", "3d", `${id}.webm`),
-    poster: join(projectDir, "assets", "3d", `${id}.poster.png`),
+    spec: join(projectDir, ".cutscene", "3d", `${id}.json`),
     look: join(projectDir, ".cutscene", "look.json"),
     beats: join(projectDir, ".cutscene", "beats.json"),
   };
@@ -202,7 +191,7 @@ export function parseArgs(argv: string[]): { flags: Flags; pos: string[] } {
   return { flags, pos };
 }
 
-const BOOL_FLAGS = new Set(["json", "yes", "force", "deadline", "keep-frames", "draft", "dry-run", "help", "update-beats", "no-beats", "no-sheet", "final"]);
+const BOOL_FLAGS = new Set(["json", "yes", "force", "dry-run", "help", "update-beats", "no-beats"]);
 
 export function emit(result: unknown, { json }: { json?: unknown }): void {
   if (json) process.stdout.write(JSON.stringify(result, null, 2) + "\n");

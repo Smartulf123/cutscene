@@ -1,4 +1,4 @@
-// The look's display font in 3D shots: which formats each tier reads, the look's own src, and
+// The look's display font in 3D shots: which formats 3D titles read, the look's own src, and
 // warnings only for templates that draw text.
 import { describe, expect, it } from "vitest";
 import { spawnSync } from "node:child_process";
@@ -25,33 +25,29 @@ const opts = (extra = {}) => ({ home: tmp(), systemDirs: [], manifest: { downloa
 
 describe("3D fonts", () => {
   it("knows which templates draw text", () => {
-    expect(usesText("title3d", 1)).toBe(true);
-    expect(usesText("title3d", 2)).toBe(true);
-    expect(usesText("physics-drop", 2)).toBe(true);
-    for (const t of ["logo-svg", "turntable", "product-shot"]) expect(usesText(t, 2), t).toBe(false);
-    for (const t of ["logo-svg", "turntable", "shapes", "flythrough"]) expect(usesText(t, 1), t).toBe(false);
+    expect(usesText("title3d")).toBe(true);
+    for (const t of ["logo-svg", "turntable", "shapes", "flythrough"]) expect(usesText(t), t).toBe(false);
   });
 
   it("scores Fontsource file names by their numeric weight", () => {
     expect(scoreFontFile("bodoni-moda-latin-700-normal.woff2", "Bodoni Moda", 700)).toBeGreaterThan(scoreFontFile("bodoni-moda-latin-400-normal.woff2", "Bodoni Moda", 700));
   });
 
-  it("Blender (Tier 2) uses the look's .woff2; Three.js (Tier 1) can't and says why", () => {
+  it("3D titles can't read the look's .woff2 and say why", () => {
     const dir = projectWithFont(["bodoni-moda-latin-700-normal.woff2"]);
     const src = "assets/fonts/bodoni-moda-latin-700-normal.woff2";
-    const t2 = resolveFont({ family: "Bodoni Moda", weight: 700, src, tier: 2, projectDir: dir, ...opts() });
-    expect(t2).toMatchObject({ source: "project", path: join(dir, src) });
-    const t1 = resolveFont({ family: "Bodoni Moda", weight: 700, src, tier: 1, projectDir: dir, ...opts() });
+    const t1 = resolveFont({ family: "Bodoni Moda", weight: 700, src, projectDir: dir, ...opts() });
     expect(t1).toMatchObject({ source: "bundled", path: BUNDLED_FONT, wanted: "Bodoni Moda" });
     expect(t1.unreadable).toBe(join(dir, src));
-    expect(FONT_FORMATS[1]).not.toContain("woff2");
-    expect(fontFallbackWarning(t1, 1)).toMatch(/only as \.woff2.*Blender \(Tier 2\) shot reads it/);
+    expect(FONT_FORMATS).toEqual(["ttf", "otf", "woff"]);
+    const note = fontFallbackWarning(t1)!;
+    expect(note).toMatch(/only as \.woff2, which Three\.js 3D titles can't read/);
+    expect(note).not.toMatch(/Blender|Tier 2/);
   });
 
   it("Tier 1 picks a pinned .woff from the cache and prefers .woff over .woff2 in the project", () => {
     const dir = projectWithFont(["bodoni-moda-latin-700-normal.woff2", "bodoni-moda-latin-700-normal.woff"]);
-    expect(resolveFont({ family: "Bodoni Moda", tier: 1, projectDir: dir, ...opts() }).path).toMatch(/\.woff$/);
-    expect(resolveFont({ family: "Bodoni Moda", tier: 2, projectDir: dir, ...opts() }).path).toMatch(/\.woff$/);
+    expect(resolveFont({ family: "Bodoni Moda", projectDir: dir, ...opts() }).path).toMatch(/\.woff$/);
     const pin = loadManifest().downloads.find((d) => d.name === "font-bodoni-moda-700");
     expect(pin, "Bodoni Moda has a pinned .woff for 3D titles").toBeTruthy();
     const home = tmp();
@@ -59,14 +55,14 @@ describe("3D fonts", () => {
     mkdirSync(join(home, "assets", fake.sha256), { recursive: true });
     writeFileSync(join(home, "assets", fake.sha256, "bodoni-moda-latin-700-normal.woff"), "x");
     const only2 = projectWithFont(["bodoni-moda-latin-700-normal.woff2"]);
-    const r = resolveFont({ family: "Bodoni Moda", tier: 1, projectDir: only2, home, systemDirs: [], manifest: { downloads: [fake] } });
+    const r = resolveFont({ family: "Bodoni Moda", projectDir: only2, home, systemDirs: [], manifest: { downloads: [fake] } });
     expect(r.source).toBe("cache");
   });
 
   it("explains a missing font with the fetch command when one is pinned", () => {
-    const r = resolveFont({ family: "Bodoni Moda", tier: 1, home: tmp(), systemDirs: [] });
+    const r = resolveFont({ family: "Bodoni Moda", home: tmp(), systemDirs: [] });
     expect(r.missing).toBe("font-bodoni-moda-700");
-    expect(fontFallbackWarning(r, 1)).toMatch(/cutscene 3d assets fetch font-bodoni-moda-700 --yes/);
+    expect(fontFallbackWarning(r)).toMatch(/cutscene 3d assets fetch font-bodoni-moda-700 --yes/);
     expect(fontFallbackWarning({ path: BUNDLED_FONT, source: "bundled" })).toBeNull();
   });
 

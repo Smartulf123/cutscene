@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { contactSheetArgs, encodeArgs, posterArgs, probeArgs, alphaStatsArgs } from "../../skills/cutscene-3d/scripts/lib/encode.mjs";
 import { updateShot3d, withShot3d, parseArgs, findProject, shotPaths, userPath } from "../../skills/cutscene-3d/scripts/lib/project.mjs";
 import {
   attrJson, compositionId, hostSnippet, pinThreeImports, renderTemplate, scriptJson, tier1Config, variablesFor, writeTier1,
@@ -11,41 +10,6 @@ import { fetchAsset, fontItemFor, fontSlug, loadManifest, resolveFont, scoreFont
 import { BUNDLED_FONT, newSpec } from "../../skills/cutscene-3d/scripts/lib/spec.mjs";
 
 const tmp = () => mkdtempSync(join(tmpdir(), "cs3d-"));
-
-describe("encode arguments", () => {
-  const a = encodeArgs({ framesDir: "C:/p/.cutscene/3d/logo/frames/", fps: 30, out: "C:/p/assets/3d/logo.webm" });
-  const pair = (flag: string) => a[a.indexOf(flag) + 1];
-  it("uses VP9 with an alpha pixel format and the alpha_mode tag", () => {
-    expect(pair("-c:v")).toBe("libvpx-vp9");
-    expect(pair("-pix_fmt")).toBe("yuva420p");
-    expect(pair("-auto-alt-ref")).toBe("0");
-    expect(pair("-metadata:s:v:0")).toBe("alpha_mode=1");
-    expect(a).toContain("-an");
-  });
-  it("reads the numbered PNG sequence at the shot's fps", () => {
-    expect(pair("-framerate")).toBe("30");
-    expect(pair("-i")).toBe("C:/p/.cutscene/3d/logo/frames/frame_%04d.png");
-    expect(a.at(-1)).toBe("C:/p/assets/3d/logo.webm");
-  });
-  it("poster keeps one PNG frame", () => {
-    expect(posterArgs({ frame: "f.png", out: "p.png" })).toEqual(expect.arrayContaining(["-frames:v", "1", "-c:v", "png", "p.png"]));
-  });
-  it("contact sheet: stills over the palette colour, 2 per row", () => {
-    const c = contactSheetArgs({ stills: ["a.png", "b.png", "c.png"], out: "s.png", width: 960, height: 540, bg: "#0B1020" });
-    const fc = c[c.indexOf("-filter_complex") + 1];
-    expect(fc).toContain("color=c=0x0B1020:s=960x540");
-    expect(fc).toContain("xstack=inputs=3:layout=0_0|w0_0|0_h0");
-    expect(c.filter((x) => x === "-i")).toHaveLength(3);
-  });
-  it("single still needs no stack", () => {
-    const c = contactSheetArgs({ stills: ["a.png"], out: "s.png", width: 10, height: 10 });
-    expect(c[c.indexOf("-filter_complex") + 1]).toContain("[v0]null[out]");
-  });
-  it("alpha checks decode with libvpx so alpha isn't dropped", () => {
-    expect(alphaStatsArgs("x.webm").slice(0, 3)).toEqual(["-hide_banner", "-c:v", "libvpx-vp9"]);
-    expect(probeArgs("x.webm").join(" ")).toContain("stream_tags");
-  });
-});
 
 const BEATS = `{
     "version": 1,
@@ -63,16 +27,16 @@ const BEATS = `{
 describe("beats.json shot3d updates", () => {
   it("withShot3d changes only the beat's shot3d", () => {
     const before = JSON.parse(BEATS);
-    const after = withShot3d(before, "b1", { spec: ".cutscene/3d/logo.json", tier: 2, file: "assets/3d/logo.webm", duration: 2.4 });
-    expect(after.beats[0].shot3d).toEqual({ spec: ".cutscene/3d/logo.json", tier: 2, file: "assets/3d/logo.webm", duration: 2.4 });
+    const after = withShot3d(before, "b1", { spec: ".cutscene/3d/logo.json", tier: 1, file: "compositions/scene3d-logo.html", duration: 2.4 });
+    expect(after.beats[0].shot3d).toEqual({ spec: ".cutscene/3d/logo.json", tier: 1, file: "compositions/scene3d-logo.html", duration: 2.4 });
     expect({ ...after.beats[0], shot3d: undefined }).toEqual({ ...before.beats[0], shot3d: undefined });
     expect(after.beats[1]).toEqual(before.beats[1]);
     expect(after.voices).toEqual(before.voices);
     expect(before.beats[0].shot3d).toBeUndefined();
   });
   it("merges into an existing shot3d", () => {
-    const after = withShot3d(JSON.parse(BEATS), "b2", { tier: 2, file: "x.webm" });
-    expect(after.beats[1].shot3d).toEqual({ tier: 2, note: "keep me", file: "x.webm" });
+    const after = withShot3d(JSON.parse(BEATS), "b2", { file: "compositions/scene3d-x.html" });
+    expect(after.beats[1].shot3d).toEqual({ tier: 1, note: "keep me", file: "compositions/scene3d-x.html" });
   });
   it("names the beats when the id is wrong", () => {
     let err;
@@ -88,10 +52,10 @@ describe("beats.json shot3d updates", () => {
     const dir = tmp();
     const file = join(dir, "beats.json");
     writeFileSync(file, BEATS);
-    await updateShot3d(file, "b1", { spec: ".cutscene/3d/logo.json", tier: 2, file: "assets/3d/logo.webm", duration: 2.4 });
+    await updateShot3d(file, "b1", { spec: ".cutscene/3d/logo.json", tier: 1, file: "compositions/scene3d-logo.html", duration: 2.4 });
     const text = readFileSync(file, "utf8");
     const after = JSON.parse(text);
-    expect(after.beats[0].shot3d.file).toBe("assets/3d/logo.webm");
+    expect(after.beats[0].shot3d.file).toBe("compositions/scene3d-logo.html");
     expect(after.beats[0].voice).toEqual(JSON.parse(BEATS).beats[0].voice);
     expect(after.beats[1]).toEqual(JSON.parse(BEATS).beats[1]);
     // untouched text (the second beat line) is kept exactly
@@ -101,16 +65,14 @@ describe("beats.json shot3d updates", () => {
 
 describe("project helpers", () => {
   it("parses flags", () => {
-    expect(parseArgs(["stills", "a.json", "--count", "3", "--json", "--frames=1,2", "-y"])).toEqual({ pos: ["stills", "a.json"], flags: { count: "3", json: true, frames: "1,2", yes: true } });
+    expect(parseArgs(["tier1", "title3d", "--spec", "a.json", "--json", "--start=1.5", "-y"])).toEqual({ pos: ["tier1", "title3d"], flags: { spec: "a.json", json: true, start: "1.5", yes: true } });
   });
   it("finds the project from a spec path and builds shot paths", () => {
     const dir = tmp();
     writeFileSync(join(dir, "index.html"), "<html></html>");
     expect(findProject(join(dir, ".cutscene", "3d"))).toBe(dir);
     const p = shotPaths(dir, "logo");
-    expect(p.webm).toBe(join(dir, "assets", "3d", "logo.webm"));
-    expect(p.poster).toBe(join(dir, "assets", "3d", "logo.poster.png"));
-    expect(p.frames).toBe(join(dir, ".cutscene", "3d", "logo", "frames"));
+    expect(p).toEqual({ project: dir, spec: join(dir, ".cutscene", "3d", "logo.json"), look: join(dir, ".cutscene", "look.json"), beats: join(dir, ".cutscene", "beats.json") });
   });
   it("refuses network paths", () => {
     expect(() => userPath("\\\\server\\share\\x.glb")).toThrow(/network/);
@@ -179,7 +141,9 @@ describe("assets and fonts", () => {
       expect(d.source, d.name).toBeTruthy();
       expect(d.url, d.name).not.toMatch(/@latest/);
     }
-    expect(manifest.downloads.some((d) => /polyhaven/.test(d.url) && d.license === "CC0-1.0")).toBe(true);
+    // Poly Haven HDRIs were only for Blender (Tier 2), which was removed.
+    expect(manifest.downloads.filter((d) => d.kind === "hdri" || /polyhaven/.test(d.url))).toEqual([]);
+    expect(manifest.downloads.every((d) => d.kind === "font" || d.name === "postprocessing")).toBe(true);
   });
   it("maps families to Fontsource slugs and the nearest weight", () => {
     expect(fontSlug("Space Grotesk")).toBe("space-grotesk");
