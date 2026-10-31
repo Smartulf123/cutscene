@@ -20,7 +20,7 @@
       "sourceSha256": [
         "b35f1f8eff68e9ff480a5d5d343a1bf5a40ebb7d0d9be20b0b980cfdb36047f3"
       ],
-      "sha256": "97fb4ed5b9eae703bfef417998cf988b6801823aeb0999cf7c5d57632203cf72"
+      "sha256": "dc925b7092bdfab1148206f3fe7cc7fc48da00a2ea3b32d6e35b29e3cf23b0ae"
     },
     "skills/cutscene-animate/adapters/animate-text.md": {
       "from": "skills/hyperframes-animation/adapters/animate-text.md",
@@ -2158,8 +2158,8 @@
     },
     "skills/cutscene-design/references/look-system.md": {
       "from": "overlays/cutscene-design/references/look-system.md",
-      "sourceSha256": "76e1d45d868084949f395e3a7f788c977c87159400616613e804ea819275ca7f",
-      "sha256": "76e1d45d868084949f395e3a7f788c977c87159400616613e804ea819275ca7f"
+      "sourceSha256": "e2996c4858adc40a8e72ffa7c56a0eb127176be54fc1d26757dc456b68e31854",
+      "sha256": "e2996c4858adc40a8e72ffa7c56a0eb127176be54fc1d26757dc456b68e31854"
     },
     "skills/cutscene-design/references/motion-principles.md": {
       "from": "skills/hyperframes-creative/references/motion-principles.md",
@@ -2237,7 +2237,7 @@
         "overlays/cutscene-promo/SKILL.head.md"
       ],
       "sourceSha256": [],
-      "sha256": "b91f19ec40d335976978c816332b23b3e3856809e32429bf6bf0df6b9e7a1b3c"
+      "sha256": "8f3ce78168588a5968f53ce4f9832cc5002a65f99231b35f89e9862d17621d49"
     },
     "skills/cutscene-promo/workflows/faceless-explainer/WORKFLOW.md": {
       "from": "skills/faceless-explainer/SKILL.md",
