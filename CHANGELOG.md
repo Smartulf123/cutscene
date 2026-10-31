@@ -13,6 +13,18 @@
 - **Safer edit lists.** An edit list's tool name can no longer point output files outside the
   project folder, and only numbers from a mix file reach FFmpeg.
 
+### Removed
+
+- **Blender 3D ("Tier 2").** A Blender shot took minutes for every second of video on a normal
+  computer, and the agent spent a lot of time and tokens on stills and renders, so it wasn't worth
+  it for most people. Every 3D shot is now drawn with Three.js inside the video, with nothing to
+  install: 3D titles, SVG logo reveals, product turntables from a .glb model, floating shapes and
+  fly-throughs. The `product-shot` and `physics-drop` templates and the Blender commands (stills,
+  render, encode and setup) are gone, and `cutscene doctor` no longer looks for Blender. A shot
+  spec with `"tier": 2` is refused with a message that says so. Make the shot with one of the
+  templates above, or, if you already have a rendered 3D clip, add it to the video as a normal
+  clip.
+
 ## 0.1.0 (2026-10-30)
 
 First public release.

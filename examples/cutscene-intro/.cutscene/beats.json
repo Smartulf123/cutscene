@@ -10,7 +10,7 @@
       "id": "b1",
       "start": 0,
       "end": 3,
-      "label": "3D logo reveal (Blender), wordmark lands",
+      "label": "3D logo reveal (pre-rendered clip), wordmark lands",
       "graphics": [
         {
           "id": "g-wordmark",
@@ -59,12 +59,6 @@
           }
         ],
         "heard": "This is Cutscene."
-      },
-      "shot3d": {
-        "spec": ".cutscene/3d/logo.json",
-        "tier": 2,
-        "file": "assets/3d/logo.webm",
-        "duration": 3
       }
     },
     {

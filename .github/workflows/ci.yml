@@ -1,6 +1,6 @@
 # Cutscene CI: Node tests, skill checks and pin ages on Ubuntu and Windows, plus the Python
-# tests. Tests that need Blender, voice models, FFmpeg or the engine skip themselves when the
-# tool is missing, so this stays green on a plain runner.
+# tests. Tests that need voice models, FFmpeg or the engine skip themselves when the tool is
+# missing, so this stays green on a plain runner.
 # Action versions are exact tags at least 14 days old (tools/check-pin-ages.mjs checks them).
 name: CI
 

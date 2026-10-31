@@ -22,7 +22,7 @@ editorial) maps to concrete GSAP eases and timings in `/cutscene-design` →
 on everything is the house-style trap this avoids.
 
 This skill does NOT choose the look (`/cutscene-design`), define the composition contract
-(`/cutscene-compose`), make Blender renders (`/cutscene-3d`) or place sound (`/cutscene-audio`).
+(`/cutscene-compose`), make 3D shots (`/cutscene-3d`) or place sound (`/cutscene-audio`).
 
 ## How to run cutscene commands
 

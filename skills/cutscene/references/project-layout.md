@@ -7,11 +7,10 @@
 ```
 <project>/
   index.html                     the main composition (root timeline)
-  compositions/                  sub-compositions
+  compositions/                  sub-compositions, including 3D shots (scene3d-<shot-id>.html)
+  compositions/assets/3d/        fonts, logos and models the 3D shots use
   assets/                        images, audio, fonts
   assets/voice/<line-id>.wav     final voice lines (+ <line-id>.license.txt)
-  assets/3d/<shot-id>.webm       final transparent 3D clips (VP9 with alpha)
-  assets/3d/<shot-id>.poster.png one still of each 3D clip for quick looks
   hyperframes.json, meta.json    engine settings and project id: keep their names
   CLAUDE.md, AGENTS.md           short guide for any agent that opens the project
   .gitignore                     keeps caches and render outputs out of git (below)
@@ -21,7 +20,7 @@
     beats.json     the beat sheet (see beats.md)
     project.md     short memory: decisions, approvals, what was checked
     voice/         voice working files: references, takes, check reports
-    3d/            3D specs (<shot-id>.json), stills, frame sequences
+    3d/            3D shot specs (<shot-id>.json)
     edit/          transcripts, edit lists, review pages
 ```
 
@@ -31,7 +30,7 @@
 - Paths inside `beats.json` and `look.json` are relative to the project folder.
 - `.gitignore` lists what Cutscene, the engine and the preview rebuild on their own:
   `.hyperframes/` (snapshots and check reports live there), `.thumbnails/`, `.transcode-cache/`,
-  3D frame sequences and stills, `.cutscene/stills/`, voice takes, `renders/` and videos saved in
+  `.cutscene/stills/`, voice takes, `renders/` and videos saved in
   the project's top folder. If the project already has a `.gitignore`, `cutscene init` only adds
   the lines it is missing.
 
@@ -41,7 +40,7 @@ Shared by every project. Set `CUTSCENE_HOME` to use another folder.
 
 ```
 ~/.cutscene/
-  config.json        user settings, e.g. {"blender": "<path>", "voice": {"default": "kokoro"}}
+  config.json        user settings, e.g. {"voice": {"default": "kokoro"}}
   engine/<version>/  the pinned video engine
   media/             the engine's media cache
   voice/             voice environment, model weights, benchmarks.json

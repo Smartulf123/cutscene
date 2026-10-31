@@ -6,8 +6,8 @@ other agents) that plans the video with you, builds it as an animated HTML compo
 Everything runs on your computer.
 
 For an example, [`examples/cutscene-intro`](examples/cutscene-intro) is a 12-second intro made
-with Cutscene itself: the brief, the look, the beat sheet, the Blender logo, the Three.js title and
-the four voice lines.
+with Cutscene itself: the brief, the look, the beat sheet, the 3D title and the four voice lines.
+Its 3D logo is a pre-rendered video clip, placed like any other clip.
 
 ## What it does
 
@@ -15,9 +15,9 @@ the four voice lines.
   character), then a beat sheet that times every line, shot and graphic. You approve each step
   before anything is built.
 - **Animates.** GSAP motion on HTML, with the engine's rules for frame-accurate, repeatable renders.
-- **Real 3D.** Extruded titles, SVG logo reveals, product turntables and physics drops. Tier 1
-  draws them with Three.js inside the video and needs nothing installed. Tier 2 renders them in your
-  own Blender to a transparent clip, and shows you stills before the long render.
+- **Real 3D.** Extruded titles, SVG logo reveals, product turntables, floating shapes and
+  fly-throughs. Cutscene draws them with Three.js inside the video, so there is nothing to install
+  and you see them in the live preview straight away.
 - **Voices on your computer.** Design a voice from a description ("female, young adult, British
   accent"), or clone one with the speaker's permission. Each line is spoken with a fixed seed, then
   transcribed back and checked word by word, so a misread word is caught before you hear it. The
@@ -59,7 +59,6 @@ missing. It asks before every download.
 | Node.js 22 or newer | everything | |
 | FFmpeg | everything | |
 | The video engine | everything; installed by `cutscene setup` into `~/.cutscene` | about 110 MB |
-| Blender 4.2 or newer | Tier 2 3D only (Tier 1 needs nothing) | |
 | Python 3.10 to 3.13 | designed and cloned voices only | |
 | OmniVoice | the best voices, design and cloning (non-commercial weights) | 3.3 GB |
 | VoxCPM2 | voices you may use commercially, and Norwegian | 5 GB |
@@ -93,7 +92,7 @@ Project state lives in the project folder (`.cutscene/brief.md`, `look.json`, `b
 | `cutscene-design` | The look: palette, type pair, motion character, contrast and same-look checks |
 | `cutscene-compose` | Writes the HTML composition and installs ready-made blocks |
 | `cutscene-animate` | Motion: GSAP timelines, transitions, kinetic type, charts, logo reveals |
-| `cutscene-3d` | 3D shots with Three.js (Tier 1) or Blender (Tier 2) |
+| `cutscene-3d` | 3D shots drawn with Three.js inside the video: titles, logos, turntables, shapes |
 | `cutscene-voice` | Designs, clones, speaks and checks voiceover lines |
 | `cutscene-captions` | Word-timed captions with themes and safe zones |
 | `cutscene-audio` | Music, sound effects, fades and ducking |

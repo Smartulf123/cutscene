@@ -3,9 +3,8 @@
 Cutscene
 Copyright 2026 the Cutscene contributors
 
-Cutscene is licensed under the Apache License 2.0 (`LICENSE`), except the Blender scripts in
-`skills/cutscene-3d/scripts/blender/`, which are GPL-3.0 (see below). This file lists the
-third-party work Cutscene is built on, ships, downloads with the user's consent, or learned from.
+Cutscene is licensed under the Apache License 2.0 (`LICENSE`). This file lists the third-party
+work Cutscene is built on, ships, downloads with the user's consent, or learned from.
 `THIRD_PARTY.md` has the file-by-file map of the synced skills.
 
 ## Built on HyperFrames
@@ -53,8 +52,7 @@ after the user agrees (`--yes`), into its own folder, never on PATH.
 
 | What | Used for | Licence | Source |
 |---|---|---|---|
-| **postprocessing** 6.39.5 (pmndrs), Copyright Raoul van Rüschen | optional 3D Tier 1 bloom; a copy with its `three` import pinned (marked as changed in its first line) goes into the video project | Zlib | npm / jsDelivr, SHA-256 pinned |
-| **Poly Haven HDRIs** (studio_small_09, brown_photostudio_02) | 3D lighting | CC0 1.0 | polyhaven.com, SHA-256 pinned |
+| **postprocessing** 6.39.5 (pmndrs), Copyright Raoul van Rüschen | optional bloom in 3D shots; a copy with its `three` import pinned (marked as changed in its first line) goes into the video project | Zlib | npm / jsDelivr, SHA-256 pinned |
 | **Fontsource fonts** for 3D titles (Space Grotesk, Inter, Manrope, Sora, Archivo Black, DM Serif Display, Playfair Display, Montserrat, Poppins, Syne, Unbounded, Outfit, Plus Jakarta Sans, Bricolage Grotesque, Geist Sans, Oswald, League Gothic, EB Garamond, Space Mono, JetBrains Mono, Baloo 2, Anton, Bodoni Moda, Cormorant Garamond, Chakra Petch, Fredoka, Teko, Cinzel, Shippori Mincho, Rajdhani, Bangers; Special Elite) | 3D text in the video's typeface | SIL OFL 1.1; Special Elite is Apache-2.0 | npm / jsDelivr, SHA-256 pinned |
 | **OmniVoice** (k2-fsa) | voice design and cloning | code Apache-2.0; **model weights CC-BY-NC-4.0 (non-commercial)**; its audio tokenizer is under the Boson Higgs Audio 2 Community License (see below) | PyPI, huggingface.co/k2-fsa/OmniVoice at a pinned revision, SHA-256 pinned |
 | **VoxCPM2** (OpenBMB) | voices, commercial use allowed | Apache-2.0 | PyPI, huggingface.co/openbmb/VoxCPM2, SHA-256 pinned |
@@ -72,7 +70,7 @@ they are not in this repository.
 
 - **GSAP** 3.14.2: Standard "No Charge" GSAP License, Copyright Webflow. Free, including for
   commercial use; not an OSI open-source licence (https://gsap.com/standard-license).
-- **three.js** 0.184.0: MIT, Copyright the three.js authors. Used by the 3D Tier 1 scenes.
+- **three.js** 0.184.0: MIT, Copyright the three.js authors. Used by the 3D shots.
 - **Lottie** (lottie-web), **Anime.js**, **TypeGPU**: MIT; optional adapters in `cutscene-animate`.
 - **Google Fonts** linked by a composition keep their own licences (mostly SIL OFL 1.1).
 
@@ -103,14 +101,6 @@ The licence text is downloaded with the model (`audio_tokenizer/LICENSE`). Voice
 OmniVoice are for non-commercial use; every voice file Cutscene writes gets a `.license.txt`
 saying which model made it and on what terms.
 
-## GPL-3.0: the Blender scripts
-
-The Python scripts in `skills/cutscene-3d/scripts/blender/` run inside Blender (`import bpy`) and
-are therefore licensed under the GNU General Public License v3.0 (`LICENSE` in that folder),
-following Blender's licensing of its Python API. The rest of Cutscene talks to Blender only by
-starting it as a separate program, and stays Apache-2.0. Blender itself (GPL) is installed by the
-user and is not part of Cutscene.
-
 ## Ideas only, no code copied
 
 - **video-use** (browser-use, MIT): transcript-first editing and a self-check after every cut.
@@ -119,7 +109,5 @@ user and is not part of Cutscene.
   text copied.
 - **audio-offset-finder** (BBC R&D, Apache-2.0): the cross-correlation method for lining up two
   recordings; Cutscene's code is its own.
-- **EL4CTEO/blender-skills** (MIT): Blender 5 API rules.
 - **VoiceStudio** (debpalash, AGPL-3.0): used only over its local API when the user runs it;
   nothing copied.
-- **eden-motion** (no licence): the idea of HyperFrames plus Blender plates; nothing copied.

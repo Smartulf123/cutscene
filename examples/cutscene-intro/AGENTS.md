@@ -2,7 +2,7 @@
 # Cutscene video project
 
 This folder is a Cutscene video project. Cutscene builds videos from HTML compositions, with
-optional 3D shots (Three.js or Blender) and local AI voices.
+optional 3D shots (Three.js scenes inside the video) and local AI voices.
 
 ## Start here
 
@@ -17,8 +17,9 @@ optional 3D shots (Three.js or Blender) and local AI voices.
 ## Project files
 
 - `index.html`: the main composition (the root timeline)
-- `compositions/`: sub-compositions, referenced with `data-composition-src`
-- `assets/`: images, audio, `assets/voice/` voice lines, `assets/3d/` transparent 3D clips
+- `compositions/`: sub-compositions, referenced with `data-composition-src`, including 3D shots
+  (`scene3d-*.html`)
+- `assets/`: images, audio, `assets/voice/` voice lines
 - `.cutscene/brief.md`: what the user wants, approved before building
 - `.cutscene/look.json`: this video's look (palette, type, motion, texture)
 - `.cutscene/beats.json`: the beat sheet; every line, shot and graphic with its time

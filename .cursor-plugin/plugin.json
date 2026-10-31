@@ -2,7 +2,7 @@
   "$schema": "https://cursor.com/schemas/cursor-plugin/plugin.json",
   "name": "cutscene",
   "displayName": "Cutscene",
-  "description": "Make and edit videos with your AI agent: animated HTML compositions, 3D shots with Three.js or Blender, local AI voices you design or clone, captions, music and footage clean-up. Everything runs on your computer.",
+  "description": "Make and edit videos with your AI agent: animated HTML compositions, 3D shots drawn with Three.js inside the video, local AI voices you design or clone, captions, music and footage clean-up. Everything runs on your computer.",
   "version": "0.1.0",
   "author": {
     "name": "Smartulf123",
@@ -21,7 +21,6 @@
     "animation",
     "gsap",
     "three",
-    "blender",
     "3d",
     "voiceover",
     "tts",

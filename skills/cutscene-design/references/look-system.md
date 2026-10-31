@@ -209,14 +209,13 @@ A brand's display font is kept; its body comes from the brand, else from the cur
 same display face, else from a pair that suits the motion character.
 
 **Fonts in 3D shots.** `/cutscene-3d` extrudes the look's display font, but it needs a file it can
-read: Blender reads .ttf, .otf, .woff and .woff2; Three.js 3D titles read only .ttf, .otf and .woff.
-Every display face in the table above has a pinned .woff in `/cutscene-3d`'s
-`assets/manifest.json`. When that file is already on this computer, `look new` copies it into
-`assets/fonts/` next to the .woff2 (the .woff is for 3D titles; declare only the .woff2 with
-`@font-face`). When it isn't, `look new` prints a note with the command that gets it
+read: .ttf, .otf or .woff, not .woff2. Every display face in the table above has a pinned .woff in
+`/cutscene-3d`'s `assets/manifest.json`. When that file is already on this computer, `look new`
+copies it into `assets/fonts/` next to the .woff2 (the .woff is for 3D titles; declare only the
+.woff2 with `@font-face`). When it isn't, `look new` prints a note with the command that gets it
 (`cutscene 3d assets fetch font-<family>-<weight> --yes`, after asking the user). Without it, a
-Three.js 3D title falls back to Geist Bold and says so; 3D shots without text (logos, products,
-shapes) never need a font.
+3D title falls back to Geist Bold and says so; 3D shots without text (logos, products, shapes)
+never need a font.
 
 Sizes at 1920x1080 (scale with the frame's short side): display 72 to 180 px, body at least
 32 px, captions at least 44 px. Two families at most; a third only for code.
