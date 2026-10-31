@@ -92,6 +92,19 @@ describe("validateBeats", () => {
     expect(w).toMatch(/after the end of the video/);
   });
 
+  it("still accepts an old shot3d.tier of 2 (Blender, now removed), with a warning", () => {
+    const sheet = (tier: unknown) => ({ version: 1, fps: 30, width: 1920, height: 1080, beats: [{ id: "a", start: 0, end: 2, shot3d: { tier, file: "assets/3d/logo.webm" } }] });
+    const old = validateBeats(sheet(2));
+    expect(old.ok).toBe(true);
+    expect(old.errors).toEqual([]);
+    expect(old.warnings.find((w) => w.path === "beats[0] (a).shot3d.tier")!.message).toMatch(/Blender \(Tier 2\) was removed/);
+    const now = validateBeats(sheet(1));
+    expect(now.ok).toBe(true);
+    expect(now.warnings).toEqual([]);
+    const bad = validateBeats(sheet("2"));
+    expect(bad.errors.map((e) => e.message).join(" ")).toMatch(/must be 1/);
+  });
+
   it("never throws on junk", () => {
     for (const junk of [null, 5, "x", [], { beats: "no" }]) expect(() => validateBeats(junk)).not.toThrow();
   });

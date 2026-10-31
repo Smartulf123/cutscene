@@ -1,169 +1,125 @@
-// Tier 1 (Three.js inside the video) vs Tier 2 (Blender) decision, and render-time estimates.
-// The rule is written out in SKILL.md and references/tiers.md; this is the same rule as code.
-import { TEMPLATES, TIER1_TEMPLATES, frameCount, materialPresets, pickEngine } from "./spec.mjs";
-import type { Params, ShotSpec } from "./spec.mjs";
+// Every 3D shot is Tier 1: Three.js inside the video. Blender (Tier 2) was removed, so a spec that
+// asks for it (an old spec, or an agent that still remembers it) gets a clear TIER2_REMOVED error
+// instead of a crash, and settings only Blender read are ignored with one warning.
+import { cutsceneError } from "./project.mjs";
+import type { CutsceneError } from "./project.mjs";
+import { TEMPLATES } from "./spec.mjs";
+import type { ShotSpec } from "./spec.mjs";
 
-/** Seconds per frame by engine ("BLENDER_EEVEE", "CYCLES") and quality ("draft", "final"). */
-export type PerFrame = Record<string, Record<"draft" | "final", number>>;
+/** The error code for anything that needs Blender. */
+export const TIER2_REMOVED = "TIER2_REMOVED";
 
-/** Render timings: the defaults below, or measured numbers that replace some of them. */
-export interface BenchInput {
-  machine?: string;
-  startup?: number;
-  eeveeFirstFrame?: number;
-  perFrame?: Record<string, Partial<Record<"draft" | "final", number>>>;
-}
+/** Templates that only Blender made, and the Three.js template closest to each. */
+export const REMOVED_TEMPLATES: Record<string, string> = { "product-shot": "turntable", "physics-drop": "title3d" };
 
-/** The spec fields an estimate reads (a spec, or a resolved spec). */
-export interface EstimateSpec {
-  template: string;
-  duration?: number;
-  fps?: number;
-  width?: number;
-  height?: number;
-  quality?: string;
-  engine?: string;
-  needs?: string[];
-  params?: Params;
-}
+/** Old Blender render engines a spec may name. */
+export const BLENDER_ENGINES = ["cycles", "eevee"];
 
-/** Needs that only Blender does well. */
-export const HARD_TIER2: Record<string, string> = {
-  glass: "glass or transparent materials need ray-traced refraction (Blender Cycles)",
-  liquid: "liquids need Blender",
-  subsurface: "subsurface scattering (skin, wax, jade) needs Blender",
-  physics: "physics and simulation need Blender's rigid bodies",
-  simulation: "physics and simulation need Blender's rigid bodies",
-  character: "characters and rigs beyond playing a glTF clip need Blender",
-  rig: "characters and rigs beyond playing a glTF clip need Blender",
-  photoreal: "photoreal lighting needs Blender",
-  blender: "you asked for Blender",
-};
-export const SOFT_TIER2: Record<string, string> = {
-  procedural: "detailed procedural materials look best in Blender",
-  caustics: "caustics need Blender Cycles",
+/** `needs` only Blender could meet, in plain words. */
+export const BLENDER_ONLY_NEEDS: Record<string, string> = {
+  glass: "ray-traced glass",
+  liquid: "liquids",
+  subsurface: "subsurface scattering",
+  physics: "physics",
+  simulation: "simulation",
+  character: "character rigs",
+  rig: "rigs",
+  photoreal: "photoreal lighting",
+  caustics: "caustics",
+  blender: "Blender",
 };
 
-/**
- * Measured on the reference PC (Intel i5-13420H, Intel UHD graphics, 24 GB, Blender 5.2.3),
- * seconds per frame at 1920x1080. Updated from real renders: see references/tiers.md.
- */
-export const BENCH: { machine: string; startup: number; eeveeFirstFrame: number; perFrame: PerFrame; physicsBakePerFrame: number; encodePerFrame: number } = {
-  machine: "i5-13420H + Intel UHD, Blender 5.2.3",
-  startup: 9, // Blender boot + scene build
-  eeveeFirstFrame: 12, // EEVEE shader compile in a fresh process (35 s the very first time)
-  perFrame: {
-    // measured 2026-10-30: title3d EEVEE 32 spp 3.6 s; Cycles 64 spp: title 38 s, glass product 91 s
-    BLENDER_EEVEE: { draft: 2.0, final: 3.7 },
-    CYCLES: { draft: 45, final: 90 },
-  },
-  physicsBakePerFrame: 0.02,
-  encodePerFrame: 0.12,
-};
+/** Spec fields only Blender read. Tier 1 ignores them (with one warning). */
+export const BLENDER_ONLY_FIELDS = ["engine", "quality", "samples", "view_transform", "motion_blur", "camera", "lighting.rig", "lighting.hdri"];
 
-function needsOf(spec: ShotSpec): Set<string> {
-  const out = new Set((spec.needs || []).map((n) => String(n).toLowerCase().trim()));
-  const presets = materialPresets(spec);
-  if (presets.includes("glass")) out.add("glass");
-  if (presets.includes("noise") || presets.includes("wave")) out.add("procedural");
-  if (spec.template === "physics-drop") out.add("physics");
-  return out;
+const lower = (v: unknown) => String(v).toLowerCase().trim();
+
+/** The `needs` in a spec that only Blender could meet. */
+export function blenderNeeds(spec: Pick<ShotSpec, "needs">): string[] {
+  return Array.isArray(spec.needs) ? [...new Set(spec.needs.map(lower).filter((n) => BLENDER_ONLY_NEEDS[n]))] : [];
 }
 
-/**
- * Decide the tier for a spec.
- */
-export function decideTier(spec: ShotSpec, { blender = undefined, deadline = false }: { blender?: { path: string; version: string } | null; deadline?: boolean } = {}) {
+/** Why a spec needs Blender, in plain words (empty = it can be made in Tier 1). Pure. */
+export function tier2Reasons(spec: ShotSpec | null | undefined): string[] {
+  if (!spec || typeof spec !== "object") return [];
   const reasons: string[] = [];
+  if (spec.tier === 2 || spec.tier === "2") reasons.push('it asks for "tier": 2');
+  if (typeof spec.engine === "string" && BLENDER_ENGINES.includes(lower(spec.engine))) reasons.push(`it asks for Blender's "${spec.engine}" engine`);
+  if (REMOVED_TEMPLATES[spec.template]) reasons.push(`"${spec.template}" was a Blender template`);
+  const needs = blenderNeeds(spec);
+  if (needs.length) reasons.push(`it needs ${needs.map((n) => BLENDER_ONLY_NEEDS[n]).join(", ")}`);
+  return reasons;
+}
+
+/** The TIER2_REMOVED error for a spec (or, without one, for a request that needs Blender). */
+export function tier2Error(reasons: string[], spec?: Partial<ShotSpec> | null): CutsceneError {
+  const steps: string[] = [];
+  const replacement = spec?.template ? REMOVED_TEMPLATES[spec.template] : undefined;
+  if (replacement) steps.push(`use the "${replacement}" template (\`cutscene 3d new ${replacement}\`)`);
+  if (spec) {
+    const needs = blenderNeeds(spec);
+    const drop = [
+      ...(typeof spec.engine === "string" && BLENDER_ENGINES.includes(lower(spec.engine)) ? ['"engine"'] : []),
+      ...(needs.length ? [`"${needs.join('", "')}" from "needs"`] : []),
+    ];
+    const edits = [
+      ...(spec.tier === 2 || spec.tier === "2" ? ['set "tier": 1'] : []),
+      ...(drop.length ? [`remove ${drop.join(" and ")}`] : []),
+    ];
+    if (edits.length) steps.push(`in the spec, ${edits.join(" and ")}`);
+  }
+  const how = steps.length ? `Make it with Tier 1 (Three.js) instead: ${steps.join(", then ")}.` : "Make the shot with Tier 1 (Three.js) instead: `cutscene 3d new <template>`, then `cutscene 3d tier1`.";
+  const e = cutsceneError(
+    TIER2_REMOVED,
+    `Blender (Tier 2) was removed from Cutscene, so this can't be made as it is${reasons.length ? `: ${reasons.join("; ")}` : ""}.`,
+    `${how} Or, if the shot is already rendered as a video file, add that file as a normal clip.`,
+  );
+  e.details = { reasons, tier1Template: replacement || spec?.template || null };
+  return e;
+}
+
+/** Commands that only drove Blender. */
+export const REMOVED_COMMANDS = ["stills", "render", "encode", "setup"];
+
+/** The TIER2_REMOVED error for a command that only drove Blender (`cutscene 3d stills`, ...). */
+export function removedCommandError(cmd: string): CutsceneError {
+  const e = cutsceneError(
+    TIER2_REMOVED,
+    `"cutscene 3d ${cmd}" was part of Blender (Tier 2), which was removed from Cutscene.`,
+    "Make the shot with Tier 1 (Three.js) instead: `cutscene 3d new <template>`, then `cutscene 3d tier1 <template> --spec <spec>`. Or, if the shot is already rendered as a video file, add that file as a normal clip.",
+  );
+  e.details = { command: cmd };
+  return e;
+}
+
+/** Throw TIER2_REMOVED when the spec needs Blender. */
+export function refuseTier2(spec: ShotSpec): void {
+  const reasons = tier2Reasons(spec);
+  if (reasons.length) throw tier2Error(reasons, spec);
+}
+
+/** The Blender-only fields a spec still has (as "camera", "lighting.rig", ...). Pure. */
+export function ignoredFields(spec: ShotSpec | null | undefined): string[] {
+  if (!spec || typeof spec !== "object") return [];
+  const lighting = spec.lighting && typeof spec.lighting === "object" ? (spec.lighting as Record<string, unknown>) : {};
+  return BLENDER_ONLY_FIELDS.filter((f) => (f.startsWith("lighting.") ? lighting[f.slice(9)] !== undefined : spec[f] !== undefined));
+}
+
+/** One warning about the Blender-only fields a spec still has, or null. */
+export function ignoredWarning(spec: ShotSpec | null | undefined): string | null {
+  const fields = ignoredFields(spec);
+  return fields.length ? `This spec has settings only Blender used (${fields.join(", ")}); Tier 1 ignores them.` : null;
+}
+
+/** What `cutscene 3d plan` reports: always Tier 1. Throws TIER2_REMOVED for a Blender spec. */
+export function decideTier(spec: ShotSpec) {
+  refuseTier2(spec);
   const warnings: string[] = [];
-  const needs = needsOf(spec);
-  const hard = [...needs].filter((n) => HARD_TIER2[n]);
-  const soft = [...needs].filter((n) => SOFT_TIER2[n]);
-  const duration = Number(spec.duration) || TEMPLATES[spec.template]?.duration || 3;
-  const has1 = Boolean(TIER1_TEMPLATES[spec.template]);
-  const has2 = Boolean(TEMPLATES[spec.template]);
-  const forced = spec.tier === 1 || spec.tier === "1" ? 1 : spec.tier === 2 || spec.tier === "2" ? 2 : null;
-
-  let tier;
-  if (forced) {
-    tier = forced;
-    reasons.push(`the spec asks for Tier ${forced}`);
-  } else if (!has2) {
-    tier = 1;
-    reasons.push(`"${spec.template}" is a Three.js template`);
-  } else if (!has1 && spec.template === "physics-drop") {
-    tier = 2;
-    reasons.push(HARD_TIER2.physics);
-  } else if (hard.length) {
-    tier = 2;
-    for (const n of hard) reasons.push(HARD_TIER2[n]);
-  } else if (soft.length && duration <= 10 && !deadline) {
-    tier = 2;
-    for (const n of soft) reasons.push(SOFT_TIER2[n]);
-  } else if (spec.template === "product-shot") {
-    tier = duration > 10 || deadline ? 1 : 2;
-    reasons.push(tier === 2 ? "a product shot wants Blender's reflections and depth of field" : "long or rushed product shot: the Three.js turntable is much faster");
-  } else {
-    tier = 1;
-    reasons.push("no realism, physics or rigs needed: Three.js inside the video renders with the rest of the frame, nothing to install");
-  }
-
-  if (tier === 2 && duration > 10) warnings.push(`This is a ${duration} s Blender shot; on this PC that is slow. Consider Tier 1 or a shorter shot.`);
-  if (tier === 2 && deadline && !hard.length) {
-    tier = 1;
-    reasons.push("tight deadline: Tier 1 instead");
-  }
-
-  const tier1Template = has1 ? spec.template : TEMPLATES[spec.template]?.tier1 || "title3d";
-  let fallback = null;
-  if (tier === 2 && blender === null) {
-    fallback = {
-      tier: 1,
-      template: tier1Template,
-      lost: hard.length ? hard.map((n) => n) : ["Blender lighting quality"],
-      message: `Blender isn't installed. Ask the user: set up Blender (download, with their OK), or make it in Three.js (Tier 1, "${tier1Template}") without ${hard.length ? hard.join(", ") : "Blender's realism"}.`,
-    };
-  }
-  if (tier === 1 && !has1) {
-    warnings.push(`There is no Three.js "${spec.template}"; Tier 1 uses "${tier1Template}" instead${spec.template === "physics-drop" ? " (no physics)" : ""}.`);
-  }
-  const engine = tier === 2 ? pickEngine(spec) : null;
-  return { tier, engine, template: tier === 1 ? tier1Template : spec.template, reasons, warnings, fallback, needs: [...needs] };
-}
-
-/**
- * Seconds to render a shot on this machine. `bench` can carry measured numbers from earlier
- * renders (`<CUTSCENE_HOME>/logs/3d-timings.json`), which beat the defaults.
- */
-export function estimate(spec: EstimateSpec, { engine, stills = 0, bench = BENCH, scale = 1 }: { engine?: string | null; stills?: number; bench?: BenchInput; scale?: number } = {}) {
-  const eng = engine || pickEngine(spec);
-  const quality = spec.quality === "draft" ? "draft" : "final";
-  const frames = frameCount(spec.duration || TEMPLATES[spec.template]?.duration || 3, spec.fps || 30);
-  const pixels = ((spec.width || 1920) * (spec.height || 1080)) / (1920 * 1080);
-  const perFrame = (bench.perFrame?.[eng]?.[quality] ?? BENCH.perFrame[eng][quality]) * pixels * scale * scale;
-  const startup = bench.startup ?? BENCH.startup;
-  const compile = eng === "BLENDER_EEVEE" ? (bench.eeveeFirstFrame ?? BENCH.eeveeFirstFrame) : 0;
-  const bake = spec.template === "physics-drop" ? frames * BENCH.physicsBakePerFrame : 0;
-  const full = startup + compile + bake + frames * perFrame;
-  const stillsDraft = (bench.perFrame?.[eng]?.draft ?? BENCH.perFrame[eng].draft) * pixels * 0.25;
-  const stillsTotal = stills ? startup + compile + bake + stills * stillsDraft : 0;
-  return {
-    engine: eng,
-    frames,
-    secondsPerFrame: round(perFrame),
-    stillsSeconds: round(stillsTotal),
-    renderSeconds: round(full),
-    encodeSeconds: round(frames * BENCH.encodePerFrame * pixels),
-    human: humanTime(full),
-  };
-}
-
-function round(x: number): number {
-  return Math.round(x * 10) / 10;
-}
-
-export function humanTime(s: number): string {
-  if (s < 90) return `about ${Math.max(1, Math.round(s))} s`;
-  if (s < 3600) return `about ${Math.round(s / 60)} min`;
-  return `about ${(s / 3600).toFixed(1)} h`;
+  const note = ignoredWarning(spec);
+  if (note) warnings.push(note);
+  const reasons = [
+    TEMPLATES[spec.template] ? `"${spec.template}" is a Three.js template` : `"${spec.template}" isn't a 3D template`,
+    "every 3D shot is Three.js inside the video: it renders with the rest of the frame, with nothing to install",
+  ];
+  return { tier: 1 as const, template: spec.template, reasons, warnings };
 }

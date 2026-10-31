@@ -91,7 +91,7 @@
     "cutscene-animate": {
       "dir": "skills/cutscene-animate",
       "name": "cutscene-animate",
-      "description": "Use for any motion in a Cutscene video: GSAP timelines, eases and staggers, the runtime adapters (GSAP, Lottie, Three.js, Anime.js, CSS keyframes, Web Animations, TypeGPU), atomic motion rules, multi-phase scene blueprints, scene transitions, motion blur, seek-safe keyframes for zooms, punch-ins and camera moves, auditing choreography with an animation map, kinetic type, and the motion-graphics workflow (lower thirds, charts, maps, 2D logo reveals, news, tweets). Use it when something moves wrong, too fast or too stiff. Does NOT pick the video's look (cutscene-design), make extruded 3D titles or Blender renders (cutscene-3d) or define the composition contract (cutscene-compose).",
+      "description": "Use for any motion in a Cutscene video: GSAP timelines, eases and staggers, the runtime adapters (GSAP, Lottie, Three.js, Anime.js, CSS keyframes, Web Animations, TypeGPU), atomic motion rules, multi-phase scene blueprints, scene transitions, motion blur, seek-safe keyframes for zooms, punch-ins and camera moves, auditing choreography with an animation map, kinetic type, and the motion-graphics workflow (lower thirds, charts, maps, 2D logo reveals, news, tweets). Use it when something moves wrong, too fast or too stiff. Does NOT pick the video's look (cutscene-design), make extruded 3D titles or 3D scenes (cutscene-3d) or define the composition contract (cutscene-compose).",
       "sources": [
         {
           "from": "hyperframes-animation",
@@ -204,7 +204,7 @@
     "cutscene-promo": {
       "dir": "skills/cutscene-promo",
       "name": "cutscene-promo",
-      "description": "Use for promo-style Cutscene videos made from a product or marketing URL, a GitHub pull request, or a topic or script: product launch, feature reveal and site-tour videos, faceless explainers, and PR-to-video changelog clips. Load it after the cutscene skill (the entry point for every new video) has routed the brief here; each is a gated workflow (brief, script, storyboard, frames, sound, assembly, review). Does NOT edit existing footage (cutscene-edit), make Blender 3D (cutscene-3d), or render a final video without the user's OK.",
+      "description": "Use for promo-style Cutscene videos made from a product or marketing URL, a GitHub pull request, or a topic or script: product launch, feature reveal and site-tour videos, faceless explainers, and PR-to-video changelog clips. Load it after the cutscene skill (the entry point for every new video) has routed the brief here; each is a gated workflow (brief, script, storyboard, frames, sound, assembly, review). Does NOT edit existing footage (cutscene-edit), make 3D shots (cutscene-3d), or render a final video without the user's OK.",
       "sources": [
         {
           "from": "product-launch-video",
@@ -1110,7 +1110,6 @@
     ],
     "ideasOnly": [
       "**OpenMontage** (calesthio/OpenMontage, AGPL-3.0): pipeline catalogue and routing studied for ideas; no code or text copied.",
-      "**eden-motion** (no licence): the HyperFrames + Blender plate idea only; nothing copied.",
       "**VoiceStudio** (AGPL-3.0): used only over its local API when the user has it; nothing copied."
     ]
   }

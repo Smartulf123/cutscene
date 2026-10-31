@@ -9,7 +9,7 @@
   "files": {
     "THIRD_PARTY.md": {
       "from": "generated",
-      "sha256": "377cb347ccd06399f69322f195b56eb71032cbe173c59a8e7dbd5e73488ac2fe"
+      "sha256": "ba48a9059eca1fc5ca93913c1d0af5f4bdaff269f947bd327f8498e4453db258"
     },
     "skills/cutscene-animate/SKILL.md": {
       "from": [
@@ -20,7 +20,7 @@
       "sourceSha256": [
         "b35f1f8eff68e9ff480a5d5d343a1bf5a40ebb7d0d9be20b0b980cfdb36047f3"
       ],
-      "sha256": "dc925b7092bdfab1148206f3fe7cc7fc48da00a2ea3b32d6e35b29e3cf23b0ae"
+      "sha256": "0a25783d479c0da488634091647676c3cf745386ee075bb0d6e1a5cf8e58de34"
     },
     "skills/cutscene-animate/adapters/animate-text.md": {
       "from": "skills/hyperframes-animation/adapters/animate-text.md",
@@ -2218,8 +2218,8 @@
     },
     "skills/cutscene-design/scripts/look.mjs": {
       "from": "overlays/cutscene-design/scripts/look.mjs",
-      "sourceSha256": "4906c2aba1fa1d78f4eb061008af0ffc3e4e3c6b4aeae34b6c122d4488013d8b",
-      "sha256": "4906c2aba1fa1d78f4eb061008af0ffc3e4e3c6b4aeae34b6c122d4488013d8b"
+      "sourceSha256": "351cd75d788faea792e783fc30b10fc1c35cade0d5168eafd7b681a4cdd7e705",
+      "sha256": "351cd75d788faea792e783fc30b10fc1c35cade0d5168eafd7b681a4cdd7e705"
     },
     "skills/cutscene-design/scripts/package-loader.mjs": {
       "from": "skills/hyperframes-creative/scripts/package-loader.mjs",
@@ -2237,7 +2237,7 @@
         "overlays/cutscene-promo/SKILL.head.md"
       ],
       "sourceSha256": [],
-      "sha256": "8f3ce78168588a5968f53ce4f9832cc5002a65f99231b35f89e9862d17621d49"
+      "sha256": "b8dd88557bea764cadba3f5b925e6c8bf63aecf246953103a8678d8e7fd5ff5f"
     },
     "skills/cutscene-promo/workflows/faceless-explainer/WORKFLOW.md": {
       "from": "skills/faceless-explainer/SKILL.md",

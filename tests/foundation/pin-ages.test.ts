@@ -41,7 +41,7 @@ beforeEach(() => {
     pins: [
       { name: "torch", version: "2.9.1", url: "https://download.pytorch.org/whl/cpu/torch-2.9.1.whl", source: "pypi" },
       { name: "omnivoice", version: "abc123", url: "https://huggingface.co/k2-fsa/OmniVoice/resolve/abc123/model.safetensors", published: "2026-09-01" },
-      { name: "blender", version: "5.2.2", url: "https://download.blender.org/release/Blender5.2/blender-5.2.2.zip", published: "2026-10-25" },
+      { name: "studio-tool", version: "5.2.2", url: "https://downloads.example.org/release/studio-tool-5.2.2.zip", published: "2026-10-25" },
     ],
   });
   write(".github/workflows/ci.yml", "steps:\n  - uses: actions/checkout@v7.0.1\n  - run: python -m pip install pytest==9.1.1 -r requirements.txt\n");
@@ -57,7 +57,7 @@ describe("collectPins", () => {
       "npm:vitest@4.1.12",
       "pypi:torch@2.9.1",
       "huggingface:omnivoice@abc123",
-      "url:blender@5.2.2",
+      "url:studio-tool@5.2.2",
       "github:actions/checkout@v7.0.1",
       "pypi:pytest@9.1.1",
     ]);
@@ -87,9 +87,9 @@ describe("checkPins", () => {
     });
     const report = await checkPins({ root, now: NOW, fetchImpl: impl, env: {} });
     const status = Object.fromEntries(report.results.map((r: PinResult) => [r.name, r.status]));
-    expect(status).toEqual({ hyperframes: "ok", vitest: "too-new", torch: "ok", omnivoice: "ok", blender: "too-new", "actions/checkout": "ok", pytest: "ok" });
+    expect(status).toEqual({ hyperframes: "ok", vitest: "too-new", torch: "ok", omnivoice: "ok", "studio-tool": "too-new", "actions/checkout": "ok", pytest: "ok" });
     expect(report.ok).toBe(false);
-    expect(report.results.find((r: PinResult) => r.name === "blender")!.from).toBe("recorded");
+    expect(report.results.find((r: PinResult) => r.name === "studio-tool")!.from).toBe("recorded");
     expect(report.results.find((r: PinResult) => r.name === "vitest")!.message).toMatch(/9 days ago/);
     expect(asked.every((u) => u.startsWith("https://"))).toBe(true);
   });
@@ -107,7 +107,7 @@ describe("checkPins", () => {
     expect(asked).toEqual([]);
     const byName = Object.fromEntries(report.results.map((r: PinResult) => [r.name, r]));
     expect(byName.omnivoice.status).toBe("ok");
-    expect(byName.blender.status).toBe("too-new");
+    expect(byName["studio-tool"].status).toBe("too-new");
     expect(byName.hyperframes.status).toBe("unknown");
     // unknown is a warning unless --strict
     write("skills/cutscene-voice/assets/manifest.json", { pins: [] });

@@ -2,7 +2,7 @@
 // Running child processes the Cutscene way:
 // - windowsHide on every spawn, so no console windows flash up on Windows;
 // - never detached: a detached process on Windows has no console, so every grandchild it
-//   starts (Chrome, FFmpeg, Blender) would open its own visible terminal window;
+//   starts (Chrome, FFmpeg, Python) would open its own visible terminal window;
 // - whole process trees are stopped with `taskkill /T /F` on Windows.
 import { spawn, spawnSync } from "node:child_process";
 import { statSync } from "node:fs";

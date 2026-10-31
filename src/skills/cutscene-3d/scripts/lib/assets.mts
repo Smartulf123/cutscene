@@ -1,4 +1,4 @@
-// Pinned downloads for Cutscene 3D (fonts, HDRIs, postprocessing): consent first, SHA-256 checked,
+// Pinned downloads for Cutscene 3D (fonts, postprocessing): consent first, SHA-256 checked,
 // stored in <CUTSCENE_HOME>/assets/<sha256>/<file>. Also finds a font file for look.json's display face.
 import { createHash } from "node:crypto";
 import type { BinaryLike } from "node:crypto";
@@ -135,10 +135,9 @@ const SYSTEM_FONT_DIRS = (): string[] => {
   return ["/usr/share/fonts", "/usr/local/share/fonts", join(process.env.HOME || "", ".fonts"), join(process.env.HOME || "", ".local", "share", "fonts")];
 };
 
-// Font formats each tier can read. Blender (FreeType) reads .woff2 too (checked on Blender 5.2:
-// bundled caption .woff2 files extrude like a .ttf). Three.js's TTFLoader (opentype.js) can't
-// unpack .woff2, so Tier 1 needs a .ttf, .otf or .woff.
-export const FONT_FORMATS: Record<number, string[]> = { 1: ["ttf", "otf", "woff"], 2: ["ttf", "otf", "woff", "woff2"] };
+// Font formats 3D titles can read. Three.js's TTFLoader (opentype.js) can't unpack .woff2, so a
+// title needs a .ttf, .otf or .woff.
+export const FONT_FORMATS: string[] = ["ttf", "otf", "woff"];
 const ext = (f: string) => (/\.([a-z0-9]+)$/i.exec(f)?.[1] || "").toLowerCase();
 
 function walkFonts(dir: string, depth = 0, out: string[] = []): string[] {
@@ -183,15 +182,14 @@ function rankFonts(files: string[], family: string, weight: number): string[] {
 
 /**
  * Find the display font for a look: the look's own file (type.display.src) and project fonts ->
- * pinned download in the cache -> system fonts -> the bundled Geist Bold. Only formats the tier
+ * pinned download in the cache -> system fonts -> the bundled Geist Bold. Only formats 3D titles
  * can read are used (FONT_FORMATS). Returns {path, source, family}; on a fallback also
- * {wanted, missing: pinned manifest item name or null, unreadable: a project file the tier can't
- * read (a .woff2 for Tier 1) or null}.
+ * {wanted, missing: pinned manifest item name or null, unreadable: a project file 3D titles
+ * can't read (a .woff2) or null}.
  */
-export function resolveFont({ family, weight = 700, projectDir, src = null, tier = 2, home = cutsceneHome(), manifest = loadManifest(), systemDirs = SYSTEM_FONT_DIRS() }: { family?: string; weight?: number; projectDir?: string; src?: string | null; tier?: number; home?: string; manifest?: Manifest; systemDirs?: string[] } = {}): FontChoice {
+export function resolveFont({ family, weight = 700, projectDir, src = null, home = cutsceneHome(), manifest = loadManifest(), systemDirs = SYSTEM_FONT_DIRS() }: { family?: string; weight?: number; projectDir?: string; src?: string | null; home?: string; manifest?: Manifest; systemDirs?: string[] } = {}): FontChoice {
   if (!family || /^geist( sans)?$/i.test(family)) return { path: BUNDLED_FONT, source: "bundled", family: "Geist" };
-  const formats = FONT_FORMATS[tier] || FONT_FORMATS[2];
-  const readable = (f: string) => formats.includes(ext(f));
+  const readable = (f: string) => FONT_FORMATS.includes(ext(f));
   const candidates: string[] = [];
   if (projectDir && src && typeof src === "string") {
     const p = resolve(projectDir, src);
@@ -209,14 +207,14 @@ export function resolveFont({ family, weight = 700, projectDir, src = null, tier
 }
 
 /** One plain sentence about a font fallback (or null when the look's font is used). */
-export function fontFallbackWarning(font: FontNote | null | undefined, tier = 2): string | null {
+export function fontFallbackWarning(font: FontNote | null | undefined): string | null {
   if (!font?.wanted) return null;
   const fetch = font.missing ? ` Get a copy 3D can read with: cutscene 3d assets fetch ${font.missing} --yes (ask the user first).` : "";
   if (font.unreadable) {
-    return `The look's font "${font.wanted}" is in the project only as .${ext(font.unreadable)}, which Three.js 3D titles can't read; this shot uses Geist Bold.${fetch || " Put a .ttf or .woff of it in the project's assets/fonts/."} A Blender (Tier 2) shot reads it as it is.`;
+    return `The look's font "${font.wanted}" is in the project only as .${ext(font.unreadable)}, which Three.js 3D titles can't read; this shot uses Geist Bold.${fetch || " Put a .ttf or .woff of it in the project's assets/fonts/."}`;
   }
   if (font.missing) return `The look's font "${font.wanted}" isn't on this computer yet; this shot uses Geist Bold.${fetch}`;
-  return `The look's font "${font.wanted}" wasn't found; this shot uses Geist Bold. Put a .ttf or .woff of it in the project's assets/fonts/${tier === 2 ? " (Blender also reads .woff2)" : ""}.`;
+  return `The look's font "${font.wanted}" wasn't found; this shot uses Geist Bold. Put a .ttf or .woff of it in the project's assets/fonts/.`;
 }
 
 /** Copy a file into a folder, returning the new path. */

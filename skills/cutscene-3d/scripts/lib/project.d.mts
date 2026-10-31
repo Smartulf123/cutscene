@@ -31,9 +31,6 @@ export interface SpecFileFields {
         model?: unknown;
     } | null;
     font?: unknown;
-    lighting?: {
-        hdri?: unknown;
-    } | null;
     look?: unknown;
 }
 export declare const FOUNDATION_LIB: string;
@@ -41,7 +38,7 @@ export declare function cutsceneHome(env?: NodeJS.ProcessEnv): string;
 export declare function isNetworkPath(p: unknown): boolean;
 export declare function cutsceneError(code: string, message: string, hint?: string, exitCode?: number): CutsceneError;
 /**
- * The spec fields that name files Blender or the browser will open. A network path there would
+ * The spec fields that name files Cutscene copies into the video. A network path there would
  * make Windows contact another computer (and offer it the user's sign-in), so specs may not use
  * one. Returns the first offending field as "params.svg", or null.
  */
@@ -54,14 +51,6 @@ export declare function findProject(start?: string): string;
 export declare function shotPaths(projectDir: string, id: string): {
     project: string;
     spec: string;
-    work: string;
-    resolved: string;
-    stills: string;
-    frames: string;
-    log: string;
-    sheet: string;
-    webm: string;
-    poster: string;
     look: string;
     beats: string;
 };

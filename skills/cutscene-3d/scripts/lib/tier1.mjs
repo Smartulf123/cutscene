@@ -7,7 +7,7 @@ import { basename, dirname, extname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { copyInto, findItem, isCached, assetPath, loadManifest, fetchAsset } from "./assets.mjs";
 import { cutsceneError, writeFileAtomic } from "./project.mjs";
-import { DEFAULT_LOOK, TIER1_TEMPLATES, merge, BUNDLED_FONT } from "./spec.mjs";
+import { DEFAULT_LOOK, DEMO_SVG, TIER1_TEMPLATES, merge, BUNDLED_FONT } from "./spec.mjs";
 const here = dirname(fileURLToPath(import.meta.url));
 export const TIER1_DIR = resolve(here, "..", "..", "templates", "tier1");
 export const THREE_VERSION = "0.184.0";
@@ -115,7 +115,7 @@ export async function writeTier1({ template, spec, projectDir, look, font, yes =
             copied.push(copyInto(ofl, join(assetDir, "fonts")));
     }
     if (template === "logo-svg") {
-        const svg = p.svg ? resolve(projectDir, p.svg) : join(here, "..", "..", "templates", "tier2", "cutscene-mark.svg");
+        const svg = p.svg ? resolve(projectDir, p.svg) : DEMO_SVG;
         if (!existsSync(svg))
             throw cutsceneError("FILE_NOT_FOUND", `The SVG ${svg} doesn't exist.`, "Check params.svg in the spec.");
         const dest = copyInto(svg, join(assetDir, "logos"), `${spec.id}${extname(svg)}`);
@@ -128,7 +128,7 @@ export async function writeTier1({ template, spec, projectDir, look, font, yes =
         if (!existsSync(model))
             throw cutsceneError("FILE_NOT_FOUND", `The model ${model} doesn't exist.`, "Check params.model in the spec.");
         if (!/\.(glb|gltf)$/i.test(model))
-            throw cutsceneError("MODEL_FORMAT", "Tier 1 turntables need a .glb or .gltf model.", "Convert the model to .glb (Blender can export it), or use Tier 2, which also reads OBJ/FBX.");
+            throw cutsceneError("MODEL_FORMAT", "Tier 1 turntables need a .glb or .gltf model.", "Convert the model to .glb (most 3D apps can export it), then point params.model at the .glb.");
         if (/\.gltf$/i.test(model))
             warnings.push("A .gltf with separate .bin/texture files must have those files copied next to it in compositions/assets/3d/models/.");
         const dest = copyInto(model, join(assetDir, "models"), `${spec.id}${extname(model)}`);

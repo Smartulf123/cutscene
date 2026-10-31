@@ -43,7 +43,7 @@ export interface BeatVoice {
 }
 
 export interface BeatShot3d {
-  /** 1 (Three.js) or 2 (Blender) */
+  /** 1 (Three.js). An older beat sheet may say 2 (Blender, now removed); it still validates, with a warning. */
   tier?: 1 | 2;
   spec?: string;
   file?: string;
@@ -271,7 +271,8 @@ export function validateBeats(obj: unknown): BeatsValidation {
       const s = b.shot3d;
       if (!isObj(s)) errors.push({ path: `${where}.shot3d`, message: "must be an object." });
       else {
-        if (s.tier !== undefined && s.tier !== 1 && s.tier !== 2) errors.push({ path: `${where}.shot3d.tier`, message: "must be 1 (Three.js) or 2 (Blender)." });
+        if (s.tier === 2) warnings.push({ path: `${where}.shot3d.tier`, message: "is 2, but Blender (Tier 2) was removed from Cutscene. A clip it already rendered still plays; make new 3D shots with Tier 1." });
+        else if (s.tier !== undefined && s.tier !== 1) errors.push({ path: `${where}.shot3d.tier`, message: "must be 1 (Three.js)." });
         checkRelPath(s.spec, `${where}.shot3d.spec`, errors);
         checkRelPath(s.file, `${where}.shot3d.file`, errors);
         if (s.duration !== undefined) checkTime(s.duration, `${where}.shot3d.duration`, errors, warnings);

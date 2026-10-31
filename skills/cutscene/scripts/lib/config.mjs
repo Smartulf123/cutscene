@@ -4,9 +4,9 @@
 //
 //   import { readConfig, writeConfig } from "../../cutscene/scripts/lib/config.mjs";
 //   const cfg = readConfig();                         // {} when there is no file yet
-//   writeConfig({ blender: "C:\\...\\blender.exe" });   // merges, writes atomically
-//   writeConfig({ voice: { default: "kokoro" } });    // nested objects merge
-//   writeConfig({ blender: null });                    // null removes a setting
+//   writeConfig({ voice: { default: "kokoro" } });    // merges, writes atomically; nested objects merge
+//   writeConfig({ voice: { seed: 42 } });             // keeps voice.default, adds voice.seed
+//   writeConfig({ voice: null });                     // null removes a setting
 import { readFileSync } from "node:fs";
 import { CutsceneError } from "./json.mjs";
 import { cutsceneHome, homePaths } from "./paths.mjs";
@@ -75,7 +75,7 @@ export function readConfig(opts = {}) {
 export function writeConfig(patch, opts = {}) {
     if (!isPlainObject(patch)) {
         throw new CutsceneError("CONFIG_PATCH_INVALID", "Settings must be saved as an object of names and values.", {
-            hint: 'Pass an object, for example writeConfig({ blender: "C:/path/to/blender.exe" }).',
+            hint: 'Pass an object, for example writeConfig({ voice: { default: "kokoro" } }).',
         });
     }
     const file = configPath(opts);

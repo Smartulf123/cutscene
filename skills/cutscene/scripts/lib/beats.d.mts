@@ -20,7 +20,7 @@ export interface BeatVoice {
     [key: string]: unknown;
 }
 export interface BeatShot3d {
-    /** 1 (Three.js) or 2 (Blender) */
+    /** 1 (Three.js). An older beat sheet may say 2 (Blender, now removed); it still validates, with a warning. */
     tier?: 1 | 2;
     spec?: string;
     file?: string;

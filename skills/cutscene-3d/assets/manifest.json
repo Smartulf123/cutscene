@@ -546,32 +546,6 @@
       "source": "npm postprocessing via jsDelivr",
       "credit": "postprocessing by Raoul van Rüschen (Zlib)",
       "note": "Optional Tier 1 bloom. Vendored into the project with its three import pinned to three@0.184.0."
-    },
-    {
-      "name": "hdri-studio-small-09",
-      "kind": "hdri",
-      "version": "1k",
-      "published": "2021-11-04",
-      "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr",
-      "sha256": "e7cfda5f4e98e623db12b8bfd0184e048488e4855d9c83e2751fb44a32e80c45",
-      "md5": "d5d7eb9d26d341d6aa4d11c1a54fd97c",
-      "size": 1615248,
-      "license": "CC0-1.0",
-      "source": "Poly Haven (polyhaven.com/a/studio_small_09)",
-      "credit": "HDRI: Studio Small 09 by Sergej Majboroda, Poly Haven (CC0)"
-    },
-    {
-      "name": "hdri-brown-photostudio-02",
-      "kind": "hdri",
-      "version": "1k",
-      "published": "2022-05-19",
-      "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/brown_photostudio_02_1k.hdr",
-      "sha256": "469abc5e6035b6c450bae8adbb448f8d1fa7c51d9e384e501516c28352c91b58",
-      "md5": "1362911793f932724326e6e56421f102",
-      "size": 1648130,
-      "license": "CC0-1.0",
-      "source": "Poly Haven (polyhaven.com/a/brown_photostudio_02)",
-      "credit": "HDRI: Brown Photostudio 02 by Sergej Majboroda, Poly Haven (CC0)"
     }
   ],
   "runtime": [

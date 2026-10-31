@@ -1,8 +1,8 @@
 // `cutscene doctor`: checks everything Cutscene uses and says how to fix what's missing.
 // Needed: Node.js 22+, FFmpeg, the pinned video engine and its render browser.
-// Optional: VP9 alpha encoding (transparent 3D clips), Blender 4.2+, Python 3.10+, the voice
-// environment, and VoiceStudio on 127.0.0.1:3900.
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+// Optional: VP9 alpha encoding (transparent WebM renders), Python 3.10+, the voice environment,
+// and VoiceStudio on 127.0.0.1:3900.
+import { existsSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -17,7 +17,6 @@ import { findKokoroPython } from "./lib/python.mjs";
 import type { PythonCandidate } from "./lib/python.mjs";
 
 export const MIN_NODE = [22, 0, 0];
-export const MIN_BLENDER = [4, 2, 0];
 export const MIN_PYTHON = [3, 10, 0];
 export const VOICESTUDIO_HEALTH = "http://127.0.0.1:3900/health";
 
@@ -35,45 +34,6 @@ export interface Check {
   installable?: boolean;
   command?: string;
   voice?: unknown;
-}
-
-/** The settings doctor reads from config.json. */
-type BlenderConfig = { blender?: string | { path?: string } };
-
-/** Where to look for Blender (see `blenderCandidates`). */
-export interface BlenderSearchOptions {
-  env?: NodeJS.ProcessEnv;
-  config?: BlenderConfig;
-  platform?: NodeJS.Platform;
-  home?: string;
-  userHome?: string;
-}
-
-/** A Blender that was found, and its version. */
-export interface FoundBlender {
-  path: string;
-  version: string | null;
-  label: string | null | undefined;
-  source: string;
-  tooOld?: boolean;
-}
-
-/** What the cutscene-3d part's findBlender() may return. */
-type PartBlender = string | null | undefined | {
-  path?: string;
-  exe?: string;
-  executable?: string;
-  bin?: string;
-  version?: number[] | string;
-  label?: string;
-  versionLabel?: string;
-  lts?: boolean;
-  source?: string;
-};
-
-/** The cutscene-3d part's Blender module, as far as doctor uses it. */
-interface BlenderPartModule {
-  findBlender?: () => PartBlender | Promise<PartBlender>;
 }
 
 /** The cutscene-voice part's status module, as far as doctor uses it. */
@@ -111,7 +71,7 @@ export function compareVersions(a: number[], b: number[]): number {
   return 0;
 }
 
-/** "Blender 5.2.3 LTS" -> [5, 2, 3] */
+/** "Python 3.12.4" -> [3, 12, 4] */
 export function parseVersion(text: string | null | undefined, prefix: string): number[] | null {
   const m = new RegExp(`${prefix}\\s*v?(\\d+)\\.(\\d+)(?:\\.(\\d+))?`, "i").exec(text || "");
   return m ? [Number(m[1]), Number(m[2]), Number(m[3] || 0)] : null;
@@ -164,8 +124,8 @@ export function checkFfmpeg({ env = process.env }: { env?: NodeJS.ProcessEnv } =
       fix: ffprobe ? undefined : "Install a full FFmpeg build that includes ffprobe.",
     }),
     check("vp9", "Transparent WebM (VP9)", "optional", vp9, {
-      detail: vp9 ? "libvpx-vp9 encoder ready (for transparent 3D clips)" : "This FFmpeg has no libvpx-vp9 encoder",
-      fix: vp9 ? undefined : "Install a full FFmpeg build (for example the gyan.dev full build on Windows) to make transparent 3D clips.",
+      detail: vp9 ? "libvpx-vp9 encoder ready (for transparent WebM renders)" : "This FFmpeg has no libvpx-vp9 encoder",
+      fix: vp9 ? undefined : "Install a full FFmpeg build (for example the gyan.dev full build on Windows) to render transparent WebM videos.",
     }),
   ];
 }
@@ -204,163 +164,6 @@ export async function checkEngine({ home = cutsceneHome() }: { home?: string } =
   ];
 }
 
-// --- Blender ----------------------------------------------------------------------------------
-
-function listDirs(dir: string): string[] {
-  try {
-    return readdirSync(dir, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name);
-  } catch {
-    return [];
-  }
-}
-
-const byVersionDesc = (a: string, b: string) => compareVersions(parseVersion(b, "") || [0], parseVersion(a, "") || [0]);
-
-function steamLibraries(steamRoot: string): string[] {
-  const libs = [steamRoot];
-  try {
-    const vdf = readFileSync(join(steamRoot, "steamapps", "libraryfolders.vdf"), "utf8");
-    for (const m of vdf.matchAll(/"path"\s+"([^"]+)"/g)) libs.push(m[1].replace(/\\\\/g, "\\"));
-  } catch {
-    // no Steam libraries file
-  }
-  return [...new Set(libs)];
-}
-
-/**
- * Where Blender might be, best first: CUTSCENE_BLENDER, config.json, PATH, the usual install
- * folders (newest version first), Steam, and portable folders.
- */
-export function blenderCandidates({ env = process.env, config = {}, platform = process.platform, home = cutsceneHome(env), userHome = homedir() }: BlenderSearchOptions = {}): { path: string; source: string }[] {
-  const out: { path: string; source: string }[] = [];
-  const add = (path: string | null | undefined, source: string) => path && out.push({ path, source });
-  add(env.CUTSCENE_BLENDER, "CUTSCENE_BLENDER");
-  add(typeof config.blender === "string" ? config.blender : config.blender && config.blender.path, "config.json");
-  add(findOnPath(platform === "win32" ? "blender.exe" : "blender", env), "PATH");
-  if (platform === "win32") {
-    const programs = [env.ProgramFiles || "C:\\Program Files", env["ProgramFiles(x86)"] || "C:\\Program Files (x86)", env.ProgramW6432].filter(Boolean) as string[];
-    const local = env.LOCALAPPDATA || join(userHome, "AppData", "Local");
-    for (const root of [...new Set(programs)]) {
-      const foundation = join(root, "Blender Foundation");
-      for (const d of listDirs(foundation).sort(byVersionDesc)) add(join(foundation, d, "blender.exe"), "Program Files");
-    }
-    const localFoundation = join(local, "Programs", "Blender Foundation");
-    for (const d of listDirs(localFoundation).sort(byVersionDesc)) add(join(localFoundation, d, "blender.exe"), "user install");
-    for (const lib of steamLibraries(join(env["ProgramFiles(x86)"] || "C:\\Program Files (x86)", "Steam"))) {
-      add(join(lib, "steamapps", "common", "Blender", "blender.exe"), "Steam");
-    }
-    for (const base of [join(home, "blender"), join(userHome, "Downloads"), join(userHome, "Desktop"), userHome, "C:\\Blender"]) {
-      for (const d of listDirs(base).filter((n) => /blender/i.test(n)).sort(byVersionDesc)) add(join(base, d, "blender.exe"), "portable folder");
-    }
-  } else if (platform === "darwin") {
-    for (const apps of ["/Applications", join(userHome, "Applications")]) {
-      add(join(apps, "Blender.app", "Contents", "MacOS", "Blender"), "Applications");
-      for (const d of listDirs(apps).filter((n) => /^blender.*\.app$/i.test(n)).sort(byVersionDesc)) add(join(apps, d, "Contents", "MacOS", "Blender"), "Applications");
-    }
-    add(join(userHome, "Library", "Application Support", "Steam", "steamapps", "common", "Blender", "Blender.app", "Contents", "MacOS", "Blender"), "Steam");
-  } else {
-    add("/snap/bin/blender", "snap");
-    add("/var/lib/flatpak/exports/bin/org.blender.Blender", "flatpak");
-    for (const base of ["/opt", userHome, join(home, "blender")]) {
-      for (const d of listDirs(base).filter((n) => /blender/i.test(n)).sort(byVersionDesc)) add(join(base, d, "blender"), "portable folder");
-    }
-    add(join(userHome, ".local", "share", "Steam", "steamapps", "common", "Blender", "blender"), "Steam");
-  }
-  const seen = new Set<string>();
-  return out.filter((c) => {
-    const key = platform === "win32" ? c.path.toLowerCase() : c.path;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-}
-
-/** Run `blender --version` and read the version. */
-export function blenderVersion(path: string): { version: number[]; label: string } | null {
-  const r = probe(path, ["--version"], { timeoutMs: 60_000 });
-  const text = `${r.stdout}\n${r.stderr}`;
-  const version = parseVersion(text, "Blender");
-  const label = (/Blender\s+(\d+\.\d+(?:\.\d+)?(?:\s+LTS)?)/i.exec(text) || [])[1];
-  return version ? { version, label: label || v2s(version) } : null;
-}
-
-/** Find Blender ourselves (used when the cutscene-3d part isn't installed). */
-export function findBlenderFallback(opts: BlenderSearchOptions = {}): FoundBlender | null {
-  let tooOld: FoundBlender | null = null;
-  for (const c of blenderCandidates(opts)) {
-    if (!existsSync(c.path)) continue;
-    const v = blenderVersion(c.path);
-    if (!v) continue;
-    if (compareVersions(v.version, MIN_BLENDER) >= 0) return { path: c.path, version: v2s(v.version), label: v.label, source: c.source };
-    tooOld = tooOld || { path: c.path, version: v2s(v.version), label: v.label, source: c.source, tooOld: true };
-  }
-  return tooOld;
-}
-
-async function importPart<T>(rel: string): Promise<T | null> {
-  const file = join(SKILLS_ROOT, rel);
-  if (!existsSync(file)) return null;
-  try {
-    return await import(pathToFileURL(file).href);
-  } catch {
-    return null;
-  }
-}
-
-/** Normalise whatever the 3d part's findBlender() returns into {path, version, label}. */
-async function blenderFromPart(mod: BlenderPartModule | null): Promise<FoundBlender | null | undefined> {
-  if (!mod || typeof mod.findBlender !== "function") return undefined;
-  try {
-    const r = await mod.findBlender();
-    if (!r) return null;
-    if (typeof r === "string") {
-      const v = blenderVersion(r);
-      return v ? { path: r, version: v2s(v.version), label: v.label, source: "cutscene-3d" } : null;
-    }
-    const path = r.path || r.exe || r.executable || r.bin;
-    if (!path) return null;
-    let version = Array.isArray(r.version) ? v2s(r.version) : typeof r.version === "string" ? (parseVersion(r.version, "") ? v2s(parseVersion(r.version, "")!) : r.version) : null;
-    let label = r.label || r.versionLabel || (version && r.lts && !/LTS/i.test(version) ? `${version} LTS` : version);
-    if (!version) {
-      const v = blenderVersion(path);
-      if (v) {
-        label = v.label;
-        version = v2s(v.version);
-      }
-    }
-    return { path, version, label, source: r.source || "cutscene-3d" };
-  } catch {
-    return undefined; // fall back to our own search
-  }
-}
-
-export async function checkBlender({ env = process.env, home = cutsceneHome(env) }: { env?: NodeJS.ProcessEnv; home?: string } = {}): Promise<Check> {
-  let config: BlenderConfig = {};
-  try {
-    config = readConfig({ home }) as BlenderConfig;
-  } catch {
-    config = {};
-  }
-  let found = await blenderFromPart(await importPart<BlenderPartModule>(join("cutscene-3d", "scripts", "lib", "blender.mjs")));
-  if (found === undefined) found = findBlenderFallback({ env, config, home });
-  if (!found) {
-    return check("blender", "Blender 4.2+", "optional", false, {
-      status: "missing",
-      detail: "Not found (only needed for realistic 3D shots)",
-      fix: "Run `cutscene 3d setup`, or set CUTSCENE_BLENDER to your blender executable.",
-    });
-  }
-  const version = found.version && parseVersion(found.version, "");
-  const ok = !found.tooOld && (!version || compareVersions(version, MIN_BLENDER) >= 0);
-  return check("blender", "Blender 4.2+", "optional", ok, {
-    status: ok ? "ok" : "too old",
-    version: found.version || undefined,
-    path: found.path,
-    detail: ok ? `${found.label || found.version} · ${found.path}` : `${found.label || found.version} is too old · ${found.path}`,
-    fix: ok ? undefined : "Install Blender 4.2 or newer (blender.org), or run `cutscene 3d setup`.",
-  });
-}
-
 // --- Python -----------------------------------------------------------------------------------
 
 export function checkPython({ platform = process.platform }: { platform?: NodeJS.Platform } = {}): Check {
@@ -377,6 +180,16 @@ export function checkPython({ platform = process.platform }: { platform?: NodeJS
     tooOld = tooOld || check("python", "Python 3.10+", "optional", false, { ...fields, status: "too old", fix: "Install Python 3.10 or newer from python.org (needed for AI voices)." });
   }
   return tooOld || check("python", "Python 3.10+", "optional", false, { detail: "Not found (needed for AI voices)", fix: "Install Python 3.10 or newer from python.org, or run `cutscene voice setup`." });
+}
+
+async function importPart<T>(rel: string): Promise<T | null> {
+  const file = join(SKILLS_ROOT, rel);
+  if (!existsSync(file)) return null;
+  try {
+    return await import(pathToFileURL(file).href);
+  } catch {
+    return null;
+  }
 }
 
 // --- Voices -----------------------------------------------------------------------------------
@@ -496,13 +309,12 @@ export function checkConfig({ home = cutsceneHome() }: { home?: string } = {}): 
 
 /** Run every check. */
 export async function collectChecks({ home = cutsceneHome(), env = process.env }: { home?: string; env?: NodeJS.ProcessEnv } = {}): Promise<Check[]> {
-  const [engine, blender, voice, voicestudio] = await Promise.all([
+  const [engine, voice, voicestudio] = await Promise.all([
     checkEngine({ home }),
-    checkBlender({ env, home }),
     checkVoice({ home }),
     checkVoiceStudio(),
   ]);
-  const checks = [checkNode(), ...checkFfmpeg({ env }), ...engine, blender, checkPython(), voice, checkKokoro({ home }), voicestudio, ...checkEditTools({ home })];
+  const checks = [checkNode(), ...checkFfmpeg({ env }), ...engine, checkPython(), voice, checkKokoro({ home }), voicestudio, ...checkEditTools({ home })];
   const cfg = checkConfig({ home });
   if (cfg) checks.unshift(cfg);
   // Needed first, then optional, keeping the order above inside each group.

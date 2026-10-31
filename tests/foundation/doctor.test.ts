@@ -1,7 +1,8 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { blenderCandidates, checkEditTools, checkKokoro, checkNode, checkVoiceStudio, compareVersions, formatDoctor, parseVersion, summarize } from "../../skills/cutscene/scripts/doctor.mjs";
+import * as doctor from "../../skills/cutscene/scripts/doctor.mjs";
+import { checkEditTools, checkKokoro, checkNode, checkVoiceStudio, compareVersions, formatDoctor, parseVersion, summarize } from "../../skills/cutscene/scripts/doctor.mjs";
 import type { Check } from "../../skills/cutscene/scripts/doctor.mjs";
 import { planSetup } from "../../skills/cutscene/scripts/setup.mjs";
 import { cleanup, tempDir } from "./helpers.ts";
@@ -14,10 +15,9 @@ afterAll(() => cleanup(root));
 
 describe("versions", () => {
   it("parses and compares", () => {
-    expect(parseVersion("Blender 5.2.3 LTS\n\tbuild date", "Blender")).toEqual([5, 2, 3]);
-    expect(parseVersion("Python 3.12.10", "Python")).toEqual([3, 12, 10]);
-    expect(parseVersion("Blender 4.2", "Blender")).toEqual([4, 2, 0]);
-    expect(parseVersion("nothing", "Blender")).toBeNull();
+    expect(parseVersion("Python 3.12.10\n", "Python")).toEqual([3, 12, 10]);
+    expect(parseVersion("Python 3.10", "Python")).toEqual([3, 10, 0]);
+    expect(parseVersion("nothing", "Python")).toBeNull();
     expect(compareVersions([4, 2, 0], [4, 2, 0])).toBe(0);
     expect(compareVersions([4, 1, 9], [4, 2, 0])).toBeLessThan(0);
     expect(compareVersions([10, 0], [4, 2, 0])).toBeGreaterThan(0);
@@ -29,36 +29,6 @@ describe("versions", () => {
   });
 });
 
-describe("Blender search order", () => {
-  it("puts CUTSCENE_BLENDER, then config.json, first; newest install folder before older", () => {
-    const pf = join(root, "Program Files");
-    for (const v of ["Blender 4.2", "Blender 5.2", "Blender 3.6"]) mkdirSync(join(pf, "Blender Foundation", v), { recursive: true });
-    const list = blenderCandidates({
-      env: { CUTSCENE_BLENDER: "D:\\tools\\blender.exe", ProgramFiles: pf, "ProgramFiles(x86)": join(root, "x86"), PATH: "" },
-      config: { blender: "E:\\b\\blender.exe" },
-      platform: "win32",
-      home: join(root, "home"),
-      userHome: join(root, "user"),
-    });
-    expect(list[0]).toEqual({ path: "D:\\tools\\blender.exe", source: "CUTSCENE_BLENDER" });
-    expect(list[1]).toEqual({ path: "E:\\b\\blender.exe", source: "config.json" });
-    const installs = list.filter((c) => c.source === "Program Files").map((c) => c.path);
-    expect(installs).toEqual([
-      join(pf, "Blender Foundation", "Blender 5.2", "blender.exe"),
-      join(pf, "Blender Foundation", "Blender 4.2", "blender.exe"),
-      join(pf, "Blender Foundation", "Blender 3.6", "blender.exe"),
-    ]);
-    expect(list.some((c) => c.source === "Steam")).toBe(true);
-  });
-
-  it("reads extra Steam libraries", () => {
-    const steam = join(root, "x86b", "Steam", "steamapps");
-    mkdirSync(steam, { recursive: true });
-    writeFileSync(join(steam, "libraryfolders.vdf"), '"libraryfolders" { "1" { "path" "G:\\\\SteamLibrary" } }');
-    const list = blenderCandidates({ env: { "ProgramFiles(x86)": join(root, "x86b"), ProgramFiles: join(root, "none"), PATH: "" }, platform: "win32", home: root, userHome: root });
-    expect(list.map((c) => c.path)).toContain(join("G:\\SteamLibrary", "steamapps", "common", "Blender", "blender.exe"));
-  });
-});
 
 describe("footage tools", () => {
   it("reads cutscene-edit's pins and its install markers", () => {
@@ -121,6 +91,11 @@ describe("report", () => {
     expect(plan.elsewhere[0].how).toContain("cutscene voice setup");
   });
 
+  it("has no Blender check (Tier 2 was removed), and setup ignores an old report's Blender line", () => {
+    expect(Object.keys(doctor).filter((k) => /blender/i.test(k))).toEqual([]);
+    const old: Check[] = [...checks, { id: "blender", name: "Blender 4.2+", group: "optional", ok: false, status: "missing" }];
+    expect(planSetup(old, "0.8.162").elsewhere.map((e) => e.id)).toEqual(["voice"]);
+  });
   it("treats VoiceStudio as optional when it isn't running", async () => {
     const r = await checkVoiceStudio({ url: "http://127.0.0.1:9/health", timeoutMs: 500 });
     expect(r).toMatchObject({ id: "voicestudio", group: "optional", ok: false, status: "off" });

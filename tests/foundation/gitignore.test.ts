@@ -13,7 +13,7 @@ afterEach(() => cleanup(dir));
 
 describe("project .gitignore", () => {
   it("covers the caches and outputs the lead found in a real project", () => {
-    for (const line of [".hyperframes/", ".thumbnails/", ".transcode-cache/", ".cutscene/3d/*/frames/", ".cutscene/3d/*/stills/", ".cutscene/stills/", ".cutscene/voice/takes/", "renders/"]) {
+    for (const line of [".hyperframes/", ".thumbnails/", ".transcode-cache/", ".cutscene/stills/", ".cutscene/voice/takes/", "renders/"]) {
       expect(GITIGNORE_LINES).toContain(line);
     }
     // Final 3D clips, voice lines and the beat sheet are work, not cache.

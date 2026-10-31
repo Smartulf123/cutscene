@@ -84,27 +84,26 @@ export declare function fetchAsset(item: ManifestItem, { yes, home, fetchImpl }?
 export declare function fontSlug(family: string | null | undefined): string;
 /** The pinned font for a family and weight (nearest weight available). */
 export declare function fontItemFor(family: string, weight?: number, manifest?: Manifest): FontItem | null;
-export declare const FONT_FORMATS: Record<number, string[]>;
+export declare const FONT_FORMATS: string[];
 /** Score a font file name against a family + weight ("SpaceGrotesk-Bold.ttf", "space-grotesk-latin-700-normal.woff2"). */
 export declare function scoreFontFile(file: string, family: string, weight?: number): number;
 /**
  * Find the display font for a look: the look's own file (type.display.src) and project fonts ->
- * pinned download in the cache -> system fonts -> the bundled Geist Bold. Only formats the tier
+ * pinned download in the cache -> system fonts -> the bundled Geist Bold. Only formats 3D titles
  * can read are used (FONT_FORMATS). Returns {path, source, family}; on a fallback also
- * {wanted, missing: pinned manifest item name or null, unreadable: a project file the tier can't
- * read (a .woff2 for Tier 1) or null}.
+ * {wanted, missing: pinned manifest item name or null, unreadable: a project file 3D titles
+ * can't read (a .woff2) or null}.
  */
-export declare function resolveFont({ family, weight, projectDir, src, tier, home, manifest, systemDirs }?: {
+export declare function resolveFont({ family, weight, projectDir, src, home, manifest, systemDirs }?: {
     family?: string;
     weight?: number;
     projectDir?: string;
     src?: string | null;
-    tier?: number;
     home?: string;
     manifest?: Manifest;
     systemDirs?: string[];
 }): FontChoice;
 /** One plain sentence about a font fallback (or null when the look's font is used). */
-export declare function fontFallbackWarning(font: FontNote | null | undefined, tier?: number): string | null;
+export declare function fontFallbackWarning(font: FontNote | null | undefined): string | null;
 /** Copy a file into a folder, returning the new path. */
 export declare function copyInto(file: string, dir: string, name?: string): string;

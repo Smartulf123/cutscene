@@ -42,10 +42,10 @@ describe("readConfig / writeConfig", () => {
   });
 
   it("merges patches, deep-merges objects and removes keys with null", () => {
-    writeConfig({ blender: "C:/Blender/blender.exe", voice: { default: "kokoro", seed: 1 } });
+    writeConfig({ editor: "C:/Tools/editor.exe", voice: { default: "kokoro", seed: 1 } });
     writeConfig({ voice: { seed: 42 } });
-    expect(readConfig()).toEqual({ blender: "C:/Blender/blender.exe", voice: { default: "kokoro", seed: 42 } });
-    const after = writeConfig({ blender: null });
+    expect(readConfig()).toEqual({ editor: "C:/Tools/editor.exe", voice: { default: "kokoro", seed: 42 } });
+    const after = writeConfig({ editor: null });
     expect(after).toEqual({ voice: { default: "kokoro", seed: 42 } });
     expect(readConfig()).toEqual(after);
   });
@@ -74,8 +74,8 @@ describe("readConfig / writeConfig", () => {
   });
 
   it("reads a file saved with a byte-order mark", () => {
-    writeFileSync(join(dir, "config.json"), '\uFEFF{"blender":"x"}');
-    expect(readConfig()).toEqual({ blender: "x" });
+    writeFileSync(join(dir, "config.json"), '\uFEFF{"editor":"x"}');
+    expect(readConfig()).toEqual({ editor: "x" });
   });
 });
 

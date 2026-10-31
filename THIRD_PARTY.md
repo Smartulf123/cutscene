@@ -77,5 +77,4 @@ Written for Cutscene (Apache-2.0) and layered on top by the sync from `overlays/
 ## Ideas only, no code copied
 
 - **OpenMontage** (calesthio/OpenMontage, AGPL-3.0): pipeline catalogue and routing studied for ideas; no code or text copied.
-- **eden-motion** (no licence): the HyperFrames + Blender plate idea only; nothing copied.
 - **VoiceStudio** (AGPL-3.0): used only over its local API when the user has it; nothing copied.

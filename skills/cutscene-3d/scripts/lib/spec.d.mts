@@ -33,10 +33,9 @@ export interface MaterialSpec {
     preset?: string;
     color?: string;
     roughness?: number;
-    image?: string | null;
     [key: string]: unknown;
 }
-/** Template parameters in a spec. Templates read many more; these are the ones Node code reads. */
+/** Template parameters in a spec (the ones the Three.js templates read). */
 export interface Params {
     text?: string;
     svg?: string | null;
@@ -44,47 +43,40 @@ export interface Params {
     face?: MaterialSpec | null;
     sides?: MaterialSpec | null;
     label?: MaterialSpec | null;
-    body?: MaterialSpec | null;
-    material_override?: MaterialSpec | null;
-    reveal_ease?: string | null;
+    depth?: number;
+    bevel?: number;
+    tracking?: number;
+    swing?: number;
     stagger?: number | null;
     letter_duration?: number | null;
+    turns?: number;
+    count?: number;
     keep_svg_colors?: boolean;
     [key: string]: unknown;
 }
-export interface CameraSpec {
-    move?: string;
-    lens?: number;
-    ease?: string;
-    dof?: {
-        fstop?: number;
-    };
-    drift?: number;
-    [key: string]: unknown;
-}
 export interface LightingSpec {
-    rig?: string;
-    hdri?: string | null;
     rim_color?: string;
     [key: string]: unknown;
 }
-/** A shot spec (<project>/.cutscene/3d/<shot>.json). */
+/**
+ * A shot spec (<project>/.cutscene/3d/<shot>.json). Specs written before Blender was removed
+ * can also hold engine, quality, samples, view_transform, motion_blur, camera, lighting.rig and
+ * lighting.hdri. The Three.js templates never read those, so they are ignored (tier.mjs
+ * BLENDER_ONLY_FIELDS).
+ */
 export interface ShotSpec {
     version?: number;
     id: string;
     template: string;
-    tier?: "auto" | 1 | 2 | "1" | "2";
-    engine?: string;
+    /** 1 or "auto" (both mean Tier 1). An old spec's 2 is refused with TIER2_REMOVED. */
+    tier?: "auto" | 1 | "1" | 2 | "2";
     duration?: number;
     fps?: number;
     width?: number;
     height?: number;
-    quality?: string;
     look?: string;
     params?: Params;
-    camera?: CameraSpec;
     lighting?: LightingSpec;
-    motion_blur?: boolean | number;
     transparent?: boolean;
     needs?: string[];
     seed?: number;
@@ -94,49 +86,33 @@ export interface ShotSpec {
     bloom?: boolean | string;
     bloom_strength?: number;
     exposure?: number;
-    samples?: number;
-    view_transform?: string;
+    [key: string]: unknown;
 }
-/** What newSpec writes: a spec with every section filled in. */
+/** What newSpec writes: a spec with its params filled in. */
 export interface NewShotSpec extends ShotSpec {
     params: Params;
-    camera: CameraSpec;
-    lighting: LightingSpec;
 }
-/** A Tier 2 template: defaults for a new spec. */
+/** A Three.js template: what it makes, and the defaults for a new spec. */
 export interface TemplateDef {
     summary: string;
-    tier1: string;
     duration: number;
     params: Params;
-    camera: CameraSpec;
-    lighting: LightingSpec;
 }
 export declare const DEFAULT_LOOK: Look & {
     palette: Palette;
 };
-/** look.json motion.character -> reveal and camera eases (Blender interpolation names). */
-export declare const MOTION: Record<string, {
-    reveal: string;
-    camera: string;
-    stagger: number;
-    letter: number;
-}>;
-export declare const EASES: string[];
-export declare const CAMERA_MOVES: string[];
 export declare const MATERIALS: string[];
-export declare const RIGS: string[];
 export declare const COLOR_TOKENS: string[];
 /**
- * Tier 2 (Blender) templates. `tier1` names the closest Three.js template for fallbacks.
- * `params` are defaults; colour fields may be palette tokens ("accent") or "#RRGGBB".
+ * The Three.js (Tier 1) templates. `params` are defaults; colour fields may be palette tokens
+ * ("accent") or "#RRGGBB".
  */
 export declare const TEMPLATES: Record<string, TemplateDef>;
-/** Templates that draw text, so they need the look's display font (others never load a font). */
-export declare const TEXT_TEMPLATES: Record<number, string[]>;
-export declare const usesText: (template: string, tier: number) => boolean;
-/** Tier 1 (Three.js) templates. */
+/** Template name -> one-line summary. */
 export declare const TIER1_TEMPLATES: Record<string, string>;
+/** Templates that draw text, so they need the look's display font (others never load a font). */
+export declare const TEXT_TEMPLATES: string[];
+export declare const usesText: (template: string) => boolean;
 export declare const FORMATS: Record<string, [number, number]>;
 export declare function isHex(v: unknown): boolean;
 /** Deep merge (arrays and scalars replace). */
@@ -157,60 +133,10 @@ export interface NewSpecOptions {
 }
 /** A new spec for `template` (what `cutscene 3d new` writes). */
 export declare function newSpec(template: string, { id, text, svg, model, duration, fps, width, height, beat, look, seed }?: NewSpecOptions): NewShotSpec;
-/** Validate a spec. Returns a list of plain-language problems (empty = fine). */
+/**
+ * Validate a spec. Returns a list of plain-language problems (empty = fine). Specs that ask
+ * for Blender (Tier 2) are caught before this, by tier2Reasons in tier.mjs.
+ */
 export declare function validateSpec(spec: ShotSpec): string[];
 /** Read look.json (or null). */
 export declare function readLook(path: string | null | undefined): Look | null;
-/** Replace palette tokens ("accent") with hex colours, deeply. */
-export declare function resolveColors<T>(value: T, palette: Palette): T;
-/** The spec fields that decide the render engine. */
-export interface EngineChoice {
-    engine?: string;
-    needs?: string[];
-    params?: Params;
-}
-/** Engine choice: "auto" picks Cycles for glass/realism, EEVEE otherwise. */
-export declare function pickEngine(spec: EngineChoice): "CYCLES" | "BLENDER_EEVEE";
-export declare function materialPresets(spec: {
-    params?: Params;
-}): (string | undefined)[];
-export declare function needsCycles(spec: EngineChoice): boolean;
-/** Frames for a duration at fps (at least 1). */
-export declare function frameCount(duration: number, fps: number): number;
-/** Pick 3-5 still frames spread over the shot: first motion, middle beats, the final hold. */
-export declare function stillFrames(frames: number, count?: number): number[];
-/**
- * The resolved spec the Blender script reads: look merged in, colours as hex, absolute paths,
- * eases from the motion character, frames counted, engine chosen.
- */
-export declare function resolveSpec(spec: ShotSpec, { projectDir, look, fontPath }?: {
-    projectDir?: string;
-    look?: Look | null;
-    fontPath?: string | null;
-}): {
-    version: number;
-    id: string;
-    template: string;
-    engine: "BLENDER_EEVEE" | "CYCLES";
-    width: number;
-    height: number;
-    fps: number;
-    duration: number;
-    frames: number;
-    quality: string;
-    seed: number;
-    palette: Palette;
-    font: string;
-    params: Params;
-    camera: CameraSpec;
-    lighting: LightingSpec;
-    motion_blur: {
-        enabled: boolean;
-        shutter: number;
-    };
-    transparent: boolean;
-    view_transform: string;
-    exposure: number;
-    samples?: number | undefined;
-};
-export type ResolvedSpec = ReturnType<typeof resolveSpec>;
