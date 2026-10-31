@@ -1,7 +1,7 @@
 // Built from src/skills/cutscene/scripts/setup.mts by `npm run build`. Edit that file, not this one.
 // `cutscene setup`: installs the engine pieces Cutscene can install itself, only with consent
 // (contracts §9). Without --yes it lists what it would download and stops with NEEDS_CONSENT.
-// Voices and Blender have their own setup: `cutscene voice setup`, `cutscene 3d setup`.
+// Voices have their own setup: `cutscene voice setup`. 3D shots need nothing installed.
 import { existsSync, readdirSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
@@ -48,8 +48,6 @@ export function planSetup(checks, pin) {
         elsewhere.push({ id: "node", name: "Node.js 22+", how: byId.node.fix });
     if (byId.voice && !byId.voice.ok)
         elsewhere.push({ id: "voice", name: "AI voices (optional)", how: "Run `cutscene voice setup` when a video needs a voiceover." });
-    if (byId.blender && !byId.blender.ok)
-        elsewhere.push({ id: "blender", name: "Blender (optional)", how: "Run `cutscene 3d setup` when a video needs realistic 3D." });
     return { downloads, elsewhere };
 }
 function formatPlan({ downloads, elsewhere }, home) {

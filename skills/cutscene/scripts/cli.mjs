@@ -76,7 +76,7 @@ Usage: cutscene <command> [options]
        Add --json to any command for one JSON result on stdout.
 
 Start
-  doctor               Check what's installed: engine, FFmpeg, Blender, voices
+  doctor               Check what's installed: engine, FFmpeg, voices
   setup                Install what's missing (asks first; --yes to agree)
   init <folder>        Make a new video project
 
@@ -98,7 +98,7 @@ Media
 
 Parts
   voice <command>      AI voices: design, clone, speak, verify
-  3d <command>         3D shots with Three.js or Blender
+  3d <command>         3D shots with Three.js
   edit <command>       Footage clean-up: silences, retakes, highlights, reframe
 
 Finish (only when the user asks for the video file)
@@ -429,8 +429,6 @@ export const GITIGNORE_LINES = [
     ".hyperframes/",
     ".thumbnails/",
     ".transcode-cache/",
-    ".cutscene/3d/*/frames/",
-    ".cutscene/3d/*/stills/",
     ".cutscene/stills/",
     ".cutscene/voice/takes/",
     "renders/",
