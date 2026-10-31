@@ -40,7 +40,7 @@ sound lands exactly when its graphic appears.
         "words": [{ "w": "Meet", "start": 0.0, "end": 0.32, "p": 0.98 }],
         "verified": true
       },
-      "shot3d": { "spec": ".cutscene/3d/logo.json", "tier": 2, "file": "assets/3d/logo.webm", "duration": 2.4 },
+      "shot3d": { "spec": ".cutscene/3d/logo.json", "tier": 1, "file": "compositions/scene3d-logo.html", "duration": 2.4 },
       "graphics": [{ "id": "g-title", "kind": "title", "text": "Cutscene" }],
       "sfx": [{ "at": 0.4, "name": "whoosh" }]
     }
@@ -62,7 +62,7 @@ sound lands exactly when its graphic appears.
 | `beats[].start`, `beats[].end` | yes | Seconds on the video timeline; `end` after `start` |
 | `beats[].label` | no | What happens, in a few words |
 | `beats[].voice` | no | The spoken line (filled by `cutscene-voice`). `words[].start/end` are relative to the start of the voice file; `beat.start` places it on the timeline |
-| `beats[].shot3d` | no | The 3D shot (filled by `cutscene-3d`): `tier` 1 (Three.js) or 2 (Blender) |
+| `beats[].shot3d` | no | The 3D shot (filled by `cutscene-3d`): its spec, its file in `compositions/`, its length, and `tier` (always 1) |
 | `beats[].graphics` | no | Graphics on screen in this beat |
 | `beats[].sfx` | no | Sounds; `at` is seconds on the video timeline, like every time except `voice.words` |
 

@@ -13,7 +13,7 @@ description: >
 
 Cutscene makes videos on the user's computer. You write the video as HTML compositions; the
 Cutscene engine previews and renders them. Two optional tools add what HTML can't: **3D shots**
-(Three.js inside the video, or Blender for realism) and **local AI voices** (designed from a
+(Three.js scenes inside the video, nothing to install) and **local AI voices** (designed from a
 description or cloned with permission, every word checked). One beat sheet keeps voice, 3D
 and graphics on the same timeline.
 
@@ -40,12 +40,12 @@ folder; treat the skill folder as read-only.
 ## First run in a session
 
 1. `cutscene doctor --json` checks Node.js, FFmpeg, the engine and its browser, and the
-   optional tools (Blender, Python, voices, VoiceStudio).
+   optional tools (Python, voices, VoiceStudio).
 2. If something needed is missing, run `cutscene setup`. It answers `NEEDS_CONSENT` and lists
    what it would download (size, licence, source). **Show that list to the user and ask.**
    Only after a clear yes, run `cutscene setup --yes`.
-3. Voices and Blender are set up only when a video needs them: `cutscene voice setup`,
-   `cutscene 3d setup`. Both ask before downloading.
+3. Voices are set up only when a video needs them: `cutscene voice setup`. It asks before
+   downloading. 3D needs no setup.
 
 ## Start from the project's state
 
@@ -114,13 +114,10 @@ Load the skill for the job. Load only what the current gate needs.
 | Captions on talking-head or narrated video | `cutscene-captions` |
 | Music, sound effects, mixing, ducking, beat sync | `cutscene-audio` |
 | A voiceover: design or clone a voice, speak the lines, check every word (optional) | `cutscene-voice` |
-| 3D: Tier 1 Three.js inside the video for titles, logos, simple objects; Tier 2 Blender for realism, physics, glass, detailed materials (optional) | `cutscene-3d` |
+| 3D shots inside the video: titles, logos, product turntables, abstract shapes, fly-throughs (optional) | `cutscene-3d` |
 | Footage clean-up: silences, filler words, retakes, best moments, vertical reframe, syncing two recordings | `cutscene-edit` |
 | Check, snapshot, preview and render details | `cutscene-render` |
 | Product launches, promos, explainers, pull-request videos | `cutscene-promo` |
-
-For 3D, start with Tier 1. Use Tier 2 (Blender) only when the shot needs realism, physics,
-characters or detailed materials, and Blender is installed (`cutscene doctor`).
 
 ## Firm rules
 

@@ -19,7 +19,7 @@ Run it in the user's project folder or pass the project path.
 
 | Command | What it does |
 |---|---|
-| `cutscene doctor` | Checks Node.js 22+, FFmpeg (and its VP9 alpha encoder), the engine and its render browser, Blender 4.2+, Python 3.10+, the voice environment and VoiceStudio. Fails only when something *needed* is missing |
+| `cutscene doctor` | Checks Node.js 22+, FFmpeg, the engine and its render browser, Python 3.10+, the voice environment and VoiceStudio. Fails only when something *needed* is missing |
 | `cutscene setup` | Lists what it would download and stops with `NEEDS_CONSENT`. `cutscene setup --yes` installs the engine and its browser |
 | `cutscene init <folder>` | Makes a project with `.cutscene/` (see project-layout.md). JSON: `{"ok":true,"project":"<abs path>","name","files":[...]}` |
 | `cutscene preview [project]` | Opens the live preview on `127.0.0.1` (default port 3002). Agents always use `--background`; `--status` checks it, `--stop` ends it (do that when the session ends). `--port N`. JSON: `{"ok":true,"url":"http://127.0.0.1:3002/#project/<name>","pid":...}` |
