@@ -16,7 +16,6 @@ import {
   hueHints,
   toneOf,
   PAIRINGS,
-  fontPin3d,
   MOTION,
   contrast,
   diffLooks,
@@ -98,14 +97,6 @@ describe("font choice", () => {
     const body = generateLook({ briefText: BRIEF_A, seed: 3, brand: readBrand('{"fonts":{"body":"Lato"}}') });
     expect(body.type.body.family).toBe("Lato");
     expect(GENERIC_DISPLAY).not.toContain(body.type.display.family);
-  });
-
-  it("every curated display face has a pinned font that 3D titles can read", () => {
-    for (const [display, weight] of PAIRINGS) {
-      const pin = fontPin3d(display, weight);
-      expect(pin, display).toBeTruthy();
-      expect(pin!.url, display).toMatch(/\.woff$/);
-    }
   });
 });
 

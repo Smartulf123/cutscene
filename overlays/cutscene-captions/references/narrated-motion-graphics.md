@@ -14,19 +14,19 @@ embed, themes) is built around footage and is not needed here.
 
 ## Spoken text vs caption text
 
-A voice line is often written the way it should be said: "A I", "three D", "twenty twenty six".
-The caption should read "AI", "3D", "2026". The script picks each beat's caption text in this
+A voice line is often written the way it should be said: "A I", "four K", "twenty twenty six".
+The caption should read "AI", "4K", "2026". The script picks each beat's caption text in this
 order and uses it only when it lines up word by word with what was said:
 
 1. `voice.display`: the caption text you set on purpose, for example
    `"display": "Tell your AI the video you want."`. Set it with the beat helper so nothing else in
    the file changes: `updateBeat(file, "b2", { voice: { display: "…" } })`.
-2. `voice.heard`: what the voice check heard (usually already "AI" and "3D").
+2. `voice.heard`: what the voice check heard (usually already "AI" and "4K").
 3. The spoken words, tidied: single capital letters in a row are joined ("A I" → "AI") and a
-   number word before "D" becomes "3D".
+   number word before "K" or "D" becomes "4K" or "2D".
 
 Each caption word must match what is said, ignoring case and punctuation, with number words read
-as digits ("3D" = "three D", "AI" = "A I", "&" = "and"). When `voice.display` doesn't line up, the
+as digits ("4K" = "four K", "AI" = "A I", "&" = "and"). When `voice.display` doesn't line up, the
 script says so and falls back; fix the display text rather than the timings. `--text line`
 skips 1 and 2.
 

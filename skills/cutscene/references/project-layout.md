@@ -7,8 +7,7 @@
 ```
 <project>/
   index.html                     the main composition (root timeline)
-  compositions/                  sub-compositions, including 3D shots (scene3d-<shot-id>.html)
-  compositions/assets/3d/        fonts, logos and models the 3D shots use
+  compositions/                  sub-compositions
   assets/                        images, audio, fonts
   assets/voice/<line-id>.wav     final voice lines (+ <line-id>.license.txt)
   hyperframes.json, meta.json    engine settings and project id: keep their names
@@ -20,7 +19,6 @@
     beats.json     the beat sheet (see beats.md)
     project.md     short memory: decisions, approvals, what was checked
     voice/         voice working files: references, takes, check reports
-    3d/            3D shot specs (<shot-id>.json)
     edit/          transcripts, edit lists, review pages
 ```
 

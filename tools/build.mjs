@@ -17,7 +17,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const SRC = join(ROOT, "src");
 /** Compiler projects that write files, in build order. Missing ones are skipped. */
-const PROJECTS = ["tsconfig.json", "tsconfig.browser.json"];
+const PROJECTS = ["tsconfig.json"];
 const OUT_EXT = { ".mts": ".mjs", ".cts": ".cjs", ".ts": ".js" };
 const DTS_EXT = { ".mts": ".d.mts", ".cts": ".d.cts", ".ts": ".d.ts" };
 const posix = (p) => p.split(sep).join("/");

@@ -22,14 +22,14 @@ Rules that come first:
   `/cutscene-design`) and use its palette, fonts and motion character instead of any colours or
   fonts in the examples. Copying an example's styling is how every video ends up looking the same.
 - **Times come from the beat sheet.** When `.cutscene/beats.json` exists, every clip's start and
-  duration comes from its beats (seconds on the final timeline), so voice lines, 3D clips and
+  duration comes from its beats (seconds on the final timeline), so voice lines, video clips and
   graphics land together.
 - **Search before hand-authoring.** `cutscene catalog --query "<the move in plain English>"`
   first; author by hand only when nothing fits.
 
 This skill does NOT pick the look (`/cutscene-design`), write motion (`/cutscene-animate`), place
-music or sound effects (`/cutscene-audio`), make voices (`/cutscene-voice`), make 3D shots
-(`/cutscene-3d`), edit footage (`/cutscene-edit`) or render (`/cutscene-render`).
+music or sound effects (`/cutscene-audio`), make voices (`/cutscene-voice`),
+edit footage (`/cutscene-edit`) or render (`/cutscene-render`).
 
 ## How to run cutscene commands
 

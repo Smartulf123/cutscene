@@ -1,6 +1,6 @@
 // `cutscene setup`: installs the engine pieces Cutscene can install itself, only with consent
 // (contracts §9). Without --yes it lists what it would download and stops with NEEDS_CONSENT.
-// Voices have their own setup: `cutscene voice setup`. 3D shots need nothing installed.
+// Voices have their own setup: `cutscene voice setup`.
 import { existsSync, readdirSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";

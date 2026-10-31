@@ -14,10 +14,10 @@
 //   index.html            where each voice file starts (<audio src="assets/voice/b1.wav"
 //                         data-start="0.35">); without one, a line starts at its beat's start
 //
-// Spoken text and caption text differ: a voice says "A I" and "three D", the caption shows "AI"
-// and "3D". Each beat's caption text is, in order: voice.display, then voice.heard (what the
+// Spoken text and caption text differ: a voice says "A I" and "four K", the caption shows "AI"
+// and "4K". Each beat's caption text is, in order: voice.display, then voice.heard (what the
 // check heard), each used only when it lines up word by word with the spoken words; otherwise the
-// spoken words, with spelled-out letters joined ("A I" -> "AI") and "<number> D" written as "3D".
+// spoken words, with spelled-out letters joined ("A I" -> "AI") and "<number> K" written as "4K" (or "<number> D" as "2D").
 //
 // It writes compositions/<id>.html (a sub-composition) and prints the host clip to paste into
 // index.html. Exit codes: 0 done, 1 failed, 2 wrong usage.
@@ -105,7 +105,7 @@ const NUMBERS: Record<string, number> = {
 };
 const SYMBOLS: Record<string, string> = { "&": " and ", "%": " percent ", "+": " plus ", "@": " at " };
 
-/** A comparison key: lower case, letters and digits only, number words as digits ("three D" -> "3d"). */
+/** A comparison key: lower case, letters and digits only, number words as digits ("four K" -> "4k"). */
 export function spokenKey(text: unknown): string {
   let t = String(text ?? "").toLowerCase().replace(/[’']/g, "");
   for (const [sym, word] of Object.entries(SYMBOLS)) t = t.split(sym).join(word);
@@ -143,7 +143,7 @@ export function alignDisplay(displayText: unknown, words: SpokenWord[]): Caption
   return j === words.length ? out : null;
 }
 
-/** Spoken words as captions: "A I" -> "AI", "three D," -> "3D,". */
+/** Spoken words as captions: "A I" -> "AI", "four K," -> "4K,". */
 export function tidySpoken(words: SpokenWord[]): CaptionToken[] {
   const out: CaptionToken[] = [];
   // s flag: a word with a line break in it still splits (without it, exec gives null)
@@ -151,9 +151,9 @@ export function tidySpoken(words: SpokenWord[]): CaptionToken[] {
   for (let i = 0; i < words.length; i++) {
     const [core, punct] = split(words[i].w);
     const next = words[i + 1] && split(words[i + 1].w);
-    // a number word then the letter D: "three D" -> "3D"
-    if (next && spokenKey(core) in NUMBERS_BY_DIGIT && /^[dD]$/.test(next[0]) && !punct) {
-      out.push({ text: `${spokenKey(core)}D${next[1]}`, start: words[i].start, end: words[i + 1].end });
+    // a number word then the letter K or D: "four K" -> "4K", "two D" -> "2D"
+    if (next && spokenKey(core) in NUMBERS_BY_DIGIT && /^[dDkK]$/.test(next[0]) && !punct) {
+      out.push({ text: `${spokenKey(core)}${next[0].toUpperCase()}${next[1]}`, start: words[i].start, end: words[i + 1].end });
       i++;
       continue;
     }
@@ -261,7 +261,7 @@ export function buildCaptions(sheet: BeatSheet | null | undefined, { html = "", 
           source = name;
           break;
         }
-        if (name === "display") warnings.push(`Beat ${b.id}: voice.display doesn't line up with the spoken words, so the caption uses the spoken words. Make each caption word match what is said ("AI" for "A I", "3D" for "three D").`);
+        if (name === "display") warnings.push(`Beat ${b.id}: voice.display doesn't line up with the spoken words, so the caption uses the spoken words. Make each caption word match what is said ("AI" for "A I", "4K" for "four K").`);
       }
     }
     tokens ??= tidySpoken(words);

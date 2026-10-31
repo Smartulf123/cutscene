@@ -12,12 +12,12 @@ import { moveSectionOut } from "../../tools/sync-hyperframes.mjs";
 
 const W = (list: [string, number, number][]): SpokenWord[] => list.map(([w, start, end]) => ({ w, start, end }));
 const B2 = W([["Tell", 0, 0.34], ["your", 0.34, 0.5], ["A", 0.5, 0.62], ["I", 0.62, 0.76], ["the", 0.76, 0.94], ["video", 0.94, 1.22], ["you", 1.22, 1.4], ["want.", 1.4, 1.62]]);
-const B3 = W([["It", 0, 0.32], ["renders", 0.32, 0.7], ["real", 0.7, 0.9], ["three", 0.9, 1.2], ["D,", 1.2, 1.5], ["and", 1.6, 1.7], ["speaks.", 1.7, 2.1]]);
+const B3 = W([["It", 0, 0.32], ["films", 0.32, 0.7], ["real", 0.7, 0.9], ["four", 0.9, 1.2], ["K,", 1.2, 1.5], ["and", 1.6, 1.7], ["speaks.", 1.7, 2.1]]);
 const SHEET: BeatSheet = {
   version: 1, fps: 30, width: 1920, height: 1080, duration: 8,
   beats: [
     { id: "b1", start: 0, end: 3, voice: { file: "assets/voice/b1.wav", line: "Tell your A I the video you want.", heard: "Tell your AI the video you want.", words: B2 } },
-    { id: "b2", start: 3, end: 6, voice: { file: "assets/voice/b2.wav", line: "It renders real three D, and speaks.", display: "It renders real 3D, and speaks.", words: B3 } },
+    { id: "b2", start: 3, end: 6, voice: { file: "assets/voice/b2.wav", line: "It films real four K, and speaks.", display: "It films real 4K, and speaks.", words: B3 } },
     { id: "b3", start: 6, end: 8, label: "logo, no voice" },
   ],
 };
@@ -25,7 +25,7 @@ const HTML = `<audio id="v1" class="clip" src="assets/voice/b1.wav" data-start="
 
 describe("caption text vs spoken text", () => {
   it("compares words the way they are said", () => {
-    expect(spokenKey("3D")).toBe(spokenKey("three") + spokenKey("D"));
+    expect(spokenKey("4K")).toBe(spokenKey("four") + spokenKey("K"));
     expect(spokenKey("AI")).toBe("ai");
     expect(spokenKey("R&D")).toBe("randd");
     expect(spokenKey("it's")).toBe("its");
@@ -34,13 +34,13 @@ describe("caption text vs spoken text", () => {
     const a = alignDisplay("Tell your AI the video you want.", B2)!;
     expect(a.map((t) => t.text)).toEqual(["Tell", "your", "AI", "the", "video", "you", "want."]);
     expect(a[2]).toEqual({ text: "AI", start: 0.5, end: 0.76 });
-    expect(alignDisplay("It renders real 3D, and speaks.", B3)![3]).toEqual({ text: "3D,", start: 0.9, end: 1.5 });
+    expect(alignDisplay("It films real 4K, and speaks.", B3)![3]).toEqual({ text: "4K,", start: 0.9, end: 1.5 });
     expect(alignDisplay("Tell your robot the video you want.", B2)).toBeNull();
     expect(alignDisplay("Tell your AI", B2)).toBeNull(); // words left over
   });
   it("tidies spoken words when there is no display text", () => {
     expect(tidySpoken(B2).map((t) => t.text).join(" ")).toBe("Tell your AI the video you want.");
-    expect(tidySpoken(B3).map((t) => t.text).join(" ")).toBe("It renders real 3D, and speaks.");
+    expect(tidySpoken(B3).map((t) => t.text).join(" ")).toBe("It films real 4K, and speaks.");
     expect(tidySpoken(W([["I", 0, 0.1], ["think", 0.1, 0.3]])).map((t) => t.text)).toEqual(["I", "think"]);
   });
   it("tidies a spoken word that has a line break in it", () => {
@@ -60,7 +60,7 @@ describe("buildCaptions", () => {
     expect(r.sources).toEqual([{ beat: "b1", source: "heard" }, { beat: "b2", source: "display" }]);
     const ai = r.lines[0].words.find((w) => w.text === "AI");
     expect(ai).toEqual({ text: "AI", start: 0.85, end: 1.11 });
-    expect(r.lines[1].words.map((w) => w.text).join(" ")).toBe("It renders real 3D, and speaks.");
+    expect(r.lines[1].words.map((w) => w.text).join(" ")).toBe("It films real 4K, and speaks.");
     expect(r.duration).toBe(8);
     for (let i = 1; i < r.lines.length; i++) expect(r.lines[i].show).toBeGreaterThanOrEqual(r.lines[i - 1].hide);
   });

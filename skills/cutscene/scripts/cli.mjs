@@ -5,7 +5,7 @@
 //
 // - Engine commands run the pinned engine from <CUTSCENE_HOME>/engine/<pin> with Cutscene's
 //   environment, and their output is reworded so users see "cutscene <cmd>".
-// - `voice`, `3d` and `edit` run the matching part's script next to this skill.
+// - `voice` and `edit` run the matching part's script next to this skill.
 // - `preview` runs ./preview.mjs; `doctor` and `setup` are Cutscene's own.
 // Built on HyperFrames, an open-source framework by HeyGen (Apache-2.0).
 // Cutscene is independent and not affiliated with HeyGen.
@@ -98,7 +98,6 @@ Media
 
 Parts
   voice <command>      AI voices: design, clone, speak, verify
-  3d <command>         3D shots with Three.js
   edit <command>       Footage clean-up: silences, retakes, highlights, reframe
 
 Finish (only when the user asks for the video file)
@@ -131,7 +130,15 @@ async function dispatchScript(script, args, env) {
         throw new CutsceneError("PART_FAILED_TO_START", `Cutscene couldn't start ${script}: ${r.error.message}`, { hint: "Run `cutscene doctor` to check the installation." });
     return r.code;
 }
-const PART_LABELS = { voice: "voice", "3d": "3D", edit: "footage editing" };
+const PART_LABELS = { voice: "voice", edit: "footage editing" };
+/** Commands that used to exist and now only explain what to do instead. */
+export const REMOVED = {
+    "3d": {
+        code: "THREED_REMOVED",
+        message: "3D was removed from Cutscene.",
+        hint: "Use 2D motion (cutscene-animate), or add an already-rendered 3D clip as a normal video clip.",
+    },
+};
 async function dispatchPart(part, args) {
     const script = partScript(part);
     if (!existsSync(script)) {
@@ -645,6 +652,10 @@ export async function main(argv) {
         const dd = after.indexOf("--");
         if ((dd < 0 ? after : after.slice(0, dd)).includes("--json"))
             json = true;
+        if (command in REMOVED) {
+            const r = REMOVED[command];
+            throw new CutsceneError(r.code, r.message, { hint: r.hint, exitCode: EXIT.USAGE });
+        }
         if (PARTS.includes(command))
             return await dispatchPart(command, json ? withJson(after) : after);
         if (command === "preview")

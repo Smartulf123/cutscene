@@ -1,14 +1,14 @@
 <!-- Adapted from HyperFrames (Apache-2.0, HeyGen, Inc.); modified for Cutscene. -->
 # Cutscene video project
 
-This folder is a Cutscene video project. Cutscene builds videos from HTML compositions, with
-optional 3D shots (Three.js scenes inside the video) and local AI voices.
+This folder is a Cutscene video project. Cutscene builds videos from HTML compositions, edits
+real footage and makes local AI voices.
 
 ## Start here
 
 - Load the **cutscene** skill first. It plans the video, keeps the beat sheet and sends each job
-  to the right Cutscene skill (compose, animate, design, captions, audio, voice, 3d, edit,
-  render, promo).
+  to the right Cutscene skill (compose, animate, design, captions, audio, voice, edit, render,
+  promo).
 - Run every command through the `cutscene` command from that skill:
   `node "<cutscene skill folder>/scripts/cli.mjs" <command>`. Never run the engine directly.
 - Approvals are recorded in `.cutscene/project.md`. Read it before asking the user anything;
@@ -17,8 +17,7 @@ optional 3D shots (Three.js scenes inside the video) and local AI voices.
 ## Project files
 
 - `index.html`: the main composition (the root timeline)
-- `compositions/`: sub-compositions, referenced with `data-composition-src`, including 3D shots
-  (`scene3d-*.html`)
+- `compositions/`: sub-compositions, referenced with `data-composition-src`
 - `assets/`: images, audio, `assets/voice/` voice lines
 - `.cutscene/brief.md`: what the user wants, approved before building
 - `.cutscene/look.json`: this video's look (palette, type, motion, texture)

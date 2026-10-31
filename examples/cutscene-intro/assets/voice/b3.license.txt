@@ -1,6 +1,6 @@
 Cutscene voice line b3
 File: assets/voice/b3.wav
-Text: "It animates, renders real three D, and speaks every line."
+Text: "It animates and speaks every line." (trimmed on 2026-10-31 from a longer take of the same voice and seed)
 Voice: narrator, designed from "female, young adult, american accent", seed 42
 Model: OmniVoice (k2-fsa/OmniVoice @ c5fdb5ccb189)
 Licence: CC-BY-NC-4.0 (NON-COMMERCIAL: do not use this file in paid or commercial work)

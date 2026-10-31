@@ -24,7 +24,6 @@ Run it in the user's project folder or pass the project path.
 | `cutscene init <folder>` | Makes a project with `.cutscene/` (see project-layout.md). JSON: `{"ok":true,"project":"<abs path>","name","files":[...]}` |
 | `cutscene preview [project]` | Opens the live preview on `127.0.0.1` (default port 3002). Agents always use `--background`; `--status` checks it, `--stop` ends it (do that when the session ends). `--port N`. JSON: `{"ok":true,"url":"http://127.0.0.1:3002/#project/<name>","pid":...}` |
 | `cutscene voice <command>` | The voice part (`cutscene-voice` skill) |
-| `cutscene 3d <command>` | The 3D part (`cutscene-3d` skill) |
 | `cutscene edit <command>` | The footage part (`cutscene-edit` skill) |
 | `cutscene --version` | Cutscene and engine versions |
 
@@ -72,7 +71,7 @@ Cutscene renders locally, uses one tested engine version, has no account and no 
 |---|---|
 | `NEEDS_CONSENT` | Something must be downloaded first; the result lists what (size, licence, source) |
 | `MISSING_REQUIREMENTS` | `doctor`/`setup`: something needed is missing; each check has a `fix` |
-| `PART_MISSING` | `voice`, `3d` or `edit` isn't installed next to this skill |
+| `PART_MISSING` | `voice` or `edit` isn't installed next to this skill |
 | `PREVIEW_MISSING` | The preview isn't installed in this copy of Cutscene |
 | `COMMAND_NOT_AVAILABLE` | A command Cutscene doesn't offer |
 | `USAGE` | Wrong arguments (exit 2) |
@@ -83,7 +82,7 @@ Cutscene renders locally, uses one tested engine version, has no account and no 
 
 ## For part scripts
 
-`cutscene voice|3d|edit ...` runs `skills/cutscene-<part>/scripts/<part>.mjs` with the same
+`cutscene voice|edit ...` runs `skills/cutscene-<part>/scripts/<part>.mjs` with the same
 Node and these variables:
 
 | Variable | Value |

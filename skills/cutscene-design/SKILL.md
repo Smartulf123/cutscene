@@ -36,8 +36,8 @@ The presets and palettes below are starting points, not house styles: remix ever
 video's `look.json`.
 
 This skill does NOT write motion code (`/cutscene-animate`), compose the HTML
-(`/cutscene-compose`), design or speak voices (`/cutscene-voice`), or make 3D renders
-(`/cutscene-3d`).
+(`/cutscene-compose`), or design or speak voices
+(`/cutscene-voice`).
 
 ## How to run cutscene commands
 

@@ -15,7 +15,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 export const SCRIPTS_DIR = resolve(here, "..");
 /** skills/cutscene */
 export const SKILL_DIR = resolve(here, "..", "..");
-/** skills/ (the folder that holds cutscene, cutscene-3d, cutscene-voice, ...) */
+/** skills/ (the folder that holds cutscene, cutscene-voice, cutscene-edit, ...) */
 export const SKILLS_ROOT = resolve(here, "..", "..", "..");
 /** Absolute path of the `cutscene` command (cli.mjs). */
 export const CLI_PATH = join(SCRIPTS_DIR, "cli.mjs");
@@ -50,7 +50,7 @@ export function engineDir(pin: string, home: string = cutsceneHome()): string {
 }
 
 /** The parts `cutscene <part>` dispatches to. */
-export const PARTS = ["voice", "3d", "edit"];
+export const PARTS = ["voice", "edit"];
 
 /**
  * Entry script of a part: `skills/cutscene-<part>/scripts/<part>.mjs`, next to this skill.

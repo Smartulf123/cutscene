@@ -25,5 +25,5 @@ Rules for every workflow:
   run them with plain `node`.
 - **No final render unless the user asks.** The last gate is the preview.
 
-This skill does NOT edit existing footage (`/cutscene-edit`), make 3D shots (`/cutscene-3d`),
+This skill does NOT edit existing footage (`/cutscene-edit`),
 design voices (`/cutscene-voice`) or render without the user's OK.

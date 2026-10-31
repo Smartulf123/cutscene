@@ -16,8 +16,8 @@ describe("project .gitignore", () => {
     for (const line of [".hyperframes/", ".thumbnails/", ".transcode-cache/", ".cutscene/stills/", ".cutscene/voice/takes/", "renders/"]) {
       expect(GITIGNORE_LINES).toContain(line);
     }
-    // Final 3D clips, voice lines and the beat sheet are work, not cache.
-    for (const keep of ["assets/", "assets/3d/", ".cutscene/", ".cutscene/beats.json"]) expect(GITIGNORE_LINES).not.toContain(keep);
+    // Assets, voice lines and the beat sheet are work, not cache.
+    for (const keep of ["assets/", "assets/voice/", ".cutscene/", ".cutscene/beats.json"]) expect(GITIGNORE_LINES).not.toContain(keep);
   });
 
   it("finishProject writes it for a new project", () => {

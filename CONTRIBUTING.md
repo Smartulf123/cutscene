@@ -38,10 +38,6 @@ Every built file starts with a line naming its source, and has a declaration fil
 next to it with its types. CI fails if either is out of date. Tests are TypeScript too
 (`tests/**/*.test.ts`); they import the built files, and `npm run typecheck` checks them.
 
-The code that runs inside a 3D video, in the browser, is in `src/skills/cutscene-3d/templates/tier1/`
-and builds to `.js` with browser types (`tsconfig.browser.json`). Three.js and GSAP come from the
-page, so their types are small declaration files next to that code.
-
 Some code stays in other languages on purpose: the videos and design references are HTML (that
 is what the engine renders), the voice scripts are Python (the voice models only run Python), and
 the generated skills keep the engine's JavaScript.
@@ -52,7 +48,7 @@ the generated skills keep the engine's JavaScript.
 |---|---|
 | `src/` | The TypeScript source for everything Cutscene wrote |
 | `skills/cutscene/` | The router skill and the `cutscene` command (`scripts/cli.mjs`, built) |
-| `skills/cutscene-3d/`, `-voice/`, `-edit/` | Cutscene's own skills; edit the `SKILL.md` (and the voice worker's Python) here, the scripts in `src/` |
+| `skills/cutscene-voice/`, `-edit/` | Cutscene's own skills; edit the `SKILL.md` (and the voice worker's Python) here, the scripts in `src/` |
 | `skills/cutscene-compose/`, `-animate/`, `-design/`, `-captions/`, `-audio/`, `-render/`, `-promo/` | **Generated** from the pinned engine source; don't edit them by hand |
 | `overlays/` | Cutscene's changes to the generated skills ([how it works](overlays/README.md)) |
 | `tools/` | The build, the sync, the skill validator and the pin-age check (built from `src/tools/`) |

@@ -1,6 +1,6 @@
 ---
 name: cutscene-animate
-description: "Use for any motion in a Cutscene video: GSAP timelines, eases and staggers, the runtime adapters (GSAP, Lottie, Three.js, Anime.js, CSS keyframes, Web Animations, TypeGPU), atomic motion rules, multi-phase scene blueprints, scene transitions, motion blur, seek-safe keyframes for zooms, punch-ins and camera moves, auditing choreography with an animation map, kinetic type, and the motion-graphics workflow (lower thirds, charts, maps, 2D logo reveals, news, tweets). Use it when something moves wrong, too fast or too stiff. Does NOT pick the video's look (cutscene-design), make extruded 3D titles or 3D scenes (cutscene-3d) or define the composition contract (cutscene-compose)."
+description: "Use for any motion in a Cutscene video: GSAP timelines, eases and staggers, the runtime adapters (GSAP, Lottie, Anime.js, CSS keyframes, Web Animations, TypeGPU), atomic motion rules, multi-phase scene blueprints, scene transitions, motion blur, seek-safe keyframes for zooms, punch-ins and camera moves, auditing choreography with an animation map, kinetic type, and the motion-graphics workflow (lower thirds, charts, maps, 2D logo reveals, news, tweets). Use it when something moves wrong, too fast or too stiff. Does NOT pick the video's look (cutscene-design) or define the composition contract (cutscene-compose)."
 ---
 
 <!-- Adapted from HyperFrames (Apache-2.0, HeyGen, Inc.); modified for Cutscene. -->
@@ -11,7 +11,7 @@ All motion for a Cutscene video, in three parts:
 
 | Need | Read |
 |---|---|
-| Motion rules, scene blueprints, transitions, runtime adapters (GSAP, Lottie, Three.js, Anime.js, CSS, Web Animations, TypeGPU) | this file, then `rules-index.md`, `blueprints-index.md`, `transitions/`, `adapters/` |
+| Motion rules, scene blueprints, transitions, runtime adapters (GSAP, Lottie, Anime.js, CSS, Web Animations, TypeGPU) | this file, then `rules-index.md`, `blueprints-index.md`, `transitions/`, `adapters/` |
 | Zooms, punch-ins, reframes, camera moves and other seek-safe keyframes | [keyframes/GUIDE.md](keyframes/GUIDE.md) |
 | A short, unnarrated motion graphic (lower third, chart, map, kinetic type, logo reveal, news, tweet) | [motion-graphics/GUIDE.md](motion-graphics/GUIDE.md) |
 
@@ -22,7 +22,7 @@ editorial) maps to concrete GSAP eases and timings in `/cutscene-design` →
 on everything is the house-style trap this avoids.
 
 This skill does NOT choose the look (`/cutscene-design`), define the composition contract
-(`/cutscene-compose`), make 3D shots (`/cutscene-3d`) or place sound (`/cutscene-audio`).
+(`/cutscene-compose`) or place sound (`/cutscene-audio`).
 
 ## How to run cutscene commands
 

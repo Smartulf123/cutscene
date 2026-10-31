@@ -20,7 +20,7 @@
       "sourceSha256": [
         "b35f1f8eff68e9ff480a5d5d343a1bf5a40ebb7d0d9be20b0b980cfdb36047f3"
       ],
-      "sha256": "0a25783d479c0da488634091647676c3cf745386ee075bb0d6e1a5cf8e58de34"
+      "sha256": "ccfd5f76aa4a31d8c005fda6b2f41cd2a7283e23b4e59d931c421187977afb8a"
     },
     "skills/cutscene-animate/adapters/animate-text.md": {
       "from": "skills/hyperframes-animation/adapters/animate-text.md",
@@ -842,7 +842,7 @@
       "sourceSha256": [
         "983a4e61310d05c4a5c5a4fff2262c24ef1929478831e3afb76b0ab584b09bce"
       ],
-      "sha256": "29b4c92a2deb7a45886e87b344f66d42bf332a4a1f3fbc52abb0406666246ec3"
+      "sha256": "e0812eb64381a8c8f35b69fbd2304c33e7ae1fb127434fdf88c688a9fc6290e5"
     },
     "skills/cutscene-captions/assets/fonts/char-widths.json": {
       "from": "skills/embedded-captions/assets/fonts/char-widths.json",
@@ -1346,8 +1346,8 @@
     },
     "skills/cutscene-captions/references/narrated-motion-graphics.md": {
       "from": "overlays/cutscene-captions/references/narrated-motion-graphics.md",
-      "sourceSha256": "59d825f21cd1d4fb9e6ebf3e2df70d9ea05f2fc4dbdef4b929e6ce5e3ae63ed0",
-      "sha256": "59d825f21cd1d4fb9e6ebf3e2df70d9ea05f2fc4dbdef4b929e6ce5e3ae63ed0"
+      "sourceSha256": "902833795e99b1ab83e873740b66416d0e8655e1f94af22e08cccc1fc228d471",
+      "sha256": "902833795e99b1ab83e873740b66416d0e8655e1f94af22e08cccc1fc228d471"
     },
     "skills/cutscene-captions/references/rail.md": {
       "from": "skills/embedded-captions/references/rail.md",
@@ -1381,13 +1381,13 @@
     },
     "skills/cutscene-captions/scripts/beats-captions.d.mts": {
       "from": "overlays/cutscene-captions/scripts/beats-captions.d.mts",
-      "sourceSha256": "7673f60789d89f1ab1b40d2082ab1f31a2647b4ff696069a9aa2d597deb99580",
-      "sha256": "7673f60789d89f1ab1b40d2082ab1f31a2647b4ff696069a9aa2d597deb99580"
+      "sourceSha256": "2788859142cd270a6aba0e9e71945e70e1c06d0bf12cfaa6aaa382620f5d1a68",
+      "sha256": "2788859142cd270a6aba0e9e71945e70e1c06d0bf12cfaa6aaa382620f5d1a68"
     },
     "skills/cutscene-captions/scripts/beats-captions.mjs": {
       "from": "overlays/cutscene-captions/scripts/beats-captions.mjs",
-      "sourceSha256": "48e43371aed8e33ac1aa78f4ec2c8413341cd5f26e0fd12c4246b05d33be7d6b",
-      "sha256": "48e43371aed8e33ac1aa78f4ec2c8413341cd5f26e0fd12c4246b05d33be7d6b"
+      "sourceSha256": "4d15d64087a96f2bb5584fea8c8acfc69d68faa0b28cc5d9167426bee86d6a3e",
+      "sha256": "4d15d64087a96f2bb5584fea8c8acfc69d68faa0b28cc5d9167426bee86d6a3e"
     },
     "skills/cutscene-captions/scripts/check-occlusion.cjs": {
       "from": "skills/embedded-captions/scripts/check-occlusion.cjs",
@@ -1638,12 +1638,12 @@
       "sourceSha256": [
         "18ac7784765cc29af5a4d88f2a63a15deaf5395985009af188b5e3718edcfe3d"
       ],
-      "sha256": "e7b80fe41b97fb9f3c6da8db01c724e6630448851b6c6dda4f3e68c00782914c"
+      "sha256": "6fc56bf3d8f668212b267c6d1281f851b1ee72b531ae6e361a58d553986c434d"
     },
     "skills/cutscene-compose/general-video/GUIDE.md": {
       "from": "skills/general-video/SKILL.md",
       "sourceSha256": "db87c1909eff755d810f83de6064bfb7c52a76e76ba388d4b00c98893dddcb1f",
-      "sha256": "fd518320a3b427a5ed64e9d1d804700eb3a8452cf9c43de28f3c076582472ed7"
+      "sha256": "296fac34c6e2b60d2bdc48464ab515df9f0e542a80d1771cb5615192dfa8b02f"
     },
     "skills/cutscene-compose/general-video/scripts/frame-packets.mjs": {
       "from": "skills/general-video/scripts/frame-packets.mjs",
@@ -1779,7 +1779,7 @@
       "sourceSha256": [
         "9da7b7ac84c8d884b54125887ecca1a645a38337013082b96af2fdc0259c945a"
       ],
-      "sha256": "8c5ca5796e45117cfe717bc7420eb9698d357ca4640cf33430fbd0bea5cfb16c"
+      "sha256": "eb4c128e55094dec61a784f8f5f0bf47b7a8e2aa8993b2e67ccbe3f8bc65c156"
     },
     "skills/cutscene-design/figma/GUIDE.md": {
       "from": "skills/figma/SKILL.md",
@@ -2158,8 +2158,8 @@
     },
     "skills/cutscene-design/references/look-system.md": {
       "from": "overlays/cutscene-design/references/look-system.md",
-      "sourceSha256": "e2996c4858adc40a8e72ffa7c56a0eb127176be54fc1d26757dc456b68e31854",
-      "sha256": "e2996c4858adc40a8e72ffa7c56a0eb127176be54fc1d26757dc456b68e31854"
+      "sourceSha256": "3a14ceaa4235b09e1d44bb08dc77448f16d1b1bb58e35cca3afa08e4e033ced5",
+      "sha256": "3a14ceaa4235b09e1d44bb08dc77448f16d1b1bb58e35cca3afa08e4e033ced5"
     },
     "skills/cutscene-design/references/motion-principles.md": {
       "from": "skills/hyperframes-creative/references/motion-principles.md",
@@ -2213,13 +2213,13 @@
     },
     "skills/cutscene-design/scripts/look.d.mts": {
       "from": "overlays/cutscene-design/scripts/look.d.mts",
-      "sourceSha256": "d4b4090354eb3960c32269f138c672ef0f0d1db28ef636f02f54207a99fbce3b",
-      "sha256": "d4b4090354eb3960c32269f138c672ef0f0d1db28ef636f02f54207a99fbce3b"
+      "sourceSha256": "8ecb9d500a1d93835784291e01b584de48e634301bff4e2b3415477c446c6ea5",
+      "sha256": "8ecb9d500a1d93835784291e01b584de48e634301bff4e2b3415477c446c6ea5"
     },
     "skills/cutscene-design/scripts/look.mjs": {
       "from": "overlays/cutscene-design/scripts/look.mjs",
-      "sourceSha256": "351cd75d788faea792e783fc30b10fc1c35cade0d5168eafd7b681a4cdd7e705",
-      "sha256": "351cd75d788faea792e783fc30b10fc1c35cade0d5168eafd7b681a4cdd7e705"
+      "sourceSha256": "4922491371c346cd09725313c5185b94d41cee349af9bda2bd7aaada3b7eea9a",
+      "sha256": "4922491371c346cd09725313c5185b94d41cee349af9bda2bd7aaada3b7eea9a"
     },
     "skills/cutscene-design/scripts/package-loader.mjs": {
       "from": "skills/hyperframes-creative/scripts/package-loader.mjs",
@@ -2237,7 +2237,7 @@
         "overlays/cutscene-promo/SKILL.head.md"
       ],
       "sourceSha256": [],
-      "sha256": "b8dd88557bea764cadba3f5b925e6c8bf63aecf246953103a8678d8e7fd5ff5f"
+      "sha256": "feee9d973bbaa0f0761320663102ba01bd22c7941e02327b4b5ae9ea4cc8f130"
     },
     "skills/cutscene-promo/workflows/faceless-explainer/WORKFLOW.md": {
       "from": "skills/faceless-explainer/SKILL.md",
@@ -2687,8 +2687,8 @@
     },
     "skills/cutscene/references/upstream/README.md": {
       "from": "overlays/cutscene-upstream/README.md",
-      "sourceSha256": "e160e68ad96d5bf4249683f1b3337672a0e8f8a5034841ceb0ed535ae023b524",
-      "sha256": "e160e68ad96d5bf4249683f1b3337672a0e8f8a5034841ceb0ed535ae023b524"
+      "sourceSha256": "fe2b0fddcfd3552173adadec4cea262345dc69d574e199b086d91b536ceea0c8",
+      "sha256": "fe2b0fddcfd3552173adadec4cea262345dc69d574e199b086d91b536ceea0c8"
     },
     "skills/cutscene/references/upstream/references/brief-contract.md": {
       "from": "skills/hyperframes/references/brief-contract.md",

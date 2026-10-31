@@ -59,7 +59,7 @@ describe("validateBeats", () => {
       height: 1920,
       beats: [
         { id: "a", start: 0, end: 1, voice: { file: "C:\\Users\\me\\b1.wav" } },
-        { id: "a", start: 1, end: 2, shot3d: { file: "../outside.webm", tier: 3 } },
+        { id: "a", start: 1, end: 2, voice: { file: "../outside.wav" } },
         { id: "c", start: 2, end: 3, voice: { file: "\\\\server\\share\\x.wav" } },
       ],
     });
@@ -68,7 +68,6 @@ describe("validateBeats", () => {
     expect(msgs).toMatch(/absolute path/);
     expect(msgs).toMatch(/outside the project/);
     expect(msgs).toMatch(/network path/);
-    expect(msgs).toMatch(/tier/);
   });
 
   it("warns (not errors) on overlaps, long decimals and unknown speakers", () => {
@@ -92,17 +91,13 @@ describe("validateBeats", () => {
     expect(w).toMatch(/after the end of the video/);
   });
 
-  it("still accepts an old shot3d.tier of 2 (Blender, now removed), with a warning", () => {
-    const sheet = (tier: unknown) => ({ version: 1, fps: 30, width: 1920, height: 1080, beats: [{ id: "a", start: 0, end: 2, shot3d: { tier, file: "assets/3d/logo.webm" } }] });
-    const old = validateBeats(sheet(2));
-    expect(old.ok).toBe(true);
-    expect(old.errors).toEqual([]);
-    expect(old.warnings.find((w) => w.path === "beats[0] (a).shot3d.tier")!.message).toMatch(/Blender \(Tier 2\) was removed/);
-    const now = validateBeats(sheet(1));
-    expect(now.ok).toBe(true);
-    expect(now.warnings).toEqual([]);
-    const bad = validateBeats(sheet("2"));
-    expect(bad.errors.map((e) => e.message).join(" ")).toMatch(/must be 1/);
+  it("still accepts an old beat sheet with shot3d (3D was removed), with a warning", () => {
+    for (const shot3d of [{ tier: 2, file: "assets/3d/logo.webm" }, { tier: 1, spec: "../outside.json" }, "junk"]) {
+      const r = validateBeats({ version: 1, fps: 30, width: 1920, height: 1080, beats: [{ id: "a", start: 0, end: 2, shot3d }] });
+      expect(r.ok).toBe(true);
+      expect(r.errors).toEqual([]);
+      expect(r.warnings.find((w) => w.path === "beats[0] (a).shot3d")!.message).toMatch(/3D was removed from Cutscene/);
+    }
   });
 
   it("never throws on junk", () => {
@@ -150,10 +145,10 @@ describe("updateBeat", () => {
   });
 
   it("works on compact one-line beats", () => {
-    updateBeat(file, "b2", { shot3d: { tier: 1, file: "assets/3d/b2.webm" } });
+    updateBeat(file, "b2", { overlay: { kind: "lower-third", file: "compositions/b2.html" } });
     const text = readFileSync(file, "utf8");
-    expect(text).toContain('"x-tag": 7, "shot3d": {"tier":1,"file":"assets/3d/b2.webm"} }');
-    expect(readBeats(file).beats[1].shot3d!.tier).toBe(1);
+    expect(text).toContain('"x-tag": 7, "overlay": {"kind":"lower-third","file":"compositions/b2.html"} }');
+    expect((readBeats(file).beats[1].overlay as { kind: string }).kind).toBe("lower-third");
   });
 
   it("removes a field with null", () => {
@@ -224,10 +219,10 @@ describe("updateBeat", () => {
 
   it("keeps CRLF line endings", () => {
     writeFileSync(file, SAMPLE.replace(/\n/g, "\r\n"));
-    updateBeat(file, "b1", { shot3d: { tier: 2 } });
+    updateBeat(file, "b1", { overlay: { kind: "title" } });
     const text = readFileSync(file, "utf8");
     expect(text.includes("\n") && !/[^\r]\n/.test(text)).toBe(true);
-    expect(readBeats(file).beats[0].shot3d!.tier).toBe(2);
+    expect((readBeats(file).beats[0].overlay as { kind: string }).kind).toBe("title");
   });
 });
 

@@ -4,7 +4,7 @@ All motion for a Cutscene video, in three parts:
 
 | Need | Read |
 |---|---|
-| Motion rules, scene blueprints, transitions, runtime adapters (GSAP, Lottie, Three.js, Anime.js, CSS, Web Animations, TypeGPU) | this file, then `rules-index.md`, `blueprints-index.md`, `transitions/`, `adapters/` |
+| Motion rules, scene blueprints, transitions, runtime adapters (GSAP, Lottie, Anime.js, CSS, Web Animations, TypeGPU) | this file, then `rules-index.md`, `blueprints-index.md`, `transitions/`, `adapters/` |
 | Zooms, punch-ins, reframes, camera moves and other seek-safe keyframes | [keyframes/GUIDE.md](keyframes/GUIDE.md) |
 | A short, unnarrated motion graphic (lower third, chart, map, kinetic type, logo reveal, news, tweet) | [motion-graphics/GUIDE.md](motion-graphics/GUIDE.md) |
 
@@ -15,4 +15,4 @@ editorial) maps to concrete GSAP eases and timings in `/cutscene-design` →
 on everything is the house-style trap this avoids.
 
 This skill does NOT choose the look (`/cutscene-design`), define the composition contract
-(`/cutscene-compose`), make 3D shots (`/cutscene-3d`) or place sound (`/cutscene-audio`).
+(`/cutscene-compose`) or place sound (`/cutscene-audio`).

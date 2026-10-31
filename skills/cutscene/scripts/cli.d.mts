@@ -44,6 +44,12 @@ interface Report {
 }
 export declare const ENGINE_COMMANDS: Record<string, EngineCommandSpec>;
 export declare const BLOCKED: Record<string, string>;
+/** Commands that used to exist and now only explain what to do instead. */
+export declare const REMOVED: Record<string, {
+    code: string;
+    message: string;
+    hint: string;
+}>;
 /** Reword the engine's prose fields (never paths, ids or keys). */
 export declare function rebrandJson(value: unknown, key?: string): unknown;
 /** Build the `--json` envelope for an engine command's result. */

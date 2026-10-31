@@ -5,7 +5,7 @@ export declare const CUTSCENE_VERSION = "0.1.0";
 export declare const SCRIPTS_DIR: string;
 /** skills/cutscene */
 export declare const SKILL_DIR: string;
-/** skills/ (the folder that holds cutscene, cutscene-3d, cutscene-voice, ...) */
+/** skills/ (the folder that holds cutscene, cutscene-voice, cutscene-edit, ...) */
 export declare const SKILLS_ROOT: string;
 /** Absolute path of the `cutscene` command (cli.mjs). */
 export declare const CLI_PATH: string;

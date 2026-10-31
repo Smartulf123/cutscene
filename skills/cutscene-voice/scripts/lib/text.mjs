@@ -120,7 +120,7 @@ export function tokenize(text, lang = "en") {
                     seg = seg.slice(0, -1);
                 }
                 const num = english ? numberWords(seg) : null;
-                const unit = english && !num ? /^(\d+)(\p{L}+)$/u.exec(seg) : null; // "3d", "4k": number then letters
+                const unit = english && !num ? /^(\d+)(\p{L}+)$/u.exec(seg) : null; // "4k", "2d": number then letters
                 if (num)
                     push(...num);
                 else if (unit)

@@ -9,7 +9,7 @@
 // spliced into the original text, so other fields, their order, spacing and number spelling
 // (12.0 stays 12.0) are kept byte for byte. Patches are JSON merge patches: objects merge,
 // `null` removes a field, arrays and other values replace. Writes are atomic and locked, so
-// voice and 3d can update the same file at once. All helpers are synchronous (await works).
+// voice and edit can update the same file at once. All helpers are synchronous (await works).
 import { readFileSync } from "node:fs";
 import { isAbsolute, join } from "node:path";
 import { CutsceneError } from "./json.mjs";
@@ -170,20 +170,9 @@ export function validateBeats(obj) {
                 }
             }
         }
+        // 3D was removed from Cutscene. An old beat sheet with shot3d still validates; the field is ignored.
         if (b.shot3d !== undefined) {
-            const s = b.shot3d;
-            if (!isObj(s))
-                errors.push({ path: `${where}.shot3d`, message: "must be an object." });
-            else {
-                if (s.tier === 2)
-                    warnings.push({ path: `${where}.shot3d.tier`, message: "is 2, but Blender (Tier 2) was removed from Cutscene. A clip it already rendered still plays; make new 3D shots with Tier 1." });
-                else if (s.tier !== undefined && s.tier !== 1)
-                    errors.push({ path: `${where}.shot3d.tier`, message: "must be 1 (Three.js)." });
-                checkRelPath(s.spec, `${where}.shot3d.spec`, errors);
-                checkRelPath(s.file, `${where}.shot3d.file`, errors);
-                if (s.duration !== undefined)
-                    checkTime(s.duration, `${where}.shot3d.duration`, errors, warnings);
-            }
+            warnings.push({ path: `${where}.shot3d`, message: "is ignored: 3D was removed from Cutscene. A 3D clip that was already rendered can stay in the video as a normal video clip." });
         }
         if (b.graphics !== undefined) {
             if (!Array.isArray(b.graphics))

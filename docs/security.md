@@ -51,8 +51,7 @@ or close other browser tabs while the stock Studio is open.
 - **Network paths are refused** everywhere a path comes in: `\\server\share`, `//server/share`,
   and the mixed spellings Windows also accepts (`/\server\share`, `\/server/share`). Opening one
   would make Windows contact that computer and offer it your sign-in. This covers paths you
-  type, paths in 3D specs (`params.svg`, `params.model`, `font`, `lighting.hdri`, `look`) and
-  source paths recorded inside transcripts and edit lists.
+  type and source paths recorded inside transcripts and edit lists.
 - **Files named in `beats.json` stay in the project.** A voice reference, a voice prompt or a voice
   line file like `"../../x.wav"` or `"C:\x.wav"` is refused, so a beat sheet can't make Cutscene
   read or overwrite files elsewhere.
@@ -65,9 +64,8 @@ or close other browser tabs while the stock Studio is open.
   name, a spec or a voice line can't become a command. The one exception is opening your browser
   on Windows (`cmd /c start`), and the address is checked against a strict pattern first.
 - Voice lines go to the voice models in a JSON job file or a text file, never on the command line.
-- Text inside videos, transcripts, SVGs, websites and voice lines is **data**. A 3D shot gets its
-  spec as values, written into the page as escaped JSON, and turns titles, SVGs and models only
-  into shapes; nothing in a spec or an SVG is run as code.
+- Text inside videos, transcripts, SVGs, websites and voice lines is **data**; nothing in it is
+  run as code.
 - On Windows, stopping a job stops its whole process tree (`taskkill /T /F`).
 
 ## Voices
@@ -96,7 +94,7 @@ never on PATH, never global.**
   its SHA-256) is written to `~/.cutscene/voice/lock.json`, and a repair reinstalls exactly that
   with `--require-hashes`. Every model file (OmniVoice, VoxCPM2, Whisper) is fetched at a pinned
   revision and checked against a SHA-256.
-- **3D assets, auto-editor, MediaPipe and the face model**: pinned URL, exact version and SHA-256
+- **auto-editor, MediaPipe and the face model**: pinned URL, exact version and SHA-256
   in each part's `assets/manifest.json`.
 - **Models the engine fetches itself** on first use (the built-in voice, speech models for
   `cutscene transcribe`, the person cut-out model, ONNX Runtime, the render browser): Cutscene
@@ -123,7 +121,7 @@ never on PATH, never global.**
 
 | Folder | What |
 |---|---|
-| `~/.cutscene/` | Cutscene's settings, the engine, voice environment and models, 3D assets, tools, logs |
+| `~/.cutscene/` | Cutscene's settings, the engine, voice environment and models, tools, logs |
 | `~/.cache/hyperframes/` | **the engine's own caches, outside `~/.cutscene`**: the render browser (`chrome/`), speech models (`whisper/`, `parakeet/`), the built-in voice (`tts/`), the cut-out model (`background-removal/`), extra npm packages (`optional/`), downloaded fonts (`fonts/`) and project history (`history/`, which can hold copies of your project files) |
 | `~/.cache/puppeteer/` | may hold a render browser the engine found there |
 
@@ -145,7 +143,7 @@ everything.
   group), but some helpers may leave a grandchild running after a crash.
 - **Network drives with a letter or a mount point** (`Z:\`, `/Volumes/share`, `/mnt/nas`) look like
   local folders and can't be told apart; only `\\server` style paths are refused.
-- **CDN scripts in compositions** (GSAP, three.js) load from exact versions on jsDelivr; GSAP has
-  a Subresource Integrity hash, three.js ES modules (`+esm` builds) do not.
+- **CDN scripts in compositions** (GSAP) load from exact versions on jsDelivr, with a
+  Subresource Integrity hash.
 - **Engine-downloaded models** other than Parakeet are fetched by the engine without a checksum
   (see above); Cutscene only asks before they are fetched.

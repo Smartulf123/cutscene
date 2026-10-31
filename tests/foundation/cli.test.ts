@@ -12,7 +12,7 @@ beforeAll(() => {
   root = tempDir();
   ({ cli, skillsRoot } = copySkill(root));
   home = fakeHome(root);
-  fakePart(skillsRoot, "3d");
+  fakePart(skillsRoot, "edit");
 });
 afterAll(() => cleanup(root));
 
@@ -65,30 +65,46 @@ describe("blocked commands", () => {
 
 describe("dispatch to parts", () => {
   it("runs a part with CUTSCENE_HOME, CUTSCENE_CLI and CUTSCENE_ENGINE_VERSION", async () => {
-    const r = await runCli(cli, ["3d", "render", "spec.json", "--fast"], { home });
+    const r = await runCli(cli, ["edit", "silences", "talk.mp4", "--fast"], { home });
     expect(r.code).toBe(0);
     const out = JSON.parse(r.stdout);
-    expect(out.part).toBe("3d");
-    expect(out.args).toEqual(["render", "spec.json", "--fast"]);
+    expect(out.part).toBe("edit");
+    expect(out.args).toEqual(["silences", "talk.mp4", "--fast"]);
     expect(out.home).toBe(home);
     expect(out.cli).toBe(cli);
     expect(out.engine).toBe(PIN);
   });
 
   it("passes --json on to the part", async () => {
-    const r = await runCli(cli, ["3d", "status", "--json"], { home });
+    const r = await runCli(cli, ["edit", "status", "--json"], { home });
     expect(r.json.args).toEqual(["status", "--json"]);
   });
 
   it("explains a missing part", async () => {
-    for (const part of ["voice", "edit"]) {
+    for (const part of ["voice"]) {
       const r = await runCli(cli, [part, "setup", "--json"], { home });
       expect(r.code).toBe(1);
       expect(r.json.error.code).toBe("PART_MISSING");
-      expect(r.json.error.message).toMatch(/^The (voice|footage editing) part of Cutscene/);
+      expect(r.json.error.message).toMatch(/^The voice part of Cutscene/);
       expect(r.json.error.hint).toMatch(/Reinstall/);
       expect(r.json.details.expected).toBe(join(skillsRoot, `cutscene-${part}`, "scripts", `${part}.mjs`));
     }
+  });
+
+  it("answers the removed 3d command with THREED_REMOVED and what to use instead", async () => {
+    // a leftover cutscene-3d folder from an old install must not run either
+    fakePart(skillsRoot, "3d");
+    const r = await runCli(cli, ["3d", "render", "spec.json", "--json"], { home });
+    expect(r.code).toBe(2);
+    expect(r.json).toMatchObject({ ok: false, error: { code: "THREED_REMOVED" } });
+    expect(r.json.error.message).toBe("3D was removed from Cutscene.");
+    expect(r.json.error.hint).toBe("Use 2D motion (cutscene-animate), or add an already-rendered 3D clip as a normal video clip.");
+    const human = await runCli(cli, ["3d"], { home });
+    expect(human.code).toBe(2);
+    expect(human.stderr).toMatch(/^Error: 3D was removed from Cutscene\./);
+    expect(human.stderr).toMatch(/\nFix: Use 2D motion \(cutscene-animate\)/);
+    const help = await runCli(cli, ["--json", "help"], { home });
+    expect(help.json.commands).not.toContain("3d");
   });
 
   it("explains a missing preview", async () => {

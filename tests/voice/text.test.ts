@@ -47,7 +47,7 @@ describe("normalising", () => {
     expect(normalizeWords("$5")).toEqual(["five", "dollars"]);
   });
   it("reads a number glued to letters as the number then the letters", () => {
-    expect(normalizeWords("renders real 3D,")).toEqual(normalizeWords("renders real three D,"));
+    expect(normalizeWords("films in real 4K,")).toEqual(normalizeWords("films in real four K,"));
     expect(normalizeWords("4K video")).toEqual(["four", "k", "video"]);
     expect(normalizeWords("the 4th take")).toEqual(["the", "fourth", "take"]);
   });

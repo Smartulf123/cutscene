@@ -8,7 +8,7 @@ A successful no-op means the skill is current. Surface an update failure instead
 
 ## 1. Apply cross-cutting source adapters
 
-- **Media:** music and sound effects: `/cutscene-audio`; narration and transcription: `/cutscene-voice`; captions: `/cutscene-captions`; 3D shots: `/cutscene-3d`. Images, logos and footage come from the user or from `cutscene capture <url>`; Cutscene does not search for or generate stock media.
+- **Media:** music and sound effects: `/cutscene-audio`; narration and transcription: `/cutscene-voice`; captions: `/cutscene-captions`. Images, logos and footage come from the user or from `cutscene capture <url>`; Cutscene does not search for or generate stock media.
 - **Figma:** If any input is a `figma.com` URL, run `/cutscene-design (Figma guide)` first. Build from its exported assets, tokens, components, or storyboard frames. Do not use raw Figma connector calls because they skip SVG sanitization, media provenance, and brand-token binding.
 
 These adapters do not change the workflow selected by `/cutscene`.

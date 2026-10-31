@@ -20,7 +20,7 @@ transcription (`cutscene transcribe`) or, for a Cutscene voiceover, from the `wo
 - **Narrated motion graphics with no footage** (a Cutscene voiceover over HTML graphics): skip the
   matting pipeline below. `node "<this skill's folder>/scripts/beats-captions.mjs" <project>`
   turns the voice word timings in `.cutscene/beats.json` into a word-highlight caption rail
-  (`compositions/captions.html`), showing "AI" and "3D" where the voice says "A I" and "three D".
+  (`compositions/captions.html`), showing "AI" and "4K" where the voice says "A I" and "four K".
   Recipe: [references/narrated-motion-graphics.md](references/narrated-motion-graphics.md).
 
 This skill does NOT cut silences, retakes or filler words (`/cutscene-edit`), make or check a

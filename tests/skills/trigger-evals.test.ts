@@ -26,12 +26,12 @@ const description = (name: string): string => {
 const { evals }: { evals: TriggerEval[] } = JSON.parse(readFileSync(join("tests", "skills", "trigger-evals.json"), "utf8"));
 
 describe("skill descriptions", () => {
-  it("cover all eleven skills, each with when-to-use and what-not", () => {
-    expect(names.sort()).toEqual(["cutscene", "cutscene-3d", "cutscene-animate", "cutscene-audio", "cutscene-captions", "cutscene-compose", "cutscene-design", "cutscene-edit", "cutscene-promo", "cutscene-render", "cutscene-voice"]);
+  it("cover all ten skills, each with when-to-use and what-not", () => {
+    expect(names.sort()).toEqual(["cutscene", "cutscene-animate", "cutscene-audio", "cutscene-captions", "cutscene-compose", "cutscene-design", "cutscene-edit", "cutscene-promo", "cutscene-render", "cutscene-voice"]);
     for (const n of names) {
       const d = description(n);
       expect(d.length, n).toBeLessThanOrEqual(1024);
-      expect(d, n).toMatch(/\b(use|start here|make 3d|cleans up)\b/i);
+      expect(d, n).toMatch(/\b(use|start here|cleans up)\b/i);
       expect(d, n).toMatch(/does not/i);
       expect(d, n).not.toMatch(/hyperframes|heygen/i);
     }
@@ -49,9 +49,6 @@ describe("skill descriptions", () => {
     expect(description("cutscene-edit")).toMatch(/cutscene-audio/);
     // captions vs edit: styled captions vs plain SRT
     expect(description("cutscene-captions")).toMatch(/SRT.*cutscene-edit/);
-    // 2D motion vs 3D
-    expect(description("cutscene-animate")).toMatch(/cutscene-3d/);
-    expect(description("cutscene-3d")).toMatch(/cutscene-animate/);
   });
 });
 

@@ -1,6 +1,6 @@
 ---
 name: cutscene-edit
-description: Cleans up real recordings (talking heads, tutorials, podcasts, interviews) by reading their words. Use when the user wants to cut silences or dead air, remove stutters, retakes, false starts or filler words (um, uh), get a fast rough cut, find the best 20–60 second moments for shorts, reframe 16:9 footage to 9:16 following the face, line up two recordings by sound, remove hum or background noise from a recording, splice music on the beat or premix a recording's sound to −14 LUFS, export plain SRT subtitles, check that graphics land on their words, or hand an edit to Premiere, DaVinci Resolve, Final Cut, Shotcut or Kdenlive. Every cut is a reviewable dry run first and writes an edit list plus a transcript retimed to the edited video. Does NOT generate voices (cutscene-voice), make 3D (cutscene-3d), mix music and effects inside a composition (cutscene-audio) or style captions (cutscene-captions).
+description: Cleans up real recordings (talking heads, tutorials, podcasts, interviews) by reading their words. Use when the user wants to cut silences or dead air, remove stutters, retakes, false starts or filler words (um, uh), get a fast rough cut, find the best 20–60 second moments for shorts, reframe 16:9 footage to 9:16 following the face, line up two recordings by sound, remove hum or background noise from a recording, splice music on the beat or premix a recording's sound to −14 LUFS, export plain SRT subtitles, check that graphics land on their words, or hand an edit to Premiere, DaVinci Resolve, Final Cut, Shotcut or Kdenlive. Every cut is a reviewable dry run first and writes an edit list plus a transcript retimed to the edited video. Does NOT generate voices (cutscene-voice), mix music and effects inside a composition (cutscene-audio) or style captions (cutscene-captions).
 ---
 
 # Cutscene edit
@@ -140,7 +140,7 @@ open loops get a ledger (`OPEN-LOOPS.json`). Pick candidates with `highlights`, 
 ## Works with
 
 - **cutscene-captions** styles captions from the retimed transcript (`*-transcript.json`).
-- **cutscene-voice** makes voiceovers; **cutscene-3d** makes 3D shots; this skill does neither.
+- **cutscene-voice** makes voiceovers; this skill doesn't.
 - **cutscene** (the router) owns the project, the beat sheet and rendering.
 
 Credits: the silence cutter, mistake finder, review page idea, beat-sync and plan validators and

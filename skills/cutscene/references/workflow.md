@@ -22,7 +22,7 @@ Write the brief in this shape:
 - Message: the one thing viewers remember
 - Must-haves: logo, product name, call to action, URLs, facts that must be exact
 - Voice: none | narrator (describe the voice) | the user's own recording
-- 3D: none | which shots (title, logo, product turntable, shapes, fly-through), and for what
+- Footage: none | the user's recordings, and what to cut (silences, retakes, best moments)
 - Music and sound: none | mood | the user's file
 - Look: brand colours and fonts if given, otherwise a direction (see Gate 3)
 - Out of scope: what this video is not
@@ -48,8 +48,8 @@ copy it into the project (`assets/`) rather than pointing at their originals.
 Every video gets its own look: palette, a type pair, a motion character (`snappy`, `smooth`,
 `bouncy`, `cinematic` or `editorial`) and texture. Take it from the user's brand when there is
 one; otherwise choose a direction from the brief. Don't reuse the look of the user's last video
-unless they ask. The `cutscene-design` skill writes and checks `look.json`; 3D shots read its
-palette and type so they match the graphics.
+unless they ask. The `cutscene-design` skill writes and checks `look.json`; captions and
+graphics read its palette and type so they match.
 
 ```bash
 node "<cutscene skill folder>/../cutscene-design/scripts/look.mjs" new --brief .cutscene/brief.md --against <folder with the user's earlier projects>
@@ -61,12 +61,12 @@ for brand colours and fonts. Details: the cutscene-design skill's `references/lo
 ## Gate 4: the storyboard (`.cutscene/beats.json`)
 
 Split the video into beats: a few seconds each, one idea per beat. For every beat decide what's
-on screen, what's said, which 3D shot or graphic appears and which sound lands. Write the beat
+on screen, what's said, which clip or graphic appears and which sound lands. Write the beat
 sheet ([beats.md](beats.md)) and show the user a compact table:
 
 | Time | On screen | Voice | Sound |
 |---|---|---|---|
-| 0.0–2.4 s | 3D logo turns in | "Meet Cutscene." | whoosh at 0.4 s |
+| 0.0–2.4 s | Logo draws in | "Meet Cutscene." | whoosh at 0.4 s |
 
 Get a yes before building. Small timing changes later don't need a new approval; changing the
 story does.
@@ -78,7 +78,7 @@ Order that avoids rework:
 1. **Voice first** when there is narration (`cutscene-voice`). Spoken lines set the real
    timing; update the beats with the measured durations before animating.
 2. **Compositions** (`cutscene-compose`, `cutscene-animate`), timed from the beat sheet.
-3. **3D shots** (`cutscene-3d`): write each shot, then look at a snapshot before moving on.
+3. **Footage** (`cutscene-edit`): cut the user's recordings, then look at a snapshot before moving on.
 4. **Captions, music and sound** (`cutscene-captions`, `cutscene-audio`).
 
 Each part fills only its own beat fields and leaves the rest alone.
@@ -91,7 +91,7 @@ Each part fills only its own beat fields and leaves the rest alone.
    - nothing cut off at the edges, text readable at phone size, no overlaps;
    - colours and fonts match `look.json`;
    - no blank or black frames at transitions;
-   - 3D shots sit cleanly on the background, with nothing cut off;
+   - video clips sit cleanly on the background, with nothing cut off;
    - captions don't cover faces or key graphics.
 3. Run the same-look check against the user's earlier videos and fix a look that's too close:
    `node "<cutscene skill folder>/../cutscene-design/scripts/look.mjs" compare <project> --against <folder with earlier projects> --strict`

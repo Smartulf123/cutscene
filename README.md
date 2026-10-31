@@ -1,13 +1,12 @@
 # Cutscene
 
 Make videos by describing them to your AI agent. Cutscene is a skill pack for Claude Code (and
-other agents) that plans the video with you, builds it as an animated HTML composition, adds real
-3D shots, speaks the narration in a voice you design, and shows you every change in a live preview.
+other agents) that plans the video with you, builds it as an animated HTML composition, edits your
+footage by its words, speaks the narration in a voice you design, and shows you every change in a live preview.
 Everything runs on your computer.
 
 For an example, [`examples/cutscene-intro`](examples/cutscene-intro) is a 12-second intro made
-with Cutscene itself: the brief, the look, the beat sheet, the 3D title and the four voice lines.
-Its 3D logo is a pre-rendered video clip, placed like any other clip.
+with Cutscene itself: the brief, the look, the beat sheet, the 2D title and the four voice lines.
 
 ## What it does
 
@@ -15,9 +14,6 @@ Its 3D logo is a pre-rendered video clip, placed like any other clip.
   character), then a beat sheet that times every line, shot and graphic. You approve each step
   before anything is built.
 - **Animates.** GSAP motion on HTML, with the engine's rules for frame-accurate, repeatable renders.
-- **Real 3D.** Extruded titles, SVG logo reveals, product turntables, floating shapes and
-  fly-throughs. Cutscene draws them with Three.js inside the video, so there is nothing to install
-  and you see them in the live preview straight away.
 - **Voices on your computer.** Design a voice from a description ("female, young adult, British
   accent"), or clone one with the speaker's permission. Each line is spoken with a fixed seed, then
   transcribed back and checked word by word, so a misread word is caught before you hear it. The
@@ -75,8 +71,8 @@ brief  ->  look  ->  beat sheet  ->  build  ->  check  ->  preview  ->  render (
 
 1. You describe the video. The agent writes a short brief and asks what it can't work out.
 2. It proposes a look for this video and checks it against your earlier ones.
-3. It writes the beat sheet: every voice line, 3D shot and graphic with its time.
-4. It builds the composition, makes the 3D shots and speaks the lines.
+3. It writes the beat sheet: every voice line, clip and graphic with its time.
+4. It builds the composition, cuts the footage and speaks the lines.
 5. It checks the result (layout, timing, contrast, each spoken word) and looks at real frames.
 6. You watch it in the live preview and ask for changes.
 7. When you're happy, ask for the final video and it renders it on your computer.
@@ -92,7 +88,6 @@ Project state lives in the project folder (`.cutscene/brief.md`, `look.json`, `b
 | `cutscene-design` | The look: palette, type pair, motion character, contrast and same-look checks |
 | `cutscene-compose` | Writes the HTML composition and installs ready-made blocks |
 | `cutscene-animate` | Motion: GSAP timelines, transitions, kinetic type, charts, logo reveals |
-| `cutscene-3d` | 3D shots drawn with Three.js inside the video: titles, logos, turntables, shapes |
 | `cutscene-voice` | Designs, clones, speaks and checks voiceover lines |
 | `cutscene-captions` | Word-timed captions with themes and safe zones |
 | `cutscene-audio` | Music, sound effects, fades and ducking |

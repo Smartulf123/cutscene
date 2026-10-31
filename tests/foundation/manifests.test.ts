@@ -73,6 +73,6 @@ describe("the cutscene skill", () => {
 
   it("routes to every Cutscene skill", () => {
     const text = read("skills/cutscene/SKILL.md");
-    for (const s of ["compose", "animate", "design", "captions", "audio", "voice", "3d", "edit", "render", "promo"]) expect(text).toContain(`cutscene-${s}`);
+    for (const s of ["compose", "animate", "design", "captions", "audio", "voice", "edit", "render", "promo"]) expect(text).toContain(`cutscene-${s}`);
   });
 });

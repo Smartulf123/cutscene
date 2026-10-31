@@ -1,7 +1,7 @@
 // Built from src/skills/cutscene/scripts/lib/atomic.mts by `npm run build`. Edit that file, not this one.
 // Safe file writes: write to a temp file next to the target, then rename it over the target,
 // so a crash never leaves a half-written file. Plus a small lock file so two Cutscene
-// processes (say voice and 3d running at once) don't overwrite each other's changes.
+// processes (say voice and edit running at once) don't overwrite each other's changes.
 import { closeSync, fsyncSync, mkdirSync, openSync, renameSync, rmSync, statSync, unlinkSync, writeSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
 import { randomBytes } from "node:crypto";

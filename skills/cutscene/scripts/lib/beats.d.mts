@@ -19,14 +19,6 @@ export interface BeatVoice {
     words?: BeatWord[];
     [key: string]: unknown;
 }
-export interface BeatShot3d {
-    /** 1 (Three.js). An older beat sheet may say 2 (Blender, now removed); it still validates, with a warning. */
-    tier?: 1 | 2;
-    spec?: string;
-    file?: string;
-    duration?: number;
-    [key: string]: unknown;
-}
 export interface BeatSfx {
     at?: number;
     name?: string;
@@ -38,7 +30,6 @@ export interface Beat {
     end: number;
     label?: string;
     voice?: BeatVoice;
-    shot3d?: BeatShot3d;
     graphics?: Record<string, unknown>[];
     sfx?: BeatSfx[];
     [key: string]: unknown;

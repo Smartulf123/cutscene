@@ -10,7 +10,7 @@ for making and editing videos with a coding agent. Three parts:
 
 - **HyperFrames** is the engine (HTML compositions, preview, render). It's an npm package pinned
   in `skills/cutscene/engine.json`.
-- **3D shots** written as Three.js scenes inside the video.
+- **Footage edits** cut by the words of a recording.
 - **Local AI voices.**
 
 The product name is **Cutscene**:
@@ -29,7 +29,6 @@ The product name is **Cutscene**:
 | `skills/cutscene/scripts/preview.mjs`, `skills/cutscene/scripts/preview/` | preview |
 | `tools/sync-hyperframes.mjs`, `tools/sync-map.json`, `overlays/` | sync |
 | `skills/cutscene-compose/`, `-animate/`, `-design/`, `-captions/`, `-audio/`, `-render/`, `-promo/` | sync (generated, plus overlays) |
-| `skills/cutscene-3d/` | 3d |
 | `skills/cutscene-voice/` | voice |
 | `skills/cutscene-edit/` | edit |
 | `tests/<owner>/` | each owner |
@@ -43,7 +42,7 @@ report under "Needs from others".
 One entry point: `node <skills>/cutscene/scripts/cli.mjs <command> [args]`.
 
 - **Finding it from a skill:** skills are installed side by side
-  (`~/.claude/skills/cutscene-3d/` next to `~/.claude/skills/cutscene/`, or inside the plugin's
+  (`~/.claude/skills/cutscene-voice/` next to `~/.claude/skills/cutscene/`, or inside the plugin's
   `skills/`), so every skill reaches the CLI as **`../cutscene/scripts/cli.mjs`** relative to its
   own folder. In `SKILL.md`, write commands as:
   ```bash
@@ -59,7 +58,6 @@ One entry point: `node <skills>/cutscene/scripts/cli.mjs <command> [args]`.
   - `cutscene doctor`: checks everything, including voice
   - `cutscene setup`: installs what's missing, only with `--yes` or after asking
   - `cutscene voice …`: dispatches to `skills/cutscene-voice/scripts/voice.mjs`
-  - `cutscene 3d …`: dispatches to `skills/cutscene-3d/scripts/3d.mjs`
   - `cutscene edit …`: dispatches to `skills/cutscene-edit/scripts/edit.mjs`
 - **Dispatch:** `cli.mjs` resolves `../../cutscene-<part>/scripts/<part>.mjs` relative to itself
   and runs it with the same Node, passing the remaining args and these env vars:
@@ -100,7 +98,7 @@ One entry point: `node <skills>/cutscene/scripts/cli.mjs <command> [args]`.
   engine/<pin>/      the pinned engine (npm --prefix)
   media/             engine media cache
   voice/             voice environment (venv), model weights, benchmarks.json
-  assets/            downloaded 3D assets (fonts, the bloom library), by sha256
+  assets/            downloaded tool assets (models, binaries), by sha256
   logs/
 ```
 
@@ -128,14 +126,12 @@ A project is a normal engine project made by `cutscene init <dir>`, plus a `.cut
 <project>/
   index.html, compositions/, …       engine files (never rename them)
   assets/voice/<line-id>.wav          final voice lines (+ <line-id>.license.txt)
-  compositions/scene3d-<shot-id>.html 3D shots (+ their fonts, logos and models in compositions/assets/3d/)
   .cutscene/
     brief.md       what the user wants (approved before building)
     look.json      this video's look (see §8)
     beats.json     the shared beat sheet (see §7)
     project.md     short memory: decisions, approvals, what was checked
     voice/         working files (references, takes, verify reports)
-    3d/            3D shot specs (<shot-id>.json)
     edit/          transcripts, edit lists, review pages
 ```
 
@@ -175,12 +171,6 @@ Times are always **seconds on the final video timeline**, as numbers with up to 
         "words": [{ "w": "Meet", "start": 0.0, "end": 0.32, "p": 0.98 }],
         "verified": true
       },
-      "shot3d": {
-        "spec": ".cutscene/3d/logo.json",
-        "tier": 1,
-        "file": "compositions/scene3d-logo.html",
-        "duration": 2.4
-      },
       "graphics": [{ "id": "g-title", "kind": "title", "text": "Cutscene" }],
       "sfx": [{ "at": 0.4, "name": "whoosh" }]
     }
@@ -191,7 +181,7 @@ Times are always **seconds on the final video timeline**, as numbers with up to 
 - **Required fields:** `version`, `fps`, `width`, `height`, `beats[].id`, `beats[].start`,
   `beats[].end`.
 - **Who fills what:** every other field is optional. A part fills only its own fields (voice
-  fills `voices` and `beats[].voice`; 3d fills `beats[].shot3d`) and preserves everything else
+  fills `voices` and `beats[].voice`) and preserves everything else
   byte for byte. Use `skills/cutscene/scripts/lib/beats.mjs` (foundation):
   `readBeats(path)`, `updateBeat(path, id, patch)`, `validateBeats(obj)`.
 - **Inside a beat,** `voice.words[].start/end` are relative to the start of the voice file;
@@ -215,8 +205,8 @@ Times are always **seconds on the final video timeline**, as numbers with up to 
 }
 ```
 
-`motion.character` is one of `snappy`, `smooth`, `bouncy`, `cinematic` or `editorial`. 3D shots
-read `palette` and `type`, so they match the graphics.
+`motion.character` is one of `snappy`, `smooth`, `bouncy`, `cinematic` or `editorial`. Captions
+and graphics read `palette` and `type`, so they match.
 
 ## 9. Downloads and installs
 

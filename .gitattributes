@@ -16,8 +16,6 @@ tools/*.mjs linguist-generated
 overlays/**/*.mjs linguist-generated
 overlays/**/*.cjs linguist-generated
 skills/cutscene/scripts/**/*.mjs linguist-generated
-skills/cutscene-3d/scripts/**/*.mjs linguist-generated
-skills/cutscene-3d/templates/tier1/*.js linguist-generated
 skills/cutscene-edit/scripts/**/*.mjs linguist-generated
 skills/cutscene-voice/scripts/**/*.mjs linguist-generated
 # Declaration files the build writes next to each built file (the hand-written ones in src/ stay source)

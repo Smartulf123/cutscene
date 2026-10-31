@@ -20,7 +20,7 @@ not separate skills.
 What Cutscene changed on the way in:
 
 - Skill names: `/cutscene-compose`, `-animate`, `-design`, `-captions`, `-audio`, `-render`,
-  `-promo`, plus Cutscene's own `-voice`, `-3d` and `-edit`.
+  `-promo`, plus Cutscene's own `-voice` and `-edit`.
 - Removed: usage and plan checks, CLI upgrade probes, skill installs and updates, the desktop app
   hand-off, cloud rendering, publishing and feedback. Music-to-video, slideshow and Remotion
   routes are not in v1.

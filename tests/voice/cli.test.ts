@@ -46,7 +46,7 @@ const SHEET = `{
     "beats": [
         { "id": "b1", "start": 0.0, "end": 2.4, "label": "logo reveal",
           "voice": { "speaker": "narrator", "line": "Meet Cutscene." },
-          "shot3d": { "spec": ".cutscene/3d/logo.json", "tier": 2 } },
+          "overlay": { "kind": "logo", "file": "compositions/logo.html" } },
         { "id": "b2", "start": 2.4, "end": 6.0, "graphics": [{ "id": "g1", "kind": "title", "text": "Hi" }] }
     ]
 }
@@ -182,7 +182,7 @@ describe("beats.json updates", () => {
         const after = readFileSync(file, "utf8");
         const sheet = JSON.parse(after);
         expect(sheet.beats[0].voice).toEqual({ speaker: "narrator", line: "Meet Cutscene.", file: "assets/voice/b1.wav", duration: 1.1, verified: true, words: [{ w: "Meet", start: 0, end: 0.3, p: 0.9 }] });
-        expect(sheet.beats[0].shot3d).toEqual({ spec: ".cutscene/3d/logo.json", tier: 2 });
+        expect(sheet.beats[0].overlay).toEqual({ kind: "logo", file: "compositions/logo.html" });
         expect(sheet.beats[1]).toEqual(JSON.parse(SHEET).beats[1]);
         expect(sheet.voices.narrator.seed).toBe(42);
         if (mode === "foundation") {

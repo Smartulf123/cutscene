@@ -12,7 +12,6 @@
 
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { homedir } from "node:os";
 import { basename, dirname, isAbsolute, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -77,18 +76,6 @@ export interface MotionCharacter {
 
 /** [display, displayWeight, body, bodyWeight, affinities] */
 export type Pairing = [string, number, string, number, string[]];
-
-/** A pinned .woff for 3D titles (cutscene-3d/assets/manifest.json). */
-export interface FontPin {
-  kind: string;
-  name: string;
-  family: string;
-  weight: number;
-  url: string;
-  sha256: string;
-  size: number;
-  license: string;
-}
 
 /** An earlier project's look. */
 export interface PreviousLook {
@@ -169,8 +156,7 @@ export const BUNDLED_FONTS: Record<string, { slug: string; weights: number[] }> 
 // them the display face; a brand that uses one keeps it.
 export const GENERIC_DISPLAY = ["Inter", "Poppins", "Open Sans", "Roboto"];
 
-// [display, displayWeight, body, bodyWeight, affinities]. Curated so each pair has a clear voice;
-// every display face here also has a pinned .woff for 3D titles (cutscene-3d/assets/manifest.json).
+// [display, displayWeight, body, bodyWeight, affinities]. Curated so each pair has a clear voice.
 export const PAIRINGS: Pairing[] = [
   ["Archivo Black", 400, "Space Grotesk", 400, ["snappy", "bouncy"]],
   ["Montserrat", 800, "IBM Plex Mono", 400, ["snappy", "editorial"]],
@@ -303,7 +289,7 @@ const MOOD_WORDS: Record<string, string[]> = {
   snappy: ["fast", "launch", "startup", "tech", "saas", "app", "energetic", "hype", "punchy", "sale", "product", "feature", "dev", "code", "ai", "short", "tiktok", "reel"],
   smooth: ["calm", "wellness", "meditation", "soft", "gentle", "spa", "health", "relax", "sleep", "mindful", "elegant", "minimal", "nature"],
   bouncy: ["playful", "fun", "kids", "cute", "cartoon", "friendly", "game", "party", "colorful", "colourful", "bouncy", "joy", "food", "pet"],
-  cinematic: ["cinematic", "film", "epic", "dramatic", "trailer", "luxury", "premium", "story", "documentary", "moody", "dark", "space", "3d", "intro", "teaser"],
+  cinematic: ["cinematic", "film", "epic", "dramatic", "trailer", "luxury", "premium", "story", "documentary", "moody", "dark", "space", "intro", "teaser"],
   editorial: ["news", "editorial", "magazine", "journal", "essay", "explainer", "report", "data", "history", "science", "interview", "podcast", "analysis", "changelog", "release"],
 };
 
@@ -673,54 +659,6 @@ export function compareAgainst(look: Look, previous: PreviousLook[], threshold =
   return { rows, tooSimilar, closest };
 }
 
-// 3D titles (cutscene-3d) need their own copy of the display font: Three.js can't read .woff2,
-// and engine fonts have no file in the project at all. The 3D part pins a .woff per family.
-const MANIFEST_3D = resolve(HERE, "..", "..", "cutscene-3d", "assets", "manifest.json");
-const fontSlug = (family: unknown): string => String(family ?? "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-const cutsceneHome = (): string => (process.env.CUTSCENE_HOME?.trim() ? resolve(process.env.CUTSCENE_HOME.trim()) : join(homedir(), ".cutscene"));
-let pins3d: FontPin[] | null = null;
-export function fontPin3d(family: unknown, weight = 700): FontPin | null {
-  if (pins3d === null) {
-    try {
-      pins3d = (JSON.parse(readFileSync(MANIFEST_3D, "utf8")) as { downloads: FontPin[] }).downloads.filter((d) => d.kind === "font");
-    } catch {
-      pins3d = [];
-    }
-  }
-  const same = pins3d.filter((d) => d.family === fontSlug(family));
-  if (!same.length) return null;
-  return same.reduce((best, f) => (Math.abs(f.weight - weight) < Math.abs(best.weight - weight) ? f : best));
-}
-function cachedPinPath(pin: FontPin): string | null {
-  const p = join(cutsceneHome(), "assets", pin.sha256, basename(new URL(pin.url).pathname));
-  try {
-    return createHash("sha256").update(readFileSync(p)).digest("hex") === pin.sha256 ? p : null;
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Make the display font ready for 3D titles, or say up front what they will do.
- * Copies the pinned .woff into assets/fonts/ when it is already on this computer.
- */
-export function prepare3dFont(look: Look, projectDir: string): { copied: string | null; note: string | null } {
-  const t = look.type.display;
-  if (/^geist( sans)?$/i.test(t.family)) return { copied: null, note: null };
-  const pin = fontPin3d(t.family, t.weight);
-  const cached = pin && cachedPinPath(pin);
-  if (cached) {
-    const rel = `assets/fonts/${basename(cached)}`;
-    mkdirSync(join(projectDir, "assets", "fonts"), { recursive: true });
-    if (!existsSync(join(projectDir, rel))) copyFileSync(cached, join(projectDir, rel));
-    return { copied: rel, note: null };
-  }
-  if (pin) {
-    return { copied: null, note: `if this video gets a 3D title, Cutscene 3D needs its own copy of "${t.family}" (${Math.round(pin.size / 1024)} KB, ${pin.license}): ask the user, then run cutscene 3d assets fetch ${pin.name} --yes. Without it, 3D titles use Geist Bold.` };
-  }
-  return { copied: null, note: `3D titles can't use "${t.family}" yet: put a .ttf or .woff of it in assets/fonts/ (3D titles can't read .woff2), or 3D titles use Geist Bold.` };
-}
-
 function copyBundledFonts(look: Look, projectDir: string): string[] {
   const copied: string[] = [];
   for (const k of ["display", "body"] as const) {
@@ -836,12 +774,9 @@ export function runCli(argv: string[], io: CliIo = { out: (s) => process.stdout.
       if (!look) return fail("LOOK_FAILED", "Could not generate a valid look.", "Try another --seed.");
       comparison = compareAgainst(look, previous, threshold);
       const fonts = copyBundledFonts(look, projectDir);
-      const font3d = prepare3dFont(look, projectDir);
-      if (font3d.copied) fonts.push(font3d.copied);
       mkdirSync(dirname(out), { recursive: true });
       writeFileSync(out, JSON.stringify(look, null, 2) + "\n");
       const check = validateLook(look, { projectDir });
-      if (font3d.note) check.warnings.push(font3d.note);
       if (brand) {
         for (const [role, key] of [["primary", "accent"], ["secondary", "accent2"], ["background", "bg"], ["text", "fg"]] as const) {
           if (brand[role] && brand[role] !== look.palette[key]) check.warnings.push(`brand ${role} ${brand[role]} was adjusted to ${look.palette[key]} for contrast; keep the original in logos and product shots`);
@@ -849,11 +784,11 @@ export function runCli(argv: string[], io: CliIo = { out: (s) => process.stdout.
       }
       const similar = comparison?.tooSimilar ?? [];
       emit(
-        { ok: true, path: out, look, fontsCopied: fonts, font3d: font3d.copied ?? null, warnings: check.warnings, compared: previous.length, tooSimilar: similar.map((s) => ({ project: s.project, score: s.score })) },
+        { ok: true, path: out, look, fontsCopied: fonts, warnings: check.warnings, compared: previous.length, tooSimilar: similar.map((s) => ({ project: s.project, score: s.score })) },
         [
           `Wrote ${out}: "${look.name}" (${look.motion.character}, ${look.type.display.family} + ${look.type.body.family}, seed ${look.seed})`,
           `  palette bg ${look.palette.bg} (${toneOf(look.palette.bg)})  fg ${look.palette.fg}  accent ${look.palette.accent}  accent2 ${look.palette.accent2}`,
-          fonts.length ? `  copied fonts: ${fonts.join(", ")} (declare the .woff2 files with @font-face${font3d.copied ? "; the .woff is for 3D titles" : ""})` : null,
+          fonts.length ? `  copied fonts: ${fonts.join(", ")} (declare the .woff2 files with @font-face)` : null,
           previous.length ? `  compared with ${previous.length} earlier look(s)${similar.length ? `; still close to ${similar.map((s) => basename(s.project)).join(", ")}` : ", all different enough"}` : null,
           ...check.warnings.map((w) => `  note: ${w}`),
         ]

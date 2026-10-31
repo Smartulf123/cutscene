@@ -24,6 +24,13 @@
   spec with `"tier": 2` is refused with a message that says so. Make the shot with one of the
   templates above, or, if you already have a rendered 3D clip, add it to the video as a normal
   clip.
+- **3D (Three.js, the `cutscene-3d` skill and `cutscene 3d`).** Cutscene has no built-in 3D any
+  more. Three.js shots were slow to preview and render and token-heavy for the agent on a normal
+  PC, and Cutscene's focus is editing real footage and voices. `cutscene 3d ...` now answers with
+  `THREED_REMOVED` and what to do instead; a beat sheet with `shot3d` still validates, with a
+  warning that the field is ignored; `cutscene-design` no longer pins .woff fonts for 3D titles.
+  Use 2D motion (`cutscene-animate`), or add an already-rendered 3D clip as a normal video clip.
+  The intro example's 3D title and logo are now flat 2D GSAP animations.
 
 ## 0.1.0 (2026-10-30)
 

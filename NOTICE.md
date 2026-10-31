@@ -36,7 +36,6 @@ logos or brand assets.
 
 | What | Where | Licence |
 |---|---|---|
-| Geist Bold, Copyright (c) 2023 Vercel, in collaboration with basement.studio | `skills/cutscene-3d/assets/fonts/` | SIL OFL 1.1 (`Geist-OFL.txt`) |
 | EB Garamond, Inter, JetBrains Mono | `skills/cutscene-design/frame-presets/code-editorial/fonts/` | SIL OFL 1.1 (`OFL-*.txt` beside the fonts) |
 | 24 caption font families from Google Fonts via Fontsource (Latin subsets) | `skills/cutscene-captions/modes/standard/fonts/` | SIL OFL 1.1 (22 families), Apache-2.0 (Permanent Marker, Special Elite); each licence with its copyright line in `licenses/` |
 | Hershey script stroke fonts (Dr. A. V. Hershey, U.S. National Bureau of Standards, via "Hershey Fonts in SVG" by Marty McGuire) | `skills/cutscene-captions/assets/strokefonts/` | Hershey font use condition: free use, credit the origin |
@@ -52,8 +51,6 @@ after the user agrees (`--yes`), into its own folder, never on PATH.
 
 | What | Used for | Licence | Source |
 |---|---|---|---|
-| **postprocessing** 6.39.5 (pmndrs), Copyright Raoul van Rüschen | optional bloom in 3D shots; a copy with its `three` import pinned (marked as changed in its first line) goes into the video project | Zlib | npm / jsDelivr, SHA-256 pinned |
-| **Fontsource fonts** for 3D titles (Space Grotesk, Inter, Manrope, Sora, Archivo Black, DM Serif Display, Playfair Display, Montserrat, Poppins, Syne, Unbounded, Outfit, Plus Jakarta Sans, Bricolage Grotesque, Geist Sans, Oswald, League Gothic, EB Garamond, Space Mono, JetBrains Mono, Baloo 2, Anton, Bodoni Moda, Cormorant Garamond, Chakra Petch, Fredoka, Teko, Cinzel, Shippori Mincho, Rajdhani, Bangers; Special Elite) | 3D text in the video's typeface | SIL OFL 1.1; Special Elite is Apache-2.0 | npm / jsDelivr, SHA-256 pinned |
 | **OmniVoice** (k2-fsa) | voice design and cloning | code Apache-2.0; **model weights CC-BY-NC-4.0 (non-commercial)**; its audio tokenizer is under the Boson Higgs Audio 2 Community License (see below) | PyPI, huggingface.co/k2-fsa/OmniVoice at a pinned revision, SHA-256 pinned |
 | **VoxCPM2** (OpenBMB) | voices, commercial use allowed | Apache-2.0 | PyPI, huggingface.co/openbmb/VoxCPM2, SHA-256 pinned |
 | **Kokoro-82M** (hexgrad) via kokoro-onnx | the built-in English voice | Apache-2.0 | github.com/thewh1teagle/kokoro-onnx (fetched by the engine) |
@@ -70,7 +67,6 @@ they are not in this repository.
 
 - **GSAP** 3.14.2: Standard "No Charge" GSAP License, Copyright Webflow. Free, including for
   commercial use; not an OSI open-source licence (https://gsap.com/standard-license).
-- **three.js** 0.184.0: MIT, Copyright the three.js authors. Used by the 3D shots.
 - **Lottie** (lottie-web), **Anime.js**, **TypeGPU**: MIT; optional adapters in `cutscene-animate`.
 - **Google Fonts** linked by a composition keep their own licences (mostly SIL OFL 1.1).
 

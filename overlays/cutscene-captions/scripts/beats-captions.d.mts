@@ -74,14 +74,14 @@ export interface CaptionResult {
     }[];
     warnings: string[];
 }
-/** A comparison key: lower case, letters and digits only, number words as digits ("three D" -> "3d"). */
+/** A comparison key: lower case, letters and digits only, number words as digits ("four K" -> "4k"). */
 export declare function spokenKey(text: unknown): string;
 /**
  * Line up caption tokens with spoken words. Each caption token takes one or more spoken words
  * ("AI" takes "A", "I"). Returns [{text, start, end}] or null when they don't line up.
  */
 export declare function alignDisplay(displayText: unknown, words: SpokenWord[]): CaptionToken[] | null;
-/** Spoken words as captions: "A I" -> "AI", "three D," -> "3D,". */
+/** Spoken words as captions: "A I" -> "AI", "four K," -> "4K,". */
 export declare function tidySpoken(words: SpokenWord[]): CaptionToken[];
 /** Break one beat's caption words into lines of at most maxWords, preferring punctuation. */
 export declare function splitLines(tokens: CaptionToken[], maxWords?: number): CaptionToken[][];

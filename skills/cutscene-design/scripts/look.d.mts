@@ -56,17 +56,6 @@ export interface MotionCharacter {
 }
 /** [display, displayWeight, body, bodyWeight, affinities] */
 export type Pairing = [string, number, string, number, string[]];
-/** A pinned .woff for 3D titles (cutscene-3d/assets/manifest.json). */
-export interface FontPin {
-    kind: string;
-    name: string;
-    family: string;
-    weight: number;
-    url: string;
-    sha256: string;
-    size: number;
-    license: string;
-}
 /** An earlier project's look. */
 export interface PreviousLook {
     project: string;
@@ -157,15 +146,6 @@ export declare function compareAgainst(look: Look, previous: PreviousLook[], thr
     rows: CompareRow[];
     tooSimilar: CompareRow[];
     closest: CompareRow | null;
-};
-export declare function fontPin3d(family: unknown, weight?: number): FontPin | null;
-/**
- * Make the display font ready for 3D titles, or say up front what they will do.
- * Copies the pinned .woff into assets/fonts/ when it is already on this computer.
- */
-export declare function prepare3dFont(look: Look, projectDir: string): {
-    copied: string | null;
-    note: string | null;
 };
 /** Where the CLI writes (tests pass their own). */
 export interface CliIo {

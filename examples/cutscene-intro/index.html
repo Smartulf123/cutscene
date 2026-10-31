@@ -36,8 +36,8 @@
       #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); color: var(--fg); font-family: var(--body); }
       .layer { position: absolute; inset: 0; }
 
-      /* ---------- b1: 3D logo + wordmark ---------- */
-      #logo3d { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 960px 540px; }
+      /* ---------- b1: logo + wordmark ---------- */
+      #logo { position: absolute; left: 190px; top: 260px; width: 560px; height: 560px; overflow: visible; }
       #wordmark-wrap { position: absolute; left: 880px; top: 400px; height: 260px; overflow: hidden; }
       #wordmark { font-family: var(--display); font-size: 228px; line-height: 260px; letter-spacing: -0.01em; white-space: nowrap; }
 
@@ -56,7 +56,9 @@
       .part .art { height: 190px; margin-bottom: 40px; display: flex; align-items: flex-end; }
       .curve path { fill: none; stroke: var(--blue); stroke-width: 5; stroke-linecap: round; }
       .curve circle { fill: var(--cut); }
-      .cube { width: 150px; height: 150px; }
+      .clips .keep { fill: #2c3341; }
+      .clips .gone { fill: #4a3a36; }
+      .clips .cutline { fill: var(--cut); }
       .wave { display: flex; align-items: center; gap: 9px; height: 150px; }
       .wave i { display: block; width: 10px; border-radius: 5px; background: var(--fg); height: 20px; }
 
@@ -85,19 +87,19 @@
   </head>
   <body>
     <div data-hf-id="hf-o5hx" id="root" data-composition-id="main" data-start="0" data-duration="12.4" data-width="1920" data-height="1080">
-      <!-- b1 0.0-3.0: pre-rendered 3D logo clip + wordmark -->
-      <video data-hf-id="hf-pu06" id="logo3d" class="clip" src="assets/3d/logo.webm" muted playsinline data-start="0" data-duration="3" data-track-index="1"></video>
+      <!-- b1 0.0-3.0: the logo lands, its cut bar draws in, the wordmark slides out -->
       <div data-hf-id="hf-419x" id="b1" class="layer clip" data-start="0" data-duration="3" data-track-index="0">
+        <svg data-hf-id="hf-pu06" id="logo" viewBox="0 0 64 64" aria-hidden="true"><path id="logo-body" fill="#F4F3EE" fill-rule="evenodd" d="M19 4 H45 A15 15 0 0 1 60 19 V45 A15 15 0 0 1 45 60 H19 A15 15 0 0 1 4 45 V19 A15 15 0 0 1 19 4 Z M28 13.5 A3.5 3.5 0 0 0 24.5 17 V47 A3.5 3.5 0 0 0 28 50.5 A3.5 3.5 0 0 0 31.5 47 V17 A3.5 3.5 0 0 0 28 13.5 Z"/><rect id="logo-bar" x="25.5" y="15" width="5" height="34" rx="2.5" fill="#FF7A45"/></svg>
         <div data-hf-id="hf-cxwb" id="wordmark-wrap"><div data-hf-id="hf-fna7" id="wordmark" data-layout-allow-overflow>Cutscene</div></div>
       </div>
 
-      <!-- b2 3.0-6.4: the prompt + Three.js title -->
+      <!-- b2 3.0-6.4: the prompt + the title -->
       <div data-hf-id="hf-wjeh" id="b2" class="layer clip" data-start="3" data-duration="3.4" data-track-index="0">
         <div data-hf-id="hf-dxa1" id="prompt" data-layout-allow-occlusion><span data-hf-id="hf-onux" class="you" data-layout-allow-occlusion>You</span><span data-hf-id="hf-dk0x" class="typed" id="typed" data-layout-allow-occlusion></span><span data-hf-id="hf-fir1" class="caret" id="caret"></span></div>
       </div>
-      <div data-hf-id="hf-0de4" id="scene3d-title-clip" data-composition-id="scene3d-title" data-composition-src="compositions/scene3d-title.html" data-start="3" data-duration="3.4" data-track-index="2" data-width="1920" data-height="1080"></div>
+      <div data-hf-id="hf-0de4" id="title-clip" data-composition-id="title" data-composition-src="compositions/title.html" data-start="3" data-duration="3.4" data-track-index="2" data-width="1920" data-height="1080"></div>
 
-      <!-- b3 6.4-9.6: motion, 3D, voice -->
+      <!-- b3 6.4-9.9: motion, footage, voice -->
       <div data-hf-id="hf-sxc0" id="b3" class="layer clip" data-start="6.4" data-duration="3.5" data-track-index="0">
         <div data-hf-id="hf-wgep" id="parts">
           <div data-hf-id="hf-5xqi" class="part" id="p-motion">
@@ -107,10 +109,12 @@
             <h2 data-hf-id="hf-lgh1">Motion</h2>
             <p data-hf-id="hf-ko6l">Every frame animated, timed to the voice.</p>
           </div>
-          <div data-hf-id="hf-pzsx" class="part" id="p-3d">
-            <div data-hf-id="hf-kadz" class="art"><img data-hf-id="hf-inex" class="cube" id="mini-logo" src="assets/3d/logo-mark.png" alt="" /></div>
-            <h2 data-hf-id="hf-7xj4">3D</h2>
-            <p data-hf-id="hf-szyp">Live Three.js, rendered with the frame.</p>
+          <div data-hf-id="hf-pzsx" class="part" id="p-footage">
+            <div data-hf-id="hf-kadz" class="art">
+              <svg data-hf-id="hf-inex" class="clips" width="260" height="150" viewBox="0 0 260 150"><rect id="clip-a" class="keep" x="0" y="74" width="104" height="70" rx="8" /><rect id="clip-gone" class="gone" x="110" y="74" width="40" height="70" rx="8" /><rect id="clip-b" class="keep" x="156" y="74" width="104" height="70" rx="8" /><rect id="clip-cut" class="cutline" x="105" y="50" width="4" height="100" rx="2" /></svg>
+            </div>
+            <h2 data-hf-id="hf-7xj4">Footage</h2>
+            <p data-hf-id="hf-szyp">Cut by its words, every pause and retake.</p>
           </div>
           <div data-hf-id="hf-1qg2" class="part" id="p-voice">
             <div data-hf-id="hf-jw2y" class="art"><div data-hf-id="hf-hsfu" class="wave" id="wave"></div></div>
@@ -123,7 +127,7 @@
       <!-- b4 9.6-12.0: end card -->
       <div data-hf-id="hf-qjss" id="b4" class="layer clip" data-start="9.9" data-duration="2.5" data-track-index="0">
         <div data-hf-id="hf-fmy8" id="end" class="layer">
-          <div data-hf-id="hf-d956" id="end-mark"><img data-hf-id="hf-h1ce" src="assets/3d/logo-mark.png" alt="" /><span data-hf-id="hf-2smd">Cutscene</span></div>
+          <div data-hf-id="hf-d956" id="end-mark"><img data-hf-id="hf-h1ce" src="assets/logo.svg" alt="" /><span data-hf-id="hf-2smd">Cutscene</span></div>
           <div data-hf-id="hf-kvd6" id="install"><b data-hf-id="hf-qcht">&gt;</b><span data-hf-id="hf-enuf">claude plugin install cutscene</span></div>
         </div>
       </div>
@@ -141,7 +145,7 @@
       <!-- voice lines -->
       <audio data-hf-id="hf-lalx" id="v-b1" class="clip" src="assets/voice/b1.wav" data-start="0.35" data-duration="1.14" data-track-index="10"></audio>
       <audio data-hf-id="hf-610i" id="v-b2" class="clip" src="assets/voice/b2.wav" data-start="3.25" data-duration="1.87" data-track-index="11"></audio>
-      <audio data-hf-id="hf-un54" id="v-b3" class="clip" src="assets/voice/b3.wav" data-start="6.5" data-duration="3.29" data-track-index="12"></audio>
+      <audio data-hf-id="hf-un54" id="v-b3" class="clip" src="assets/voice/b3.wav" data-start="6.5" data-duration="2.15" data-track-index="12"></audio>
       <audio data-hf-id="hf-qgog" id="v-b4" class="clip" src="assets/voice/b4.wav" data-start="10" data-duration="1.35" data-track-index="13"></audio>
 
       <div data-hf-id="hf-phcv" id="vignette" class="layer"></div>
@@ -151,21 +155,23 @@
     <script>
       // Word timings copied from .cutscene/beats.json (voice.words, relative to each line) and the
       // line's start on the timeline (the <audio> data-start above).
-      const CAPTIONS = [{"id":"b1","at":0.35,"until":3.25,"words":[{"w":"This","start":0,"end":0.3},{"w":"is","start":0.3,"end":0.44},{"w":"Cutscene.","start":0.44,"end":0.88}]},{"id":"b2","at":3.25,"until":6.5,"words":[{"w":"Tell","start":0,"end":0.34},{"w":"your","start":0.34,"end":0.5},{"w":"AI","start":0.5,"end":0.76},{"w":"the","start":0.76,"end":0.94},{"w":"video","start":0.94,"end":1.22},{"w":"you","start":1.22,"end":1.4},{"w":"want.","start":1.4,"end":1.62}]},{"id":"b3","at":6.5,"until":10,"words":[{"w":"It","start":0,"end":0.32},{"w":"animates,","start":0.32,"end":0.84},{"w":"renders","start":0.96,"end":1.3},{"w":"real","start":1.3,"end":1.5},{"w":"3D,","start":1.5,"end":1.94},{"w":"and","start":2.12,"end":2.18},{"w":"speaks","start":2.18,"end":2.44},{"w":"every","start":2.44,"end":2.74},{"w":"line.","start":2.74,"end":2.98}]},{"id":"b4","at":10,"until":12.4,"words":[{"w":"All","start":0,"end":0.38},{"w":"on","start":0.38,"end":0.52},{"w":"your","start":0.52,"end":0.64},{"w":"computer.","start":0.64,"end":0.84}]}];
+      const CAPTIONS = [{"id":"b1","at":0.35,"until":3.25,"words":[{"w":"This","start":0,"end":0.3},{"w":"is","start":0.3,"end":0.44},{"w":"Cutscene.","start":0.44,"end":0.88}]},{"id":"b2","at":3.25,"until":6.5,"words":[{"w":"Tell","start":0,"end":0.34},{"w":"your","start":0.34,"end":0.5},{"w":"AI","start":0.5,"end":0.76},{"w":"the","start":0.76,"end":0.94},{"w":"video","start":0.94,"end":1.22},{"w":"you","start":1.22,"end":1.4},{"w":"want.","start":1.4,"end":1.62}]},{"id":"b3","at":6.5,"until":10,"words":[{"w":"It","start":0,"end":0.32},{"w":"animates","start":0.32,"end":0.84},{"w":"and","start":0.84,"end":1.04},{"w":"speaks","start":1.04,"end":1.3},{"w":"every","start":1.3,"end":1.6},{"w":"line.","start":1.6,"end":1.86}]},{"id":"b4","at":10,"until":12.4,"words":[{"w":"All","start":0,"end":0.38},{"w":"on","start":0.38,"end":0.52},{"w":"your","start":0.52,"end":0.64},{"w":"computer.","start":0.64,"end":0.84}]}];
 
       const EASE = "circ.out";
       const tl = gsap.timeline({ paused: true });
 
       // ---- b1: the wordmark slides out from behind the logo as the bar lands
       tl.fromTo("#wordmark", { yPercent: 105 }, { yPercent: 0, duration: 0.8, ease: "expo.out" }, 1.25);
-      tl.fromTo("#logo3d", { x: -480, scale: 0.78 }, { x: -498, scale: 0.78, duration: 1.4, ease: "sine.inOut" }, 1.4);
+      tl.fromTo("#logo", { scale: 0.6, rotation: -14, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 1.0, ease: "expo.out", transformOrigin: "50% 50%" }, 0.15);
+      tl.fromTo("#logo-bar", { scaleY: 0 }, { scaleY: 1, duration: 0.6, ease: "power3.out", transformOrigin: "50% 0%" }, 0.65);
+      tl.fromTo("#logo", { x: 0 }, { x: -18, duration: 1.6, ease: "sine.inOut", immediateRender: false }, 1.4);
 
       // ---- cut wipes: a bar slices across, the next beat is behind it
       [[2.82, "#wipe1"], [6.22, "#wipe2"], [9.72, "#wipe3"]].forEach(([t, el]) => {
         tl.fromTo(el, { x: -200 }, { x: 2100, duration: 0.42, ease: "power2.inOut" }, t);
       });
 
-      // ---- b2: the prompt types itself, then the 3D title takes the frame
+      // ---- b2: the prompt types itself, then the title takes the frame
       const PROMPT = "make a 12 second intro for my channel";
       const typed = { n: 0 };
       tl.fromTo("#prompt", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.45, ease: EASE }, 3.1);
@@ -176,14 +182,14 @@
       tl.to("#caret", { opacity: 0, duration: 0.01, repeat: 5, yoyo: true, repeatDelay: 0.24 }, 4.5);
 
       // ---- b3: three parts, each lands on its word
-      const parts = [["#p-motion", 6.65], ["#p-3d", 7.35], ["#p-voice", 8.15]];
+      const parts = [["#p-motion", 6.65], ["#p-footage", 7.1], ["#p-voice", 7.55]];
       parts.forEach(([el, t]) => {
         tl.fromTo(`${el} h2`, { yPercent: 40, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.55, ease: EASE }, t);
         tl.fromTo(`${el} p`, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "sine.out" }, t + 0.18);
         tl.fromTo(`${el} .art`, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.5, ease: EASE }, t + 0.05);
       });
-      tl.fromTo("#p-3d", { "--grow": 0 }, { "--grow": 1, duration: 0.5, ease: "power2.out" }, 7.2);
-      tl.fromTo("#p-voice", { "--grow": 0 }, { "--grow": 1, duration: 0.5, ease: "power2.out" }, 8.0);
+      tl.fromTo("#p-footage", { "--grow": 0 }, { "--grow": 1, duration: 0.5, ease: "power2.out" }, 6.95);
+      tl.fromTo("#p-voice", { "--grow": 0 }, { "--grow": 1, duration: 0.5, ease: "power2.out" }, 7.4);
       // motion: a dot rides the ease curve
       const path = document.getElementById("curve-path");
       const len = path.getTotalLength();
@@ -198,8 +204,11 @@
           c.setAttribute("cx", pt.x); c.setAttribute("cy", pt.y);
         },
       }, 6.7);
-      // 3D: the logo turns slowly
-      tl.fromTo("#mini-logo", { rotation: -8, scale: 0.9 }, { rotation: 0, scale: 1, duration: 1.6, ease: EASE }, 7.4);
+      // footage: the cut lands, the dead take drops out, the two clips close the gap
+      tl.fromTo("#clip-cut", { scaleY: 0 }, { scaleY: 1, duration: 0.35, ease: "power3.out", transformOrigin: "50% 50%" }, 7.45);
+      tl.fromTo("#clip-gone", { opacity: 1, y: 0 }, { opacity: 0, y: 26, duration: 0.4, ease: "power2.in" }, 7.8);
+      tl.fromTo("#clip-b", { x: 0 }, { x: -52, duration: 0.5, ease: "expo.out" }, 8.2);
+      tl.fromTo("#clip-cut", { opacity: 1 }, { opacity: 0, duration: 0.35, ease: "sine.out" }, 8.35);
       // voice: deterministic waveform bars that move while the line is spoken
       const wave = document.getElementById("wave");
       const BARS = 15;
@@ -207,15 +216,15 @@
       const bars = [...wave.children];
       const amp = { t: 0 };
       tl.to(amp, {
-        t: 1, duration: 1.35, ease: "none",
+        t: 1, duration: 1.15, ease: "none",
         onUpdate: () => {
           bars.forEach((b, i) => {
             const h = 20 + 110 * Math.abs(Math.sin(amp.t * 19 + i * 0.83) * Math.sin(amp.t * 7 + i * 0.37));
             b.style.height = `${h.toFixed(1)}px`;
           });
         },
-      }, 8.2);
-      tl.to(bars, { height: 20, duration: 0.3, ease: "sine.out" }, 9.6);
+      }, 7.55);
+      tl.to(bars, { height: 20, duration: 0.3, ease: "sine.out" }, 8.75);
 
       // ---- b4: end card
       tl.fromTo("#end-mark", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out" }, 10.05);
