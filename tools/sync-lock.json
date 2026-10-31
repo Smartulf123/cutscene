@@ -20,7 +20,7 @@
       "sourceSha256": [
         "b35f1f8eff68e9ff480a5d5d343a1bf5a40ebb7d0d9be20b0b980cfdb36047f3"
       ],
-      "sha256": "97fb4ed5b9eae703bfef417998cf988b6801823aeb0999cf7c5d57632203cf72"
+      "sha256": "429758ee5717bafd711ef69b4754d78ad9b92b484eba4c8cd327acc26b1f7855"
     },
     "skills/cutscene-animate/adapters/animate-text.md": {
       "from": "skills/hyperframes-animation/adapters/animate-text.md",
@@ -2218,8 +2218,8 @@
     },
     "skills/cutscene-design/scripts/look.mjs": {
       "from": "overlays/cutscene-design/scripts/look.mjs",
-      "sourceSha256": "4906c2aba1fa1d78f4eb061008af0ffc3e4e3c6b4aeae34b6c122d4488013d8b",
-      "sha256": "4906c2aba1fa1d78f4eb061008af0ffc3e4e3c6b4aeae34b6c122d4488013d8b"
+      "sourceSha256": "351cd75d788faea792e783fc30b10fc1c35cade0d5168eafd7b681a4cdd7e705",
+      "sha256": "351cd75d788faea792e783fc30b10fc1c35cade0d5168eafd7b681a4cdd7e705"
     },
     "skills/cutscene-design/scripts/package-loader.mjs": {
       "from": "skills/hyperframes-creative/scripts/package-loader.mjs",
@@ -2237,7 +2237,7 @@
         "overlays/cutscene-promo/SKILL.head.md"
       ],
       "sourceSha256": [],
-      "sha256": "b91f19ec40d335976978c816332b23b3e3856809e32429bf6bf0df6b9e7a1b3c"
+      "sha256": "e9bd263165ec2a8bbf3380c414674d2d53f9ab75ef55c7f55db419ad9f9a9814"
     },
     "skills/cutscene-promo/workflows/faceless-explainer/WORKFLOW.md": {
       "from": "skills/faceless-explainer/SKILL.md",

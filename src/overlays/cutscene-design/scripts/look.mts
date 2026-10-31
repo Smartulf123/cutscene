@@ -715,11 +715,10 @@ export function prepare3dFont(look: Look, projectDir: string): { copied: string 
     if (!existsSync(join(projectDir, rel))) copyFileSync(cached, join(projectDir, rel));
     return { copied: rel, note: null };
   }
-  const blenderReads = t.src ? " Blender 3D shots read the copied .woff2 as it is." : "";
   if (pin) {
-    return { copied: null, note: `if this video gets a 3D title, Cutscene 3D needs its own copy of "${t.family}" (${Math.round(pin.size / 1024)} KB, ${pin.license}): ask the user, then run cutscene 3d assets fetch ${pin.name} --yes. Without it, Three.js 3D titles use Geist Bold.${blenderReads}` };
+    return { copied: null, note: `if this video gets a 3D title, Cutscene 3D needs its own copy of "${t.family}" (${Math.round(pin.size / 1024)} KB, ${pin.license}): ask the user, then run cutscene 3d assets fetch ${pin.name} --yes. Without it, 3D titles use Geist Bold.` };
   }
-  return { copied: null, note: `3D titles can't use "${t.family}" yet: put a .ttf or .woff of it in assets/fonts/ (Blender also reads .woff2), or 3D titles use Geist Bold.` };
+  return { copied: null, note: `3D titles can't use "${t.family}" yet: put a .ttf or .woff of it in assets/fonts/ (3D titles can't read .woff2), or 3D titles use Geist Bold.` };
 }
 
 function copyBundledFonts(look: Look, projectDir: string): string[] {

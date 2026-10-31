@@ -1,6 +1,6 @@
 ---
 name: cutscene-promo
-description: "Use for promo-style Cutscene videos made from a product or marketing URL, a GitHub pull request, or a topic or script: product launch, feature reveal and site-tour videos, faceless explainers, and PR-to-video changelog clips. Load it after the cutscene skill (the entry point for every new video) has routed the brief here; each is a gated workflow (brief, script, storyboard, frames, sound, assembly, review). Does NOT edit existing footage (cutscene-edit), make Blender 3D (cutscene-3d), or render a final video without the user's OK."
+description: "Use for promo-style Cutscene videos made from a product or marketing URL, a GitHub pull request, or a topic or script: product launch, feature reveal and site-tour videos, faceless explainers, and PR-to-video changelog clips. Load it after the cutscene skill (the entry point for every new video) has routed the brief here; each is a gated workflow (brief, script, storyboard, frames, sound, assembly, review). Does NOT edit existing footage (cutscene-edit), make 3D shots (cutscene-3d), or render a final video without the user's OK."
 ---
 
 <!-- Adapted from HyperFrames (Apache-2.0, HeyGen, Inc.); modified for Cutscene. -->

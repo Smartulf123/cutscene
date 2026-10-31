@@ -1,6 +1,6 @@
 ---
 name: cutscene-animate
-description: "Use for any motion in a Cutscene video: GSAP timelines, eases and staggers, the runtime adapters (GSAP, Lottie, Three.js, Anime.js, CSS keyframes, Web Animations, TypeGPU), atomic motion rules, multi-phase scene blueprints, scene transitions, motion blur, seek-safe keyframes for zooms, punch-ins and camera moves, auditing choreography with an animation map, kinetic type, and the motion-graphics workflow (lower thirds, charts, maps, 2D logo reveals, news, tweets). Use it when something moves wrong, too fast or too stiff. Does NOT pick the video's look (cutscene-design), make extruded 3D titles or Blender renders (cutscene-3d) or define the composition contract (cutscene-compose)."
+description: "Use for any motion in a Cutscene video: GSAP timelines, eases and staggers, the runtime adapters (GSAP, Lottie, Three.js, Anime.js, CSS keyframes, Web Animations, TypeGPU), atomic motion rules, multi-phase scene blueprints, scene transitions, motion blur, seek-safe keyframes for zooms, punch-ins and camera moves, auditing choreography with an animation map, kinetic type, and the motion-graphics workflow (lower thirds, charts, maps, 2D logo reveals, news, tweets). Use it when something moves wrong, too fast or too stiff. Does NOT pick the video's look (cutscene-design), make extruded 3D titles or 3D scenes (cutscene-3d) or define the composition contract (cutscene-compose)."
 ---
 
 <!-- Adapted from HyperFrames (Apache-2.0, HeyGen, Inc.); modified for Cutscene. -->
