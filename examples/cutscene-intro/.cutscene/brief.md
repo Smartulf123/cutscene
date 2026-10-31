@@ -7,13 +7,13 @@
 - **Message:** tell your AI the video you want; Cutscene writes the motion, renders real 3D
   and speaks every line, all on your computer.
 - **Must-haves:**
-  - a Blender-rendered transparent 3D logo (Tier 2)
-  - a Three.js title (Tier 1)
+  - a transparent 3D logo (a pre-rendered video clip)
+  - a 3D title made by Cutscene
   - a designed voice, every line checked by Whisper
   - captions from the voice's word timings
   - Cutscene-designed graphics, all timed from one beat sheet
 - **Voice:** yes, one designed narrator (OmniVoice; non-commercial weights, fine for an
   open-source README).
-- **3D:** yes, both tiers.
+- **3D:** yes: the logo as a pre-rendered clip, the title as a Cutscene 3D shot.
 - **Mood:** confident and precise, like a well-made title sequence. Not a SaaS ad.
 - **Ends on:** the Cutscene wordmark and the one-line install.
