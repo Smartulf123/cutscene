@@ -22,7 +22,7 @@
     { "query": "I need a narrator: female, warm, british accent, for all 6 lines in the beat sheet", "expected": "cutscene-voice", "keywords": ["voiceover", "narration"], "not": ["cutscene-audio"] },
     { "query": "clone my voice from me-reading.wav (it's me, I'm fine with it) and use it for the intro lines", "expected": "cutscene-voice", "keywords": ["clones"], "not": ["cutscene-edit"] },
     { "query": "make the Cutscene logo a shiny chrome 3D thing that spins in, I have logo.svg", "expected": "cutscene-3d", "keywords": ["logo", "3D"], "not": ["cutscene-animate"] },
-    { "query": "can you render a product turntable of my headphones glb in blender, transparent background", "expected": "cutscene-3d", "keywords": ["turntables", "Blender"], "not": ["cutscene-render"] },
+    { "query": "can you make a product turntable of my headphones glb, transparent background", "expected": "cutscene-3d", "keywords": ["turntables", "glTF"], "not": ["cutscene-render"] },
     { "query": "cut all the ums and long pauses out of podcast-ep12.mp4", "expected": "cutscene-edit", "keywords": ["filler words", "silences"], "not": ["cutscene-audio", "cutscene-captions"] },
     { "query": "find the three best 30-second moments in this webinar recording for shorts and make them vertical", "expected": "cutscene-edit", "keywords": ["shorts", "9:16"], "not": ["cutscene-promo"] },
     { "query": "there's a hum in my mic recording, clean it up and bring it to -14 LUFS", "expected": "cutscene-edit", "keywords": ["hum", "LUFS"], "not": ["cutscene-audio"] },
