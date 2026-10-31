@@ -4,8 +4,8 @@ Thanks for helping. Bug reports, fixes and new recipes are all welcome.
 
 ## Set up
 
-You need Node.js 22 or newer and FFmpeg. Blender and Python are only needed for the 3D and voice
-tests; those tests skip themselves when the tool is missing.
+You need Node.js 22 or newer and FFmpeg. Python is only needed for the voice tests; those tests
+skip themselves when it is missing.
 
 ```bash
 npm ci
@@ -43,8 +43,8 @@ and builds to `.js` with browser types (`tsconfig.browser.json`). Three.js and G
 page, so their types are small declaration files next to that code.
 
 Some code stays in other languages on purpose: the videos and design references are HTML (that
-is what the engine renders), the Blender and voice scripts are Python (Blender and the voice
-models only run Python), and the generated skills keep the engine's JavaScript.
+is what the engine renders), the voice scripts are Python (the voice models only run Python), and
+the generated skills keep the engine's JavaScript.
 
 ## Where things live
 
@@ -52,7 +52,7 @@ models only run Python), and the generated skills keep the engine's JavaScript.
 |---|---|
 | `src/` | The TypeScript source for everything Cutscene wrote |
 | `skills/cutscene/` | The router skill and the `cutscene` command (`scripts/cli.mjs`, built) |
-| `skills/cutscene-3d/`, `-voice/`, `-edit/` | Cutscene's own skills; edit the `SKILL.md` and Python here, the scripts in `src/` |
+| `skills/cutscene-3d/`, `-voice/`, `-edit/` | Cutscene's own skills; edit the `SKILL.md` (and the voice worker's Python) here, the scripts in `src/` |
 | `skills/cutscene-compose/`, `-animate/`, `-design/`, `-captions/`, `-audio/`, `-render/`, `-promo/` | **Generated** from the pinned engine source; don't edit them by hand |
 | `overlays/` | Cutscene's changes to the generated skills ([how it works](overlays/README.md)) |
 | `tools/` | The build, the sync, the skill validator and the pin-age check (built from `src/tools/`) |

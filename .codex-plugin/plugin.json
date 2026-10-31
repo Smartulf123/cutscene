@@ -1,6 +1,6 @@
 {
   "name": "cutscene",
-  "description": "Make and edit videos with your AI agent: animated HTML compositions, 3D shots with Three.js or Blender, local AI voices you design or clone, captions, music and footage clean-up. Everything runs on your computer.",
+  "description": "Make and edit videos with your AI agent: animated HTML compositions, 3D shots drawn with Three.js inside the video, local AI voices you design or clone, captions, music and footage clean-up. Everything runs on your computer.",
   "version": "0.1.0",
   "author": {
     "name": "Smartulf123",
@@ -17,7 +17,6 @@
     "animation",
     "gsap",
     "three",
-    "blender",
     "3d",
     "voiceover",
     "tts",
@@ -29,7 +28,7 @@
   "interface": {
     "displayName": "Cutscene",
     "shortDescription": "Make videos with your AI agent",
-    "longDescription": "Plan, build and preview videos with your AI agent. Cutscene writes animated HTML compositions with GSAP, adds 3D shots (Three.js inside the video, or Blender for realism), speaks voiceovers with local AI voices you design or clone (with permission), checks every spoken word, adds captions, music and sound effects, and cleans up footage: silences, retakes, highlights and vertical reframes. One beat sheet keeps voice, 3D and graphics in sync, and every video gets its own look. Everything runs on your computer.",
+    "longDescription": "Plan, build and preview videos with your AI agent. Cutscene writes animated HTML compositions with GSAP, adds 3D shots (Three.js scenes inside the video, nothing to install), speaks voiceovers with local AI voices you design or clone (with permission), checks every spoken word, adds captions, music and sound effects, and cleans up footage: silences, retakes, highlights and vertical reframes. One beat sheet keeps voice, 3D and graphics in sync, and every video gets its own look. Everything runs on your computer.",
     "developerName": "Smartulf123",
     "category": "Creativity",
     "capabilities": ["Read", "Write"],

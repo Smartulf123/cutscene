@@ -1,7 +1,7 @@
 # Security in Cutscene
 
-Cutscene runs on your computer: it edits files, starts programs (the video engine, FFmpeg,
-Blender, a Python voice worker) and runs a small local web server for the live preview. This page
+Cutscene runs on your computer: it edits files, starts programs (the video engine, FFmpeg, a
+Python voice worker) and runs a small local web server for the live preview. This page
 says what it protects against, how, and what is still open. To report a problem, see
 [SECURITY.md](../SECURITY.md).
 
@@ -65,10 +65,9 @@ or close other browser tabs while the stock Studio is open.
   name, a spec or a voice line can't become a command. The one exception is opening your browser
   on Windows (`cmd /c start`), and the address is checked against a strict pattern first.
 - Voice lines go to the voice models in a JSON job file or a text file, never on the command line.
-- Text inside videos, transcripts, SVGs, websites and voice lines is **data**. Blender runs a fixed
-  script (`skills/cutscene-3d/scripts/blender/run.py`) that reads the spec as values; nothing in a
-  spec or an SVG is run as code. Blender starts with `--factory-startup`, so add-ons and startup
-  scripts from your own Blender setup don't run.
+- Text inside videos, transcripts, SVGs, websites and voice lines is **data**. A 3D shot gets its
+  spec as values, written into the page as escaped JSON, and turns titles, SVGs and models only
+  into shapes; nothing in a spec or an SVG is run as code.
 - On Windows, stopping a job stops its whole process tree (`taskkill /T /F`).
 
 ## Voices

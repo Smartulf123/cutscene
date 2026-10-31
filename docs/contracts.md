@@ -10,7 +10,7 @@ for making and editing videos with a coding agent. Three parts:
 
 - **HyperFrames** is the engine (HTML compositions, preview, render). It's an npm package pinned
   in `skills/cutscene/engine.json`.
-- **Blender** for 3D, run headless.
+- **3D shots** written as Three.js scenes inside the video.
 - **Local AI voices.**
 
 The product name is **Cutscene**:
@@ -56,7 +56,7 @@ One entry point: `node <skills>/cutscene/scripts/cli.mjs <command> [args]`.
   `catalog`, `timeline`, `compare`, `normalize-audio`, `doctor`. Blocked, with a plain message:
   `skills`, `upgrade`, `cloud`, `cloudrun`, `lambda`, `publish`, `auth`, `feedback`, `usage`.
 - **Cutscene commands:**
-  - `cutscene doctor`: checks everything, including Blender and voice
+  - `cutscene doctor`: checks everything, including voice
   - `cutscene setup`: installs what's missing, only with `--yes` or after asking
   - `cutscene voice …`: dispatches to `skills/cutscene-voice/scripts/voice.mjs`
   - `cutscene 3d …`: dispatches to `skills/cutscene-3d/scripts/3d.mjs`
@@ -96,11 +96,11 @@ One entry point: `node <skills>/cutscene/scripts/cli.mjs <command> [args]`.
 
 ```
 ~/.cutscene/
-  config.json        user settings: {"blender": "<path>", "voice": {"default": "kokoro"}, ...}
+  config.json        user settings: {"voice": {"default": "kokoro"}, ...}
   engine/<pin>/      the pinned engine (npm --prefix)
   media/             engine media cache
   voice/             voice environment (venv), model weights, benchmarks.json
-  assets/            downloaded CC0 assets (Poly Haven etc.), by sha256
+  assets/            downloaded 3D assets (fonts, the bloom library), by sha256
   logs/
 ```
 
@@ -128,15 +128,14 @@ A project is a normal engine project made by `cutscene init <dir>`, plus a `.cut
 <project>/
   index.html, compositions/, …       engine files (never rename them)
   assets/voice/<line-id>.wav          final voice lines (+ <line-id>.license.txt)
-  assets/3d/<shot-id>.webm            final transparent 3D clips (VP9 with alpha)
-  assets/3d/<shot-id>.poster.png      one still for quick looks
+  compositions/scene3d-<shot-id>.html 3D shots (+ their fonts, logos and models in compositions/assets/3d/)
   .cutscene/
     brief.md       what the user wants (approved before building)
     look.json      this video's look (see §8)
     beats.json     the shared beat sheet (see §7)
     project.md     short memory: decisions, approvals, what was checked
     voice/         working files (references, takes, verify reports)
-    3d/            specs (<shot-id>.json), stills, frame sequences
+    3d/            3D shot specs (<shot-id>.json)
     edit/          transcripts, edit lists, review pages
 ```
 
@@ -178,8 +177,8 @@ Times are always **seconds on the final video timeline**, as numbers with up to 
       },
       "shot3d": {
         "spec": ".cutscene/3d/logo.json",
-        "tier": 2,
-        "file": "assets/3d/logo.webm",
+        "tier": 1,
+        "file": "compositions/scene3d-logo.html",
         "duration": 2.4
       },
       "graphics": [{ "id": "g-title", "kind": "title", "text": "Cutscene" }],
@@ -217,7 +216,7 @@ Times are always **seconds on the final video timeline**, as numbers with up to 
 ```
 
 `motion.character` is one of `snappy`, `smooth`, `bouncy`, `cinematic` or `editorial`. 3D shots
-read `palette` and `type`, so Blender and Three.js renders match the graphics.
+read `palette` and `type`, so they match the graphics.
 
 ## 9. Downloads and installs
 
@@ -246,15 +245,14 @@ read `palette` and `type`, so Blender and Three.js renders match the graphics.
 
 - **Node:** 22+, ESM `.mjs`, **no runtime dependencies** in skill scripts (Node built-ins only).
   The engine is the one npm install, done by the CLI.
-- **Python:** 3.10+, only inside `~/.cutscene/voice` (voice) or run by Blender (3d).
+- **Python:** 3.10+, only inside `~/.cutscene/voice` (voice).
 - Small pure functions with tests next to the logic. Plain-language messages: sentence case,
   errors that say how to fix them.
 - **Headers on copied or adapted files:**
   - `// Adapted from <project> <path> (<licence>), <copyright>. Modified for Cutscene.`
   - HyperFrames-derived Markdown files:
     `<!-- Adapted from HyperFrames (Apache-2.0, HeyGen, Inc.); modified for Cutscene. -->`
-- **Blender scripts** that `import bpy` live in `skills/cutscene-3d/scripts/blender/` with a
-  GPL-3.0 `LICENSE`. Everything else is Apache-2.0.
+- **Licence:** everything Cutscene writes is Apache-2.0.
 - **Never copy code** from AGPL projects (VoiceStudio, OpenMontage) or projects without a
   licence (eden-motion). Ideas only.
 
@@ -263,7 +261,7 @@ read `palette` and `type`, so Blender and Three.js renders match the graphics.
 - **Node: Vitest 4.1.12** (root `package.json`, dev only), files
   `tests/<owner>/**/*.test.mjs`.
 - **Python: pytest 9.1.1**, files `tests/<owner>/**/test_*.py`.
-- **Heavy tools:** tests that need Blender, a voice model, FFmpeg or the engine must detect the
+- **Heavy tools:** tests that need a voice model, FFmpeg or the engine must detect the
   tool and skip with a clear reason when it's missing, so CI without them stays green. Each owner
   also reports the result of running them for real on this PC.
 - **Fixtures:** use only `fixtures/` (made by us). Never commit footage of real people other than
