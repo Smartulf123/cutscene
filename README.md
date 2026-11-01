@@ -10,7 +10,6 @@ Everything runs on your computer.
 The video above was made with Cutscene. Its project is in
 [`examples/cutscene-promo`](examples/cutscene-promo): the webcam take, the edit list Cutscene cut
 it with, the beat sheet, the scenes and the voice lines.
-[`examples/cutscene-intro`](examples/cutscene-intro) is a shorter 12-second intro.
 
 ## What it does
 

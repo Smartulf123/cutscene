@@ -40,9 +40,11 @@ logos or brand assets.
 | 24 caption font families from Google Fonts via Fontsource (Latin subsets) | `skills/cutscene-captions/modes/standard/fonts/` | SIL OFL 1.1 (22 families), Apache-2.0 (Permanent Marker, Special Elite); each licence with its copyright line in `licenses/` |
 | Hershey script stroke fonts (Dr. A. V. Hershey, U.S. National Bureau of Standards, via "Hershey Fonts in SVG" by Marty McGuire) | `skills/cutscene-captions/assets/strokefonts/` | Hershey font use condition: free use, credit the origin |
 
-The showcase project in `examples/cutscene-intro/` uses DM Serif Display and Space Grotesk (SIL OFL
-1.1, from Fontsource) and voice lines made with OmniVoice, which are **non-commercial
-(CC-BY-NC-4.0)**; each voice file has a `.license.txt` beside it.
+The promo project in `examples/cutscene-promo/` uses Space Grotesk (SIL OFL 1.1, from Fontsource)
+and voice lines made with OmniVoice, which are **non-commercial (CC-BY-NC-4.0)**; each voice file
+has a `.license.txt` beside it. Its webcam footage is the author's own. Its Pexels clips (Pexels
+License) and the engine's Pixabay sound effects are not in this repository:
+`examples/cutscene-promo/footage/prepare.mjs` downloads and checks them.
 
 ## Downloaded only with the user's consent
 
