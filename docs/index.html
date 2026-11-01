@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cutscene · demo</title>
+  <meta name="description" content="A 48-second demo of Cutscene, the video editor inside your AI agent, made with Cutscene itself.">
+  <meta property="og:title" content="Cutscene">
+  <meta property="og:description" content="The video editor inside your AI agent. Film yourself, tell your agent what you want, and Cutscene edits it on your computer.">
+  <meta property="og:image" content="https://smartulf123.github.io/cutscene/poster.jpg">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <style>
+    :root { color-scheme: dark; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: radial-gradient(ellipse at 50% 30%, #241a3d, #0f0b1a 70%); color: #f4f0ff; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    main { width: min(1100px, 100% - 32px); padding: 40px 0; text-align: center; }
+    h1 { margin: 0 0 4px; font-size: clamp(28px, 5vw, 44px); letter-spacing: -0.02em; }
+    p { margin: 0 0 24px; color: #9c93b8; }
+    video { width: 100%; border-radius: 14px; box-shadow: 0 20px 60px rgba(0, 0, 0, .5), 0 0 0 1px rgba(108, 230, 255, .2); background: #000; }
+    code { display: inline-block; margin-top: 24px; padding: 10px 16px; border-radius: 10px; background: #1a1430; border: 1px solid #2e2550; font-size: 14px; overflow-wrap: anywhere; }
+    a { color: #6ce6ff; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Cutscene</h1>
+    <p>The video editor inside your AI agent. This video was made with Cutscene.</p>
+    <video src="promo.mp4" poster="poster.jpg" controls playsinline preload="metadata"></video>
+    <code>claude plugin install cutscene@cutscene</code>
+    <p style="margin-top:16px"><a href="https://github.com/Smartulf123/cutscene">github.com/Smartulf123/cutscene</a></p>
+  </main>
+</body>
+</html>

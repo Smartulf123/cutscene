@@ -5,8 +5,12 @@ other agents) that plans the video with you, builds it as an animated HTML compo
 footage by its words, speaks the narration in a voice you design, and shows you every change in a live preview.
 Everything runs on your computer.
 
-For an example, [`examples/cutscene-intro`](examples/cutscene-intro) is a 12-second intro made
-with Cutscene itself: the brief, the look, the beat sheet, the 2D title and the four voice lines.
+<a href="https://smartulf123.github.io/cutscene/"><img src="docs/poster-play.jpg" alt="Watch the 48-second Cutscene demo: a raw webcam take edited by Cutscene (pauses cut, captions on every word, a vertical short), then a montage on real footage. The video was made with Cutscene."></a>
+
+The video above was made with Cutscene. Its project is in
+[`examples/cutscene-promo`](examples/cutscene-promo): the webcam take, the edit list Cutscene cut
+it with, the beat sheet, the scenes and the voice lines.
+[`examples/cutscene-intro`](examples/cutscene-intro) is a shorter 12-second intro.
 
 ## What it does
 
