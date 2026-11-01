@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "source": "C:\\Users\\kaspe\\OneDrive\\Desktop\\Video Editing AI Program\\examples\\cutscene-promo\\.cutscene\\edit\\take.silenced.mp4",
+  "aspect": "9:16",
+  "mode": "faces",
+  "crop": {
+    "w": 606,
+    "h": 1080
+  },
+  "sourceSize": {
+    "w": 1920,
+    "h": 1080
+  },
+  "keys": [
+    {
+      "t": 0,
+      "p": 0.4711
+    },
+    {
+      "t": 15.75,
+      "p": 0.4711
+    }
+  ],
+  "facesSeen": 1
+}

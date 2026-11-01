@@ -1,0 +1,173 @@
+<!doctype html>
+<!--
+  Cutscene launch video (47.9 s). The host: background, texture, the magenta cut between scenes,
+  captions, voice, music and sound. Each beat is a sub-composition in compositions/; every time
+  here comes from .cutscene/beats.json, the look from .cutscene/look.json and the shared rules
+  from .cutscene/design-system.md.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js" integrity="sha384-sG0Hv1tP1lZCk9KQmrIbY/XNwi+OY84GQqhMscbnsoBFqAz8KNCil1kvfL3Hbbk2" crossorigin="anonymous"></script>
+    <style>
+      :root {
+        --bg: #0f0b1a;
+        --fg: #f4f0ff;
+        --accent: #ff3d9a;
+        --accent2: #6ce6ff;
+        --raised: #1a1430;
+        --line: #2e2550;
+        --muted: #9c93b8;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); color: var(--fg); font-family: "Source Code Pro", ui-monospace, monospace; }
+      .layer { position: absolute; inset: 0; }
+
+      /* the cut: one magenta bar sweeps across at every scene change */
+      .cut { position: absolute; top: -80px; left: 0; width: 22px; height: 1240px; background: var(--accent); box-shadow: 0 0 60px 8px rgba(255, 61, 154, 0.45); transform: translateX(-160px) rotate(6deg); }
+
+      /* captions from the voice's word timings */
+      #captions { position: absolute; left: 0; right: 0; top: 940px; height: 72px; text-align: center; font-size: 40px; line-height: 72px; }
+      .cap { position: absolute; left: 0; right: 0; opacity: 0; }
+      .cap span { color: #8a81a8; }
+
+      #vignette { background: radial-gradient(ellipse at 50% 46%, transparent 55%, rgba(0, 0, 0, 0.5) 100%); pointer-events: none; opacity: 0.25; }
+      #grain { opacity: 0.05; mix-blend-mode: overlay; pointer-events: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='11'/></filter><rect width='240' height='240' filter='url(%23n)'/></svg>"); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="47.9" data-width="1920" data-height="1080">
+      <!-- scenes, one sub-composition per beat -->
+      <div id="h-b1" data-composition-id="b1-raw" data-composition-src="compositions/b1-raw.html" data-start="0" data-duration="3.6" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="h-b2" data-composition-id="b2-prompt" data-composition-src="compositions/b2-prompt.html" data-start="3.6" data-duration="2.8" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="h-b3" data-composition-id="b3-edit" data-composition-src="compositions/b3-edit.html" data-start="6.4" data-duration="16.0" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="h-b4" data-composition-id="b4-logo" data-composition-src="compositions/b4-logo.html" data-start="22.4" data-duration="3.5" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="h-b5" data-composition-id="b5-montage" data-composition-src="compositions/b5-montage.html" data-start="25.9" data-duration="9.0" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="h-b6" data-composition-id="b6-voice" data-composition-src="compositions/b6-voice.html" data-start="34.9" data-duration="3.0" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="h-b7" data-composition-id="b7-studio" data-composition-src="compositions/b7-studio.html" data-start="37.9" data-duration="4.6" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="h-b8" data-composition-id="b8-end" data-composition-src="compositions/b8-end.html" data-start="42.5" data-duration="5.4" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <!-- music: an original bed made for this video (.cutscene/audio/make-bed.py) -->
+      <audio id="music" class="clip" src="assets/music/bed.wav" data-start="0" data-duration="47.9" data-track-index="30" data-volume="0.34"></audio>
+
+      <!-- sound effects (.cutscene/audio/sfx-cues.json; files from the sound library) -->
+      <audio id="sfx-01" class="clip" src="assets/sfx/whoosh-short.mp3" data-start="3.68" data-duration="0.57" data-track-index="40" data-volume="0.25"></audio>
+      <audio id="sfx-02" class="clip" src="assets/sfx/typing.mp3" data-start="4.42" data-duration="1.4" data-track-index="41" data-volume="0.35"></audio>
+      <audio id="sfx-03" class="clip" src="assets/sfx/click-soft.mp3" data-start="5.95" data-duration="0.37" data-track-index="42" data-volume="0.6"></audio>
+      <audio id="sfx-04" class="clip" src="assets/sfx/whoosh-short.mp3" data-start="6.3" data-duration="0.57" data-track-index="43" data-volume="0.35"></audio>
+      <audio id="sfx-05" class="clip" src="assets/sfx/click-soft.mp3" data-start="7.14" data-duration="0.37" data-track-index="44" data-volume="0.35"></audio>
+      <audio id="sfx-06" class="clip" src="assets/sfx/ping.mp3" data-start="7.6" data-duration="1.32" data-track-index="45" data-volume="0.15"></audio>
+      <audio id="sfx-07" class="clip" src="assets/sfx/whoosh-short.mp3" data-start="7.98" data-duration="0.57" data-track-index="46" data-volume="0.2"></audio>
+      <audio id="sfx-08" class="clip" src="assets/sfx/whoosh.mp3" data-start="15.84" data-duration="0.57" data-track-index="47" data-volume="0.25"></audio>
+      <audio id="sfx-09" class="clip" src="assets/sfx/whoosh-short.mp3" data-start="16.72" data-duration="0.57" data-track-index="48" data-volume="0.2"></audio>
+      <audio id="sfx-10" class="clip" src="assets/sfx/ping.mp3" data-start="17.27" data-duration="1.32" data-track-index="49" data-volume="0.15"></audio>
+      <audio id="sfx-11" class="clip" src="assets/sfx/whoosh-cinematic.mp3" data-start="22.4" data-duration="5.54" data-track-index="50" data-volume="0.45"></audio>
+      <audio id="sfx-12" class="clip" src="assets/sfx/impact-bass-1.mp3" data-start="22.9" data-duration="2.12" data-track-index="51" data-volume="0.7"></audio>
+      <audio id="sfx-13" class="clip" src="assets/sfx/whoosh-short.mp3" data-start="23.45" data-duration="0.57" data-track-index="52" data-volume="0.3"></audio>
+      <audio id="sfx-14" class="clip" src="assets/sfx/sparkle.mp3" data-start="23.9" data-duration="1.8" data-track-index="53" data-volume="0.25"></audio>
+      <audio id="sfx-15" class="clip" src="assets/sfx/whoosh-short.mp3" data-start="25.9" data-duration="0.57" data-track-index="54" data-volume="0.4"></audio>
+      <audio id="sfx-16" class="clip" src="assets/sfx/whoosh.mp3" data-start="26.05" data-duration="0.57" data-track-index="55" data-volume="0.3"></audio>
+      <audio id="sfx-17" class="clip" src="assets/sfx/pop.mp3" data-start="28.15" data-duration="0.72" data-track-index="56" data-volume="0.35"></audio>
+      <audio id="sfx-18" class="clip" src="assets/sfx/whoosh-short.mp3" data-start="28.37" data-duration="0.57" data-track-index="57" data-volume="0.3"></audio>
+      <audio id="sfx-19" class="clip" src="assets/sfx/pop.mp3" data-start="30.4" data-duration="0.72" data-track-index="58" data-volume="0.35"></audio>
+      <audio id="sfx-20" class="clip" src="assets/sfx/whoosh.mp3" data-start="30.62" data-duration="0.57" data-track-index="59" data-volume="0.4"></audio>
+      <audio id="sfx-21" class="clip" src="assets/sfx/typing.mp3" data-start="32.65" data-duration="1.0" data-track-index="60" data-volume="0.2"></audio>
+      <audio id="sfx-22" class="clip" src="assets/sfx/pop.mp3" data-start="33.22" data-duration="0.72" data-track-index="61" data-volume="0.3"></audio>
+      <audio id="sfx-23" class="clip" src="assets/sfx/whoosh-short.mp3" data-start="34.9" data-duration="0.57" data-track-index="62" data-volume="0.3"></audio>
+      <audio id="sfx-24" class="clip" src="assets/sfx/sparkle.mp3" data-start="37.23" data-duration="1.8" data-track-index="63" data-volume="0.25"></audio>
+      <audio id="sfx-25" class="clip" src="assets/sfx/whoosh-short.mp3" data-start="37.9" data-duration="0.57" data-track-index="64" data-volume="0.3"></audio>
+      <audio id="sfx-26" class="clip" src="assets/sfx/whoosh-short.mp3" data-start="38.32" data-duration="0.57" data-track-index="65" data-volume="0.25"></audio>
+      <audio id="sfx-27" class="clip" src="assets/sfx/whoosh-cinematic.mp3" data-start="39.95" data-duration="5.54" data-track-index="66" data-volume="0.35"></audio>
+      <audio id="sfx-28" class="clip" src="assets/sfx/click-soft.mp3" data-start="40.83" data-duration="0.37" data-track-index="67" data-volume="0.3"></audio>
+      <audio id="sfx-29" class="clip" src="assets/sfx/whoosh.mp3" data-start="42.5" data-duration="0.57" data-track-index="68" data-volume="0.3"></audio>
+      <audio id="sfx-30" class="clip" src="assets/sfx/impact-bass-1.mp3" data-start="42.8" data-duration="2.12" data-track-index="69" data-volume="0.4"></audio>
+      <audio id="sfx-31" class="clip" src="assets/sfx/whoosh-short.mp3" data-start="43.06" data-duration="0.57" data-track-index="70" data-volume="0.3"></audio>
+      <audio id="sfx-32" class="clip" src="assets/sfx/typing.mp3" data-start="44.8" data-duration="0.6" data-track-index="71" data-volume="0.25"></audio>
+
+      <!-- the cut between scenes -->
+      <div id="cuts" class="layer clip" data-start="0" data-duration="47.9" data-track-index="5" style="pointer-events:none">
+        <div id="cut1" class="cut" data-layout-allow-overflow></div>
+        <div id="cut2" class="cut" data-layout-allow-overflow></div>
+        <div id="cut3" class="cut" data-layout-allow-overflow></div>
+        <div id="cut4" class="cut" data-layout-allow-overflow></div>
+        <div id="cut5" class="cut" data-layout-allow-overflow></div>
+        <div id="cut6" class="cut" data-layout-allow-overflow></div>
+      </div>
+
+      <!-- narrator captions (b4, b7); Kasper's words are captioned inside b3, and b5, b6 and b8 show their words on screen -->
+      <div id="captions" class="clip" data-start="0" data-duration="47.9" data-track-index="6"></div>
+
+      <!-- narrator: one line per beat; the montage line is placed as four phrases. Kasper's own sound plays from his footage in b1 and b3 -->
+      <audio id="v-b4" class="clip" src="assets/voice/b4.wav" data-start="22.65" data-duration="2.83" data-track-index="14"></audio>
+      <audio id="v-b6" class="clip" src="assets/voice/b6.wav" data-start="35.15" data-duration="2.57" data-track-index="16"></audio>
+      <audio id="v-b7" class="clip" src="assets/voice/b7.wav" data-start="38.15" data-duration="3.22" data-track-index="17"></audio>
+      <audio id="v-b8" class="clip" src="assets/voice/b8.wav" data-start="43.0" data-duration="2.71" data-track-index="18"></audio>
+      <audio id="v-b4-1" class="clip" src="assets/voice/b5.wav" data-start="26.1" data-media-start="0" data-duration="0.84" data-track-index="20"></audio>
+      <audio id="v-b4-2" class="clip" src="assets/voice/b5.wav" data-start="28.35" data-media-start="0.8" data-duration="1.16" data-track-index="21"></audio>
+      <audio id="v-b4-3" class="clip" src="assets/voice/b5.wav" data-start="30.6" data-media-start="2.04" data-duration="0.88" data-track-index="22"></audio>
+      <audio id="v-b4-4" class="clip" src="assets/voice/b5-4.wav" data-start="32.85" data-media-start="0" data-duration="1.29" data-track-index="23"></audio>
+
+      <div id="vignette" class="layer clip" data-start="0" data-duration="47.9" data-track-index="8"></div>
+      <div id="grain" class="layer clip" data-start="0" data-duration="47.9" data-track-index="9"></div>
+    </div>
+
+    <script>
+      // Word timings copied from .cutscene/beats.json (voice.words, relative to each line) and the
+      // line's start on the timeline (voice_at).
+      const CAPTIONS = [{"id":"b4","at":22.65,"until":25.9,"words":[{"w":"Meet","start":0,"end":0.34},{"w":"Cutscene,","start":0.34,"end":0.8},{"w":"the","start":0.9,"end":0.94},{"w":"video","start":0.94,"end":1.18},{"w":"editor","start":1.18,"end":1.5},{"w":"inside","start":1.5,"end":1.82},{"w":"your","start":1.82,"end":2.08},{"w":"AI","start":2.08,"end":2.3},{"w":"agent.","start":2.3,"end":2.66}]},{"id":"b7","at":38.15,"until":42.5,"words":[{"w":"One","start":0,"end":0.36},{"w":"beat","start":0.36,"end":0.54},{"w":"sheet","start":0.54,"end":0.74},{"w":"keeps","start":0.74,"end":0.98},{"w":"it","start":0.98,"end":1.14},{"w":"all","start":1.14,"end":1.26},{"w":"in","start":1.26,"end":1.38},{"w":"sync,","start":1.38,"end":1.7},{"w":"and","start":1.84,"end":1.9},{"w":"you","start":1.9,"end":2},{"w":"watch","start":2,"end":2.22},{"w":"every","start":2.22,"end":2.42},{"w":"change","start":2.42,"end":2.68},{"w":"live.","start":2.68,"end":2.96}]}];
+      const CUTS = [6.4, 22.4, 25.9, 34.9, 37.9, 42.5];
+
+      const tl = gsap.timeline({ paused: true });
+
+      // the cut: centred on each scene change, so the next scene appears behind it
+      CUTS.forEach((t, i) => {
+        tl.fromTo(`#cut${i + 1}`, { x: -160 }, { x: 2080, duration: 0.42, ease: "power3.inOut" }, t - 0.21);
+      });
+
+      // captions: one line per voice line, the spoken word lights up
+      const capRoot = document.getElementById("captions");
+      // A line is shown in short phrases so each fits the band on one line: split after a comma
+      // or full stop, or before a word that would push the phrase past 44 characters.
+      const phrases = (words) => {
+        const out = [[]];
+        const len = (p) => p.reduce((n, w) => n + w.w.length + 1, 0);
+        words.forEach((w) => {
+          let cur = out[out.length - 1];
+          if (cur.length && len(cur) + w.w.length > 44) out.push((cur = []));
+          cur.push(w);
+          if (/[.,]$/.test(w.w) && cur.length >= 3) out.push([]);
+        });
+        return out.filter((p) => p.length);
+      };
+      CAPTIONS.forEach((line) => {
+        const ps = phrases(line.words);
+        ps.forEach((words, pi) => {
+          const row = document.createElement("div");
+          row.className = "cap";
+          words.forEach((w) => {
+            const s = document.createElement("span");
+            s.textContent = w.w + " ";
+            row.appendChild(s);
+          });
+          capRoot.appendChild(row);
+          const first = line.at + words[0].start;
+          const last = line.at + words[words.length - 1].end;
+          const next = pi + 1 < ps.length ? line.at + ps[pi + 1][0].start - 0.1 : Math.min(last + 0.4, line.until - 0.25);
+          tl.fromTo(row, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.15, ease: "sine.out" }, first - 0.1);
+          tl.to(row, { opacity: 0, duration: 0.12, ease: "sine.in" }, next - 0.12);
+          // tl.set (not callbacks) so the right words are lit at any seek, forwards or back
+          [...row.children].forEach((s, wi) => {
+            tl.set(s, { color: "#8a81a8" }, 0);
+            tl.set(s, { color: "#f4f0ff" }, line.at + words[wi].start);
+          });
+        });
+      });
+
+      tl.set({}, {}, 47.9);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

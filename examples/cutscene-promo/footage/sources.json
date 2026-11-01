@@ -1,0 +1,53 @@
+{
+  "note": "Stock footage for this video (Pexels License: free to use and edit, no credit needed; not to be redistributed as stock). The files are not kept in git: run `node footage/prepare.mjs` in this folder to download each one, check its sha256 and cut the piece the video uses into assets/footage/.",
+  "files": {
+    "city-bokeh.mp4": {
+      "source": "https://www.pexels.com/video/9935090/",
+      "file": "https://videos.pexels.com/video-files/9935090/9935090-uhd_3840_2160_30fps.mp4",
+      "licence": "Pexels License (https://www.pexels.com/license/)",
+      "sha256": "ca1d33548685f7de8286bbcd1ecbc7099f18de180877962b8606ba97841a99c1",
+      "bytes": 19656902,
+      "trim": {
+        "start": 5,
+        "length": 3.5,
+        "out": "assets/footage/city-bokeh.mp4"
+      }
+    },
+    "rain-street.mp4": {
+      "source": "https://www.pexels.com/video/12570193/",
+      "file": "https://videos.pexels.com/video-files/12570193/12570193-hd_1920_1080_24fps.mp4",
+      "licence": "Pexels License (https://www.pexels.com/license/)",
+      "sha256": "c50f2d86bf353ee60979dfa4a35292dfc1f03fba634cec5007db2573d7fbce52",
+      "bytes": 9252536,
+      "trim": {
+        "start": 3.5,
+        "length": 3.5,
+        "out": "assets/footage/rain-street.mp4"
+      }
+    },
+    "coast-aerial.mp4": {
+      "source": "https://www.pexels.com/video/9981939/",
+      "file": "https://videos.pexels.com/video-files/9981939/9981939-uhd_3840_2160_30fps.mp4",
+      "licence": "Pexels License (https://www.pexels.com/license/)",
+      "sha256": "4926b5339650c98d57e0b8c3cd381b5c7487d339bd057264958ba489b7f88814",
+      "bytes": 64014795,
+      "trim": {
+        "start": 5,
+        "length": 3.5,
+        "out": "assets/footage/coast-aerial.mp4"
+      }
+    },
+    "developer.mp4": {
+      "source": "https://www.pexels.com/video/36328529/",
+      "file": "https://videos.pexels.com/video-files/36328529/15406860_1920_1080_25fps.mp4",
+      "licence": "Pexels License (https://www.pexels.com/license/)",
+      "sha256": "506bda77a4b29eeea9fed5a1ba74e3ce40541780c933152bac34c0c3bf82c4f0",
+      "bytes": 4756133,
+      "trim": {
+        "start": 4,
+        "length": 3.5,
+        "out": "assets/footage/developer.mp4"
+      }
+    }
+  }
+}

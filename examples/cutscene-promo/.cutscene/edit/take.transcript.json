@@ -1,0 +1,287 @@
+{
+  "version": 1,
+  "kind": "cutscene-transcript",
+  "timeline": "source",
+  "source": "C:\\Users\\kaspe\\OneDrive\\Desktop\\Video Editing AI Program\\examples\\cutscene-promo\\footage\\take.mp4",
+  "edl": null,
+  "audio_duration_secs": 23.467,
+  "source_audio_duration_secs": 23.467,
+  "produced_by": "cutscene-edit transcribe",
+  "engine": {
+    "asr": null,
+    "model": null
+  },
+  "fingerprint": "17977289:981c4d6cfc7ab7db33dd18d0d8c08462",
+  "refinement": {
+    "refined": 14,
+    "estimated": 1,
+    "silences": 11,
+    "thresholdDb": -50,
+    "floorDb": -120.1
+  },
+  "words": [
+    {
+      "type": "word",
+      "text": "Hey,",
+      "start": 1.826,
+      "end": 2.08,
+      "refined": "start"
+    },
+    {
+      "type": "word",
+      "text": "I'm",
+      "start": 2.08,
+      "end": 2.4
+    },
+    {
+      "type": "word",
+      "text": "Casper.",
+      "start": 2.4,
+      "end": 2.994,
+      "refined": "end"
+    },
+    {
+      "type": "word",
+      "text": "I",
+      "start": 4.16,
+      "end": 4.4,
+      "in_silence": true
+    },
+    {
+      "type": "word",
+      "text": "make",
+      "start": 4.577,
+      "end": 4.64,
+      "refined": "start"
+    },
+    {
+      "type": "word",
+      "text": "videos",
+      "start": 4.88,
+      "end": 5.28
+    },
+    {
+      "type": "word",
+      "text": "about",
+      "start": 5.52,
+      "end": 5.68
+    },
+    {
+      "type": "word",
+      "text": "building",
+      "start": 5.68,
+      "end": 6.16
+    },
+    {
+      "type": "word",
+      "text": "things",
+      "start": 6.16,
+      "end": 6.64
+    },
+    {
+      "type": "word",
+      "text": "with",
+      "start": 6.64,
+      "end": 6.88
+    },
+    {
+      "type": "word",
+      "text": "AI.",
+      "start": 6.88,
+      "end": 7.315,
+      "refined": "end"
+    },
+    {
+      "type": "word",
+      "text": "So",
+      "start": 8.452,
+      "end": 8.72,
+      "refined": "start"
+    },
+    {
+      "type": "word",
+      "text": "today",
+      "start": 8.96,
+      "end": 9.52
+    },
+    {
+      "type": "word",
+      "text": "I",
+      "start": 9.844,
+      "end": 9.92,
+      "refined": "start"
+    },
+    {
+      "type": "word",
+      "text": "wanted",
+      "start": 9.92,
+      "end": 10.24
+    },
+    {
+      "type": "word",
+      "text": "to",
+      "start": 10.24,
+      "end": 10.4
+    },
+    {
+      "type": "word",
+      "text": "show",
+      "start": 10.4,
+      "end": 10.64
+    },
+    {
+      "type": "word",
+      "text": "you",
+      "start": 10.64,
+      "end": 10.88
+    },
+    {
+      "type": "word",
+      "text": "how",
+      "start": 10.88,
+      "end": 11.12
+    },
+    {
+      "type": "word",
+      "text": "I",
+      "start": 11.12,
+      "end": 11.36
+    },
+    {
+      "type": "word",
+      "text": "edit",
+      "start": 11.36,
+      "end": 11.84
+    },
+    {
+      "type": "word",
+      "text": "my",
+      "start": 11.84,
+      "end": 12.16
+    },
+    {
+      "type": "word",
+      "text": "videos.",
+      "start": 12.16,
+      "end": 12.596,
+      "refined": "end"
+    },
+    {
+      "type": "word",
+      "text": "I",
+      "start": 14.384,
+      "end": 14.484,
+      "refined": "moved"
+    },
+    {
+      "type": "word",
+      "text": "don't",
+      "start": 14.484,
+      "end": 14.72,
+      "refined": "start"
+    },
+    {
+      "type": "word",
+      "text": "open",
+      "start": 14.72,
+      "end": 15.2
+    },
+    {
+      "type": "word",
+      "text": "any",
+      "start": 15.2,
+      "end": 15.52
+    },
+    {
+      "type": "word",
+      "text": "editor.",
+      "start": 15.52,
+      "end": 16.051,
+      "refined": "end"
+    },
+    {
+      "type": "word",
+      "text": "I",
+      "start": 17.307,
+      "end": 17.36,
+      "refined": "start"
+    },
+    {
+      "type": "word",
+      "text": "just",
+      "start": 17.36,
+      "end": 17.68
+    },
+    {
+      "type": "word",
+      "text": "tell",
+      "start": 17.68,
+      "end": 18
+    },
+    {
+      "type": "word",
+      "text": "cutscene",
+      "start": 18,
+      "end": 18.776,
+      "refined": "end"
+    },
+    {
+      "type": "word",
+      "text": "and",
+      "start": 19.054,
+      "end": 19.28,
+      "refined": "start"
+    },
+    {
+      "type": "word",
+      "text": "my",
+      "start": 19.28,
+      "end": 19.52
+    },
+    {
+      "type": "word",
+      "text": "AI",
+      "start": 19.52,
+      "end": 20
+    },
+    {
+      "type": "word",
+      "text": "agents",
+      "start": 20,
+      "end": 20.56
+    },
+    {
+      "type": "word",
+      "text": "to",
+      "start": 20.56,
+      "end": 20.8
+    },
+    {
+      "type": "word",
+      "text": "do",
+      "start": 20.8,
+      "end": 20.96
+    },
+    {
+      "type": "word",
+      "text": "it",
+      "start": 20.96,
+      "end": 21.2
+    },
+    {
+      "type": "word",
+      "text": "for",
+      "start": 21.2,
+      "end": 21.375,
+      "refined": "end"
+    },
+    {
+      "type": "word",
+      "text": "me.",
+      "start": 21.52,
+      "end": 21.814,
+      "in_silence": true,
+      "end_estimated": true
+    }
+  ]
+}

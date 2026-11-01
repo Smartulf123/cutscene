@@ -1,0 +1,859 @@
+{
+ "version": 1,
+ "fps": 30,
+ "format": "landscape",
+ "width": 1920,
+ "height": 1080,
+ "duration": 47.9,
+ "beats": [
+  {
+   "id": "b1",
+   "start": 0,
+   "end": 3.6,
+   "label": "Cold open: Kasper's raw take, untouched, with its dead air",
+   "footage": {
+    "file": "footage/take.mp4",
+    "media_start": 0,
+    "media_end": 3.6,
+    "audio": true,
+    "note": "source timeline; 'Hey, I'm Kasper.' at 1.83-2.99"
+   },
+   "graphics": [
+    {
+     "id": "g-raw",
+     "kind": "file-label",
+     "text": "take.mp4 · raw · 0:23.5"
+    }
+   ]
+  },
+  {
+   "id": "b2",
+   "start": 3.6,
+   "end": 6.4,
+   "label": "The raw take shrinks into a chat attachment; the request is typed and sent",
+   "graphics": [
+    {
+     "id": "g-prompt",
+     "kind": "chat-prompt",
+     "attachment": "take.mp4",
+     "text": "Cut the pauses, caption every word, make a vertical short."
+    }
+   ],
+   "sfx": [
+    {
+     "at": 3.7,
+     "name": "typing"
+    },
+    {
+     "at": 5.95,
+     "name": "click"
+    }
+   ]
+  },
+  {
+   "id": "b3",
+   "start": 6.4,
+   "end": 22.4,
+   "label": "The real edit: the pauses collapse on the waveform (23.5 s to 16.0 s), the clean take plays with word captions, then reframes to 9:16",
+   "edit": {
+    "edl": ".cutscene/edit/take.silence-edl.json",
+    "transcript": ".cutscene/edit/take.silence-transcript.json",
+    "source_duration": 23.467,
+    "edited_duration": 15.999,
+    "cuts": "4 pauses and dead air at both ends",
+    "verified": "41 words kept, all heard (cutscene edit verify)"
+   },
+   "footage": {
+    "file": ".cutscene/edit/take.silenced.mp4",
+    "at": 8.0,
+    "media_start": 1.45,
+    "media_end": 15.85,
+    "audio": true,
+    "timeline": "edited"
+   },
+   "reframe": {
+    "plan": ".cutscene/edit/take.reframe.json",
+    "at_word": "I don't open any editor",
+    "at": 15.87,
+    "crop_x": 619.03
+   },
+   "captions": {
+    "words": [
+     {
+      "w": "I",
+      "start": 1.593,
+      "end": 1.833
+     },
+     {
+      "w": "make",
+      "start": 2.01,
+      "end": 2.073
+     },
+     {
+      "w": "videos",
+      "start": 2.313,
+      "end": 2.713
+     },
+     {
+      "w": "about",
+      "start": 2.953,
+      "end": 3.113
+     },
+     {
+      "w": "building",
+      "start": 3.113,
+      "end": 3.593
+     },
+     {
+      "w": "things",
+      "start": 3.593,
+      "end": 4.073
+     },
+     {
+      "w": "with",
+      "start": 4.073,
+      "end": 4.313
+     },
+     {
+      "w": "AI.",
+      "start": 4.313,
+      "end": 4.748
+     },
+     {
+      "w": "So",
+      "start": 4.952,
+      "end": 5.22
+     },
+     {
+      "w": "today",
+      "start": 5.46,
+      "end": 6.02
+     },
+     {
+      "w": "I",
+      "start": 6.344,
+      "end": 6.42
+     },
+     {
+      "w": "wanted",
+      "start": 6.42,
+      "end": 6.74
+     },
+     {
+      "w": "to",
+      "start": 6.74,
+      "end": 6.9
+     },
+     {
+      "w": "show",
+      "start": 6.9,
+      "end": 7.14
+     },
+     {
+      "w": "you",
+      "start": 7.14,
+      "end": 7.38
+     },
+     {
+      "w": "how",
+      "start": 7.38,
+      "end": 7.62
+     },
+     {
+      "w": "I",
+      "start": 7.62,
+      "end": 7.86
+     },
+     {
+      "w": "edit",
+      "start": 7.86,
+      "end": 8.34
+     },
+     {
+      "w": "my",
+      "start": 8.34,
+      "end": 8.66
+     },
+     {
+      "w": "videos.",
+      "start": 8.66,
+      "end": 9.096
+     },
+     {
+      "w": "I",
+      "start": 9.317,
+      "end": 9.417
+     },
+     {
+      "w": "don't",
+      "start": 9.417,
+      "end": 9.653
+     },
+     {
+      "w": "open",
+      "start": 9.653,
+      "end": 10.133
+     },
+     {
+      "w": "any",
+      "start": 10.133,
+      "end": 10.453
+     },
+     {
+      "w": "editor.",
+      "start": 10.453,
+      "end": 10.984
+     },
+     {
+      "w": "I",
+      "start": 11.173,
+      "end": 11.226
+     },
+     {
+      "w": "just",
+      "start": 11.226,
+      "end": 11.546
+     },
+     {
+      "w": "tell",
+      "start": 11.546,
+      "end": 11.866
+     },
+     {
+      "w": "Cutscene",
+      "start": 11.866,
+      "end": 12.642
+     },
+     {
+      "w": "and",
+      "start": 12.92,
+      "end": 13.146
+     },
+     {
+      "w": "my",
+      "start": 13.146,
+      "end": 13.386
+     },
+     {
+      "w": "AI",
+      "start": 13.386,
+      "end": 13.866
+     },
+     {
+      "w": "agents",
+      "start": 13.866,
+      "end": 14.426
+     },
+     {
+      "w": "to",
+      "start": 14.426,
+      "end": 14.666
+     },
+     {
+      "w": "do",
+      "start": 14.666,
+      "end": 14.826
+     },
+     {
+      "w": "it",
+      "start": 14.826,
+      "end": 15.066
+     },
+     {
+      "w": "for",
+      "start": 15.066,
+      "end": 15.241
+     },
+     {
+      "w": "me.",
+      "start": 15.386,
+      "end": 15.68
+     }
+    ],
+    "offset": 6.55
+   },
+   "graphics": [
+    {
+     "id": "g-wave",
+     "kind": "edit-waveform",
+     "text": "0:23.5 → 0:16.0"
+    }
+   ],
+   "sfx": [
+    {
+     "at": 6.5,
+     "name": "whoosh-short"
+    },
+    {
+     "at": 7.6,
+     "name": "glitch"
+    }
+   ]
+  },
+  {
+   "id": "b4",
+   "start": 22.4,
+   "end": 25.9,
+   "label": "The Cutscene logo (flat mark), then the wordmark",
+   "voice": {
+    "speaker": "narrator",
+    "line": "Meet Cutscene, the video editor inside your A I agent.",
+    "file": "assets/voice/b4.wav",
+    "duration": 2.83,
+    "model": "omnivoice",
+    "seed": 42,
+    "take": ".cutscene/voice/takes/b4.omnivoice.s42.wav",
+    "spoken": "2026-10-31",
+    "verified": true,
+    "words": [
+     {
+      "w": "Meet",
+      "start": 0,
+      "end": 0.34,
+      "p": 0.911
+     },
+     {
+      "w": "Cutscene,",
+      "start": 0.34,
+      "end": 0.8,
+      "p": 0.958
+     },
+     {
+      "w": "the",
+      "start": 0.9,
+      "end": 0.94,
+      "p": 0.993
+     },
+     {
+      "w": "video",
+      "start": 0.94,
+      "end": 1.18,
+      "p": 0.956
+     },
+     {
+      "w": "editor",
+      "start": 1.18,
+      "end": 1.5,
+      "p": 0.999
+     },
+     {
+      "w": "inside",
+      "start": 1.5,
+      "end": 1.82,
+      "p": 0.96
+     },
+     {
+      "w": "your",
+      "start": 1.82,
+      "end": 2.08,
+      "p": 0.995
+     },
+     {
+      "w": "A",
+      "start": 2.08,
+      "end": 2.3,
+      "p": 0.948
+     },
+     {
+      "w": "I",
+      "start": 2.08,
+      "end": 2.3,
+      "p": 0.948
+     },
+     {
+      "w": "agent.",
+      "start": 2.3,
+      "end": 2.66,
+      "p": 0.851
+     }
+    ],
+    "heard": "Meet Cutscene, the video editor inside your AI agent."
+   },
+   "voice_at": 22.65,
+   "graphics": [
+    {
+     "id": "g-wordmark",
+     "kind": "wordmark",
+     "text": "Cutscene"
+    }
+   ],
+   "sfx": [
+    {
+     "at": 19.9,
+     "name": "whoosh"
+    },
+    {
+     "at": 20.4,
+     "name": "impact"
+    }
+   ]
+  },
+  {
+   "id": "b5",
+   "start": 25.9,
+   "end": 34.9,
+   "label": "Montage on real footage: grade, pinned text, background swap, face cam",
+   "voice": {
+    "speaker": "narrator",
+    "line": "Color grade it. Pin text to the footage. Swap the background. Drop in live three D.",
+    "file": "assets/voice/b5.wav",
+    "duration": 4.19,
+    "model": "omnivoice",
+    "seed": 42,
+    "take": ".cutscene/voice/takes/b5.omnivoice.s42.wav",
+    "spoken": "2026-10-31",
+    "verified": true,
+    "words": [
+     {
+      "w": "Color",
+      "start": 0,
+      "end": 0.38,
+      "p": 0.809
+     },
+     {
+      "w": "grade",
+      "start": 0.38,
+      "end": 0.64,
+      "p": 0.744
+     },
+     {
+      "w": "it.",
+      "start": 0.64,
+      "end": 0.8,
+      "p": 0.952
+     },
+     {
+      "w": "Pin",
+      "start": 0.86,
+      "end": 1.04,
+      "p": 0.95
+     },
+     {
+      "w": "text",
+      "start": 1.04,
+      "end": 1.3,
+      "p": 0.982
+     },
+     {
+      "w": "to",
+      "start": 1.3,
+      "end": 1.46,
+      "p": 0.992
+     },
+     {
+      "w": "the",
+      "start": 1.46,
+      "end": 1.54,
+      "p": 0.994
+     },
+     {
+      "w": "footage.",
+      "start": 1.54,
+      "end": 1.84,
+      "p": 0.997
+     },
+     {
+      "w": "Swap",
+      "start": 2.1,
+      "end": 2.32,
+      "p": 0.997
+     },
+     {
+      "w": "the",
+      "start": 2.32,
+      "end": 2.44,
+      "p": 0.995
+     },
+     {
+      "w": "background.",
+      "start": 2.44,
+      "end": 2.8,
+      "p": 0.994
+     },
+     {
+      "w": "Drop",
+      "start": 3.02,
+      "end": 3.18,
+      "p": 0.996
+     },
+     {
+      "w": "in",
+      "start": 3.18,
+      "end": 3.36,
+      "p": 0.976
+     },
+     {
+      "w": "live",
+      "start": 3.36,
+      "end": 3.58,
+      "p": 0.647
+     },
+     {
+      "w": "three",
+      "start": 3.58,
+      "end": 3.96,
+      "p": 0.886
+     },
+     {
+      "w": "D.",
+      "start": 3.58,
+      "end": 3.96,
+      "p": 0.886
+     }
+    ],
+    "heard": "Color grade it. Pin text to the footage. Swap the background. Drop in live 3D.",
+    "line_note": "The first three phrases play from b5.wav; the fourth, \"Add your face cam.\", is assets/voice/b5-4.wav (the 3D phrase was cut, 2026-10-31)."
+   },
+   "graphics": [
+    {
+     "id": "g-montage",
+     "kind": "montage",
+     "items": [
+      "Color grade it",
+      "Pin text to the footage",
+      "Swap the background",
+      "Add your face cam"
+     ]
+    }
+   ],
+   "montage": [
+    {
+     "item": "Color grade it",
+     "start": 25.9,
+     "end": 28.15,
+     "footage": "footage/rain-street.mp4",
+     "media_start": 0,
+     "media_end": 0.84,
+     "voice_at": 26.1
+    },
+    {
+     "item": "Pin text to the footage",
+     "start": 28.15,
+     "end": 30.4,
+     "footage": "footage/coast-aerial.mp4",
+     "media_start": 0.8,
+     "media_end": 1.96,
+     "voice_at": 28.35
+    },
+    {
+     "item": "Swap the background",
+     "start": 30.4,
+     "end": 32.65,
+     "footage": "footage/take-cutout.webm over footage/city-bokeh.mp4",
+     "media_start": 2.04,
+     "media_end": 2.92,
+     "voice_at": 30.6
+    },
+    {
+     "item": "Add your face cam",
+     "start": 32.65,
+     "end": 34.9,
+     "footage": "footage/developer.mp4 with footage/take-clean.mp4 framed as a face cam",
+     "media_start": 0,
+     "media_end": 1.29,
+     "voice_at": 32.85,
+     "file": "assets/voice/b5-4.wav"
+    }
+   ]
+  },
+  {
+   "id": "b6",
+   "start": 34.9,
+   "end": 37.9,
+   "label": "The designed voice: a sound wave becomes her caption",
+   "voice": {
+    "speaker": "narrator",
+    "line": "And a voice you design from a sentence, like mine.",
+    "file": "assets/voice/b6.wav",
+    "duration": 2.57,
+    "model": "omnivoice",
+    "seed": 42,
+    "take": ".cutscene/voice/takes/b5.omnivoice.s42.wav",
+    "spoken": "2026-10-30",
+    "verified": true,
+    "words": [
+     {
+      "w": "And",
+      "start": 0,
+      "end": 0.28,
+      "p": 0.835
+     },
+     {
+      "w": "a",
+      "start": 0.28,
+      "end": 0.38,
+      "p": 0.994
+     },
+     {
+      "w": "voice",
+      "start": 0.38,
+      "end": 0.54,
+      "p": 0.999
+     },
+     {
+      "w": "you",
+      "start": 0.54,
+      "end": 0.68,
+      "p": 0.997
+     },
+     {
+      "w": "design",
+      "start": 0.68,
+      "end": 0.96,
+      "p": 0.878
+     },
+     {
+      "w": "from",
+      "start": 0.96,
+      "end": 1.12,
+      "p": 0.996
+     },
+     {
+      "w": "a",
+      "start": 1.12,
+      "end": 1.26,
+      "p": 0.998
+     },
+     {
+      "w": "sentence,",
+      "start": 1.26,
+      "end": 1.6,
+      "p": 0.999
+     },
+     {
+      "w": "like",
+      "start": 1.82,
+      "end": 2.08,
+      "p": 0.999
+     },
+     {
+      "w": "mine.",
+      "start": 2.08,
+      "end": 2.32,
+      "p": 1
+     }
+    ],
+    "heard": "and a voice you design from a sentence, like mine.",
+    "reused_from": "the 35 s cut's b5 line (same take)"
+   },
+   "voice_at": 35.15,
+   "graphics": [
+    {
+     "id": "g-wave2",
+     "kind": "waveform"
+    }
+   ]
+  },
+  {
+   "id": "b7",
+   "start": 37.9,
+   "end": 42.5,
+   "label": "A real screen recording of the Cutscene preview playing this project",
+   "voice": {
+    "speaker": "narrator",
+    "line": "One beat sheet keeps it all in sync, and you watch every change live.",
+    "file": "assets/voice/b7.wav",
+    "duration": 3.22,
+    "model": "omnivoice",
+    "seed": 42,
+    "take": ".cutscene/voice/takes/b6.omnivoice.s42.wav",
+    "spoken": "2026-10-30",
+    "verified": true,
+    "words": [
+     {
+      "w": "One",
+      "start": 0,
+      "end": 0.36,
+      "p": 0.902
+     },
+     {
+      "w": "beat",
+      "start": 0.36,
+      "end": 0.54,
+      "p": 0.936
+     },
+     {
+      "w": "sheet",
+      "start": 0.54,
+      "end": 0.74,
+      "p": 0.996
+     },
+     {
+      "w": "keeps",
+      "start": 0.74,
+      "end": 0.98,
+      "p": 0.995
+     },
+     {
+      "w": "it",
+      "start": 0.98,
+      "end": 1.14,
+      "p": 0.999
+     },
+     {
+      "w": "all",
+      "start": 1.14,
+      "end": 1.26,
+      "p": 0.96
+     },
+     {
+      "w": "in",
+      "start": 1.26,
+      "end": 1.38,
+      "p": 0.997
+     },
+     {
+      "w": "sync,",
+      "start": 1.38,
+      "end": 1.7,
+      "p": 0.989
+     },
+     {
+      "w": "and",
+      "start": 1.84,
+      "end": 1.9,
+      "p": 0.995
+     },
+     {
+      "w": "you",
+      "start": 1.9,
+      "end": 2,
+      "p": 0.998
+     },
+     {
+      "w": "watch",
+      "start": 2,
+      "end": 2.22,
+      "p": 0.998
+     },
+     {
+      "w": "every",
+      "start": 2.22,
+      "end": 2.42,
+      "p": 0.996
+     },
+     {
+      "w": "change",
+      "start": 2.42,
+      "end": 2.68,
+      "p": 0.998
+     },
+     {
+      "w": "live.",
+      "start": 2.68,
+      "end": 2.96,
+      "p": 0.986
+     }
+    ],
+    "heard": "One beat sheet keeps it all in sync, and you watch every change live.",
+    "reused_from": "the 35 s cut's b6 line (same take)"
+   },
+   "voice_at": 38.15,
+   "footage": {
+    "file": "footage/preview-recording.mp4",
+    "note": "recorded from the running Cutscene preview"
+   }
+  },
+  {
+   "id": "b8",
+   "start": 42.5,
+   "end": 47.9,
+   "label": "End card: wordmark, install command, GitHub link",
+   "voice": {
+    "speaker": "narrator",
+    "line": "Cutscene. Free, open source, and ready when you are.",
+    "file": "assets/voice/b8.wav",
+    "duration": 2.71,
+    "model": "omnivoice",
+    "seed": 42,
+    "take": ".cutscene/voice/takes/b7.omnivoice.s42.wav",
+    "spoken": "2026-10-30",
+    "verified": true,
+    "words": [
+     {
+      "w": "Cutscene.",
+      "start": 0.38,
+      "end": 0.7,
+      "p": 0.866
+     },
+     {
+      "w": "Free,",
+      "start": 0.84,
+      "end": 1.16,
+      "p": 0.986
+     },
+     {
+      "w": "open",
+      "start": 1.32,
+      "end": 1.48,
+      "p": 0.977
+     },
+     {
+      "w": "source,",
+      "start": 1.48,
+      "end": 1.7,
+      "p": 0.666
+     },
+     {
+      "w": "and",
+      "start": 1.82,
+      "end": 1.9,
+      "p": 0.999
+     },
+     {
+      "w": "ready",
+      "start": 1.9,
+      "end": 2.08,
+      "p": 1
+     },
+     {
+      "w": "when",
+      "start": 2.08,
+      "end": 2.26,
+      "p": 0.993
+     },
+     {
+      "w": "you",
+      "start": 2.26,
+      "end": 2.36,
+      "p": 0.999
+     },
+     {
+      "w": "are.",
+      "start": 2.36,
+      "end": 2.54,
+      "p": 0.999
+     }
+    ],
+    "heard": "Cutscene. Free, open source, and ready when you are.",
+    "reused_from": "the 35 s cut's b7 line (same take)"
+   },
+   "voice_at": 43.0,
+   "graphics": [
+    {
+     "id": "g-end",
+     "kind": "end-card",
+     "text": "claude plugin install cutscene@cutscene",
+     "url": "github.com/Smartulf123/cutscene"
+    }
+   ]
+  }
+ ],
+ "voices": {
+  "narrator": {
+   "model": "omnivoice",
+   "design": "female, young adult, american accent",
+   "reference": ".cutscene/voice/narrator-ref.wav",
+   "reference_text": "Hi there. I'm the voice of Cutscene, and I'm really glad you're here.",
+   "seed": 42,
+   "language": "en",
+   "license": "CC-BY-NC-4.0",
+   "created": "2026-10-30",
+   "instruct": "female, young adult, american accent",
+   "prompt": ".cutscene/voice/narrator.omnivoice.pt",
+   "num_step": 16,
+   "fast": false,
+   "reference_verified": true
+  }
+ }
+}

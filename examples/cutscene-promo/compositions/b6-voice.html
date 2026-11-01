@@ -1,0 +1,203 @@
+<!doctype html>
+<!--
+  b6 "a voice you design" (32.4-35.4 s on the host, local 0-3.0; voice_at 32.65 = local 0.25).
+  Her real waveform (RMS envelope of assets/voice/b6.wav, the same take as the 35 s cut's b5.wav,
+  72 bins per second) plays under a cyan
+  playhead; each spoken word rises out of the wave at the playhead and settles into a two-line
+  caption. "mine" lands in magenta and the wave settles. The chip says how the voice was made
+  (beats.json voices.narrator.design).
+-->
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face {
+          font-family: "Space Grotesk";
+          src: url("../assets/fonts/space-grotesk-latin-700-normal.woff2") format("woff2");
+          font-weight: 700;
+          font-style: normal;
+          font-display: block;
+        }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        #s6-world { position: absolute; inset: 0; transform-origin: 50% 50%; will-change: transform; }
+
+        /* caption: words are placed from Space Grotesk 700 advance widths (120 px, -0.03em) */
+        #s6-caption { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+        .s6-word {
+          position: absolute; top: 0; height: 132px; line-height: 132px; white-space: nowrap;
+          font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 120px; letter-spacing: -0.03em;
+          color: #f4f0ff; transform-origin: 50% 50%; will-change: transform, opacity;
+        }
+        .s6-word .s6-pt { color: #f4f0ff; }
+
+        /* waveform */
+        #s6-wave { position: absolute; left: 120px; top: 500px; width: 1680px; height: 320px; transform-origin: 50% 50%; }
+        .s6-bar { position: absolute; top: 0; width: 5px; border-radius: 3px; background: #4a4170; transform-origin: 50% 50%; }
+        #s6-axis { position: absolute; left: 120px; top: 659px; width: 1680px; height: 2px; background: #2e2550; }
+        #s6-head { position: absolute; left: 0; top: 480px; width: 2px; height: 360px; background: #6ce6ff; box-shadow: 0 0 18px 2px rgba(108, 230, 255, 0.55); }
+
+        /* how this voice was made */
+        #s6-chip {
+          position: absolute; left: 120px; top: 872px; height: 64px; padding: 0 28px 0 22px;
+          display: flex; align-items: center; gap: 18px;
+          background: #1a1430; border: 1.5px solid #2e2550; border-radius: 18px;
+          font-family: "Source Code Pro", monospace; font-size: 30px; line-height: 1; white-space: nowrap;
+        }
+        #s6-chip-icon { position: relative; width: 26px; height: 28px; flex: none; }
+        .s6-ib { position: absolute; bottom: 0; width: 4px; border-radius: 2px; background: #6ce6ff; }
+        #s6-chip-k { color: #9c93b8; }
+        #s6-chip-v { color: #f4f0ff; display: inline-block; width: 654px; }
+        #s6-caret { display: inline-block; width: 3px; height: 32px; margin-left: 2px; vertical-align: -6px; background: #6ce6ff; }
+      </style>
+
+      <div data-hf-id="hf-ylug" id="root" data-composition-id="b6-voice" data-width="1920" data-height="1080">
+        <div data-hf-id="hf-y5jx" id="s6-stage" class="clip" data-start="0" data-duration="3.0" data-track-index="0" style="position:absolute;inset:0">
+          <div data-hf-id="hf-sixh" id="s6-world">
+            <div data-hf-id="hf-6cyo" id="s6-axis"></div>
+            <div data-hf-id="hf-0mrk" id="s6-wave"></div>
+            <div data-hf-id="hf-zzj9" id="s6-head"></div>
+            <div data-hf-id="hf-yetf" id="s6-caption"></div>
+            <div data-hf-id="hf-z5ld" id="s6-chip">
+              <div data-hf-id="hf-pm51" id="s6-chip-icon">
+                <div data-hf-id="hf-pwz3" class="s6-ib" style="left:0;height:12px"></div>
+                <div data-hf-id="hf-9k0v" class="s6-ib" style="left:7px;height:28px"></div>
+                <div data-hf-id="hf-0a9u" class="s6-ib" style="left:14px;height:18px"></div>
+                <div data-hf-id="hf-6ier" class="s6-ib" style="left:21px;height:8px"></div>
+              </div>
+              <span data-hf-id="hf-f951" id="s6-chip-k">Designed from:</span><span data-hf-id="hf-ri31" id="s6-chip-v"><span data-hf-id="hf-1lwv" id="s6-chip-t"></span><span data-hf-id="hf-t4x7" id="s6-caret"></span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          // Real amplitude envelope of assets/voice/b6.wav: RMS per 1/72 s, normalised, ^0.6.
+          const ENV = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.003, 0.007, 0.005, 0.007, 0.008, 0.011, 0.017, 0.13, 0.256, 0.388, 0.441, 0.472, 0.509, 0.493, 0.6, 0.602, 0.395, 0.321, 0.233, 0.162, 0.227, 0.277, 0.45, 0.675, 0.89, 1.0, 0.862, 0.792, 0.591, 0.525, 0.379, 0.265, 0.215, 0.196, 0.209, 0.268, 0.204, 0.222, 0.574, 0.568, 0.5, 0.359, 0.295, 0.26, 0.393, 0.548, 0.529, 0.409, 0.33, 0.312, 0.304, 0.285, 0.386, 0.57, 0.619, 0.617, 0.657, 0.577, 0.587, 0.452, 0.435, 0.395, 0.353, 0.344, 0.308, 0.234, 0.087, 0.092, 0.099, 0.093, 0.075, 0.334, 0.302, 0.309, 0.302, 0.279, 0.298, 0.337, 0.28, 0.173, 0.163, 0.183, 0.19, 0.207, 0.258, 0.171, 0.298, 0.391, 0.417, 0.366, 0.294, 0.285, 0.278, 0.267, 0.212, 0.075, 0.133, 0.2, 0.127, 0.074, 0.301, 0.312, 0.322, 0.265, 0.262, 0.254, 0.257, 0.26, 0.227, 0.213, 0.158, 0.058, 0.096, 0.119, 0.176, 0.188, 0.195, 0.221, 0.211, 0.195, 0.158, 0.135, 0.078, 0.017, 0.014, 0.015, 0.015, 0.011, 0.013, 0.012, 0.014, 0.115, 0.314, 0.478, 0.526, 0.566, 0.517, 0.451, 0.418, 0.146, 0.041, 0.02, 0.225, 0.084, 0.028, 0.105, 0.37, 0.338, 0.317, 0.448, 0.476, 0.455, 0.469, 0.433, 0.392, 0.333, 0.363, 0.339, 0.311, 0.324, 0.289, 0.291, 0.27, 0.274, 0.262, 0.233, 0.233, 0.195, 0.147, 0.076, 0.031, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+          const BPS = 72;
+          const VOICE_AT = 0.25;            // voice_at 32.65 - beat start 32.4
+          const WAVE_X = 120, WAVE_W = 1680, WAVE_CY = 660, HALF = 150, MIN_H = 6;
+          const PITCH = WAVE_W / ENV.length;
+          const xAt = (t) => WAVE_X + (t - VOICE_AT) * BPS * PITCH;
+
+          // Words, local time = 0.25 + w.start (beats.json b6.voice.words).
+          // Widths are Space Grotesk 700 advances in em (from the font's hmtx), minus 0.03em per glyph.
+          const SPACE = 0.254 - 0.03;
+          const WORDS = [
+            { w: "And", t: 0.25, adv: 1.888, line: 0 },
+            { w: "a", t: 0.53, adv: 0.578, line: 0 },
+            { w: "voice", t: 0.63, adv: 2.589, line: 0 },
+            { w: "you", t: 0.79, adv: 1.844, line: 0 },
+            { w: "design", t: 0.93, adv: 3.259, line: 0 },
+            { w: "from", t: 1.21, adv: 2.298, line: 1 },
+            { w: "a", t: 1.37, adv: 0.578, line: 1 },
+            { w: "sentence,", t: 1.51, adv: 4.823, line: 1 },
+            { w: "like", t: 2.07, adv: 1.673, line: 1 },
+            { w: "mine.", t: 2.33, adv: 2.611, line: 1, accent: true },
+          ];
+          const FS = 120, LINE_TOP = [196, 334], LINE_H = 132, CAP_X = 120;
+
+          const CYAN = [108, 230, 255], FG = [244, 240, 255], DIM = [74, 65, 112];
+          const mix = (a, b, k) => `rgb(${Math.round(a[0] + (b[0] - a[0]) * k)},${Math.round(a[1] + (b[1] - a[1]) * k)},${Math.round(a[2] + (b[2] - a[2]) * k)})`;
+
+          const tl = gsap.timeline({ paused: true });
+
+          // ---- waveform bars
+          const wave = document.getElementById("s6-wave");
+          const bars = ENV.map((v, i) => {
+            const h = Math.max(MIN_H, Math.round(v * HALF * 2));
+            const b = document.createElement("div");
+            b.className = "s6-bar";
+            b.style.left = Math.round(i * PITCH + (PITCH - 5) / 2) + "px";
+            b.style.top = Math.round(WAVE_CY - 500 - h / 2) + "px";
+            b.style.height = h + "px";
+            wave.appendChild(b);
+            return b;
+          });
+
+          // ---- caption words
+          const cap = document.getElementById("s6-caption");
+          const cursor = [0, 0];
+          const words = WORDS.map((d) => {
+            const wEm = d.adv - 0.03 * d.w.length;
+            const left = CAP_X + cursor[d.line] * FS;
+            cursor[d.line] += wEm + SPACE;
+            const el = document.createElement("div");
+            el.className = "s6-word";
+            if (d.accent) {
+              el.innerHTML = '<span style="color:#ff3d9a">mine</span><span class="s6-pt">.</span>';
+            } else {
+              el.textContent = d.w;
+            }
+            el.style.left = left.toFixed(1) + "px";
+            el.style.top = LINE_TOP[d.line] + "px";
+            cap.appendChild(el);
+            const cx = left + (wEm * FS) / 2, cy = LINE_TOP[d.line] + LINE_H / 2;
+            return { el, d, dx: xAt(d.t) - cx, dy: WAVE_CY - cy };
+          });
+
+          // Each word is born small at the playhead, inside the wave, and rises into its slot.
+          words.forEach(({ el, d, dx, dy }) => {
+            tl.fromTo(el, { x: dx, y: dy, scale: 0.28 }, { x: 0, y: 0, scale: 1, duration: 0.78, ease: "expo.out", immediateRender: true }, d.t);
+            tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.14, ease: "power2.out", immediateRender: true }, d.t);
+            if (!d.accent) {
+              tl.fromTo(el, { color: "#6ce6ff" }, { color: "#f4f0ff", duration: 0.9, ease: "sine.out", immediateRender: true }, d.t + 0.05);
+            }
+          });
+
+          // ---- chip text: the sentence the voice was designed from, typed while she says it
+          const CHIP = "female, young adult, American accent";
+          const chipT = document.getElementById("s6-chip-t");
+          const caret = document.getElementById("s6-caret");
+          const TYPE_A = 0.93, TYPE_B = 1.55;
+
+          // ---- one clock drives everything that is a pure function of time
+          const head = document.getElementById("s6-head");
+          const clock = { t: 0 };
+          let lastChars = -1;
+          function render(t) {
+            // playhead
+            const ph = Math.min(Math.max(t, VOICE_AT), VOICE_AT + ENV.length / BPS);
+            head.style.transform = `translateX(${xAt(ph).toFixed(1)}px)`;
+            // bars: dim ahead, cyan at the playhead, lit behind
+            for (let i = 0; i < bars.length; i++) {
+              const d = t - (VOICE_AT + i / BPS);
+              let c, s = 1;
+              if (d < 0) c = mix(DIM, DIM, 0);
+              else if (d < 0.32) { const k = d / 0.32; c = mix(CYAN, FG, k * k); s = 1 + 0.22 * (1 - k) * (1 - k); }
+              else c = "rgb(244,240,255)";
+              bars[i].style.backgroundColor = c;
+              bars[i].style.transform = s === 1 ? "none" : `scaleY(${s.toFixed(3)})`;
+            }
+            // chip typing
+            const n = Math.max(0, Math.min(CHIP.length, Math.floor(((t - TYPE_A) / (TYPE_B - TYPE_A)) * CHIP.length)));
+            if (n !== lastChars) { chipT.textContent = CHIP.slice(0, n); lastChars = n; }
+            const typing = t >= TYPE_A - 0.3 && t < TYPE_B + 0.5;
+            const blinkOn = t < TYPE_A || t > TYPE_B ? (t % 0.5) < 0.28 : true;
+            caret.style.opacity = typing && blinkOn ? "1" : "0";
+          }
+          render(0);
+          tl.to(clock, { t: 3.0, duration: 3.0, ease: "none", onUpdate: () => render(clock.t) }, 0);
+
+          // ---- entrance: wave grows in behind the cut, chip and playhead arrive by ~0.35 s
+          tl.fromTo("#s6-wave", { scaleY: 0.04 }, { scaleY: 1, duration: 0.7, ease: "expo.out", immediateRender: true }, 0);
+          tl.fromTo("#s6-axis", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.6, ease: "expo.out", immediateRender: true }, 0);
+          tl.fromTo("#s6-chip", { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "expo.out", immediateRender: true }, 0.12);
+          tl.fromTo("#s6-head", { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "sine.out", immediateRender: true }, 0.1);
+
+          // ---- "like mine.": the wave settles into a quiet line, the playhead bows out
+          tl.fromTo("#s6-wave", { scaleY: 1 }, { scaleY: 0.2, duration: 0.55, ease: "power3.inOut", immediateRender: false }, 2.4);
+          tl.fromTo("#s6-wave", { opacity: 1 }, { opacity: 0.55, duration: 0.55, ease: "power3.inOut", immediateRender: false }, 2.4);
+          tl.fromTo("#s6-head", { opacity: 1 }, { opacity: 0, duration: 0.3, ease: "power3.in", immediateRender: false }, 2.66);
+
+          // ---- slow camera drift
+          tl.fromTo("#s6-world", { scale: 1 }, { scale: 1.04, duration: 3.0, ease: "sine.inOut", immediateRender: true }, 0);
+
+          tl.set({}, {}, 3.0);
+          window.__timelines["b6-voice"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

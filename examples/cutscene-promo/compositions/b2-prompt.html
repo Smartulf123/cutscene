@@ -1,0 +1,158 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; }
+        #s2-scene { position: absolute; inset: 0; overflow: hidden; }
+
+        /* soft violet pool of light behind the composer */
+        #s2-amb { position: absolute; left: 160px; top: 150px; width: 1600px; height: 820px; background: radial-gradient(ellipse at 50% 50%, rgba(46, 37, 80, 0.85) 0%, rgba(46, 37, 80, 0.35) 42%, rgba(15, 11, 26, 0) 72%); opacity: 0; }
+
+        /* the camera: holds still while the take lands, then a slow push-in */
+        #s2-cam { position: absolute; inset: 0; transform-origin: 960px 560px; }
+
+        /* the composer */
+        #s2-glow { position: absolute; left: 280px; top: 372px; width: 1360px; height: 372px; border-radius: 22px; box-shadow: 0 0 70px 6px rgba(108, 230, 255, 0.28), 0 0 0 1.5px rgba(108, 230, 255, 0.55); opacity: 0; }
+        #s2-panel { position: absolute; left: 280px; top: 372px; width: 1360px; height: 372px; border-radius: 22px; background: #1a1430; border: 1.5px solid #2e2550; opacity: 0; }
+        #s2-att-name { position: absolute; left: 332px; top: 30px; font: 600 32px/44px "Source Code Pro", ui-monospace, monospace; color: #f4f0ff; white-space: nowrap; }
+        #s2-att-meta { position: absolute; left: 332px; top: 78px; font: 400 30px/42px "Source Code Pro", ui-monospace, monospace; color: #9c93b8; white-space: nowrap; }
+
+        #s2-send { position: absolute; left: 1274px; top: 286px; width: 56px; height: 56px; }
+        #s2-send-fill { position: absolute; inset: 0; border-radius: 16px; background: #2e2550; display: flex; align-items: center; justify-content: center; }
+        #s2-send-fill svg { width: 28px; height: 28px; display: block; }
+        #s2-send-ring { position: absolute; inset: 0; border-radius: 16px; border: 2px solid #ff3d9a; opacity: 0; }
+
+        /* the prompt: two lines of fixed-width cells, so every position is known without measuring */
+        #s2-text { position: absolute; left: 342px; top: 574px; width: 1180px; height: 120px; font: 400 44px/60px "Source Code Pro", ui-monospace, monospace; color: #f4f0ff; }
+        .s2-row { position: absolute; left: 0; height: 60px; white-space: pre; }
+        .s2-ch { display: inline-block; width: 26.4px; height: 60px; text-align: center; vertical-align: top; opacity: 0; }
+        #s2-ph { position: absolute; left: 0; top: 0; color: #9c93b8; opacity: 0; white-space: nowrap; }
+        #s2-caret { position: absolute; left: -1px; top: 8px; width: 3px; height: 44px; border-radius: 2px; background: #6ce6ff; opacity: 0; }
+
+        /* status under the composer once it is sent */
+        #s2-status { position: absolute; left: 280px; top: 772px; height: 44px; font: 400 30px/44px "Source Code Pro", ui-monospace, monospace; color: #9c93b8; white-space: nowrap; display: flex; align-items: center; opacity: 0; }
+
+        /* the raw take's last frame: full frame at first, it shrinks into the attachment slot */
+        #s2-shot { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; overflow: hidden; }
+        #s2-shot img { display: block; width: 1920px; height: 1080px; }
+
+      </style>
+
+      <div data-hf-id="hf-v9vk" id="root" data-composition-id="b2-prompt" data-width="1920" data-height="1080">
+        <div data-hf-id="hf-hew4" id="s2-scene" class="clip" data-start="0" data-duration="2.8" data-track-index="0">
+          <div data-hf-id="hf-uvmh" id="s2-amb"></div>
+          <div data-hf-id="hf-69oc" id="s2-cam">
+            <div data-hf-id="hf-uawc" id="s2-glow"></div>
+            <div data-hf-id="hf-26cn" id="s2-panel">
+              <div data-hf-id="hf-yge2" id="s2-att-name">take.mp4</div>
+              <div data-hf-id="hf-hxaj" id="s2-att-meta">0:23.5 · raw, uncut</div>
+              <div data-hf-id="hf-ip9p" id="s2-send">
+                <div data-hf-id="hf-az1w" id="s2-send-ring"></div>
+                <div data-hf-id="hf-coz5" id="s2-send-fill">
+                  <svg data-hf-id="hf-pej4" viewBox="0 0 28 28" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path data-hf-id="hf-bsb2" id="s2-arrow" stroke="#9c93b8" d="M14 22V6M7 13l7-7 7 7" /></svg>
+                </div>
+              </div>
+            </div>
+            <div data-hf-id="hf-obyy" id="s2-text">
+              <span data-hf-id="hf-aw8s" id="s2-ph">Ask Cutscene to edit…</span>
+              <div data-hf-id="hf-ico1" id="s2-row0" class="s2-row" style="top:0px"></div>
+              <div data-hf-id="hf-kp5e" id="s2-row1" class="s2-row" style="top:60px"></div>
+              <div data-hf-id="hf-uajk" id="s2-caret"></div>
+            </div>
+            <div data-hf-id="hf-92ac" id="s2-status">cutscene edit · take.mp4</div>
+            <div data-hf-id="hf-vvvb" id="s2-shot">
+              <img data-hf-id="hf-7ry8" src="../assets/b3/raw-last.jpg" alt="Kasper's raw take" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          const LINES = ["Cut the pauses, caption every word,", "make a vertical short."];
+          const CW = 26.4, LH = 60; // Source Code Pro advance (0.6em) at 44px
+          // attachment slot inside the panel (screen px): 256 x 144 at panel + (32, 30)
+          const SLOT_X = 280 + 32, SLOT_Y = 372 + 30, SLOT_W = 256;
+          const S = SLOT_W / 1920;
+
+          const T_LAND0 = 0.08, T_LAND1 = 0.78, T_TYPE0 = 0.84, T_TYPE1 = 2.18, T_SEND = 2.35, T_END = 2.8;
+
+          // seeded generator (mulberry32): a human typing rhythm without Math.random
+          function mulberry32(a) {
+            return function () {
+              a |= 0; a = (a + 0x6d2b79f5) | 0;
+              let t = Math.imul(a ^ (a >>> 15), 1 | a);
+              t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+              return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+            };
+          }
+          const rnd = mulberry32(871146);
+
+          // ---- build the cells
+          const cells = [];
+          LINES.forEach((line, r) => {
+            const row = document.getElementById("s2-row" + r);
+            for (let i = 0; i < line.length; i++) {
+              const ch = document.createElement("span");
+              ch.className = "s2-ch";
+              ch.textContent = line[i];
+              row.appendChild(ch);
+              cells.push({ ch, c: line[i], r, i });
+            }
+          });
+
+          // ---- typing schedule: fast and uneven (seeded), scaled to fill T_TYPE0 -> T_TYPE1
+          const gaps = [];
+          for (let k = 1; k < cells.length; k++) {
+            let g = 0.6 + rnd() * 0.8;
+            if (cells[k - 1].c === " ") g *= 1.35;
+            if (cells[k - 1].c === ",") g *= 2.2;
+            gaps.push(g);
+          }
+          const gsum = gaps.reduce((a, b) => a + b, 0);
+          const times = [T_TYPE0];
+          for (const g of gaps) times.push(times[times.length - 1] + (g / gsum) * (T_TYPE1 - T_TYPE0));
+
+          const tl = gsap.timeline({ paused: true });
+
+          // ---- the take shrinks into the attachment slot (starts as b1's last frame, full frame)
+          tl.fromTo("#s2-shot", { x: 0, y: 0, scale: 1, borderRadius: 0 }, { x: SLOT_X, y: SLOT_Y, scale: S, borderRadius: 14 / S, duration: T_LAND1 - T_LAND0, ease: "expo.inOut" }, T_LAND0);
+          tl.fromTo("#s2-amb", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "sine.out" }, 0.2);
+          tl.fromTo("#s2-panel", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 0.34);
+          tl.fromTo(["#s2-att-name", "#s2-att-meta"], { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out", stagger: 0.06 }, T_LAND1 - 0.08);
+          tl.fromTo("#s2-ph", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "sine.out" }, 0.5);
+
+          // ---- camera: still while the take lands (so it matches b1 exactly), then a slow push-in
+          tl.fromTo("#s2-cam", { scale: 1 }, { scale: 1.05, duration: T_END - T_LAND1, ease: "sine.inOut" }, T_LAND1);
+
+          // ---- typing
+          const caret = document.getElementById("s2-caret");
+          tl.set("#s2-ph", { opacity: 0 }, T_TYPE0);
+          tl.set(caret, { opacity: 1, x: 0, y: 0 }, T_TYPE0 - 0.12);
+          cells.forEach((cell, k) => {
+            tl.set(cell.ch, { opacity: 1 }, times[k]);
+            tl.set(caret, { x: (cell.i + 1) * CW, y: cell.r * LH }, times[k]);
+          });
+          // the send button wakes up with the first key
+          tl.to("#s2-send-fill", { backgroundColor: "#f4f0ff", duration: 0.2, ease: "power2.out" }, T_TYPE0);
+          tl.to("#s2-arrow", { attr: { stroke: "#0f0b1a" }, duration: 0.2, ease: "power2.out" }, T_TYPE0);
+          tl.set(caret, { opacity: 0 }, T_SEND);
+
+          // ---- Enter (abs 5.95 s): the button presses, the panel lights up
+          tl.to("#s2-send", { scale: 0.86, duration: 0.07, ease: "power2.out" }, T_SEND);
+          tl.to("#s2-send", { scale: 1, duration: 0.3, ease: "expo.out" }, T_SEND + 0.07);
+          tl.to("#s2-send-fill", { backgroundColor: "#ff3d9a", duration: 0.08, ease: "power2.out" }, T_SEND);
+          tl.fromTo("#s2-send-ring", { scale: 1, opacity: 0.9 }, { scale: 2.3, opacity: 0, duration: 0.42, ease: "expo.out" }, T_SEND + 0.02);
+          tl.fromTo("#s2-glow", { opacity: 0 }, { opacity: 1, duration: 0.14, ease: "power2.out" }, T_SEND);
+          tl.to("#s2-panel", { borderColor: "#4a3d80", duration: 0.14, ease: "power2.out" }, T_SEND);
+          tl.fromTo("#s2-status", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, T_SEND + 0.08);
+
+          tl.set({}, {}, T_END);
+          window.__timelines["b2-prompt"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

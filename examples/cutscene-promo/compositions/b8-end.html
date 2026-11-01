@@ -1,0 +1,163 @@
+<!doctype html>
+<!--
+  b8 end card (40.0-45.4 s on the host; local 0-5.4; voice_at 40.5 = local 0.5).
+  Voice: "Cutscene. Free, open source, and ready when you are." (local word times:
+  Cutscene.@0.88 Free,@1.34 open@1.82 source,@1.98 ready@2.4 are.@2.86, ends 3.04).
+  The mark is the flat logo (assets/logo.svg) drawn inline, its cut bar in the video's magenta.
+  The card carries the words; there are no host captions here.
+  The one magenta thing is the logo's cut bar. It echoes once: a copy of it slides out of the
+  mark and wipes the wordmark in, then folds away.
+-->
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face {
+          font-family: "Space Grotesk";
+          font-weight: 700;
+          font-style: normal;
+          src: url("../assets/fonts/space-grotesk-latin-700-normal.woff2") format("woff2");
+        }
+        #root { position: absolute; inset: 0; color: #f4f0ff; }
+
+        /* everything drifts together; scaled about the frame centre */
+        #s8-stage { position: absolute; inset: 0; transform-origin: 960px 520px; }
+
+        /* the centred stack: lockup, line, install panel, url */
+        #s8-stack { position: absolute; left: 0; right: 0; top: 214px; display: flex; flex-direction: column; align-items: center; }
+
+        /* lockup */
+        #s8-lockup { display: flex; align-items: center; gap: 46px; height: 236px; margin-left: -12px; }
+        .s8-mask { overflow: hidden; }
+        #s8-mark-mask { width: 208px; height: 236px; display: flex; align-items: center; justify-content: center; }
+        #s8-mark { width: 208px; height: 208px; display: block; }
+        #s8-mark-img { width: 208px; height: 208px; display: block; object-fit: contain; }
+
+        #s8-wm-mask { position: relative; height: 236px; overflow: hidden; }
+        #s8-wm { display: block; font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 196px; line-height: 236px; letter-spacing: -0.035em; color: #f4f0ff; white-space: nowrap; padding-right: 10px; }
+        #s8-echo { position: absolute; top: 46px; right: 0; width: 14px; height: 144px; border-radius: 7px; background: #ff3d9a; box-shadow: 0 0 34px 4px rgba(255, 61, 154, 0.5); }
+
+        /* the line */
+        #s8-line { margin-top: 4px; display: flex; gap: 0.26em; font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 60px; line-height: 76px; letter-spacing: -0.02em; color: #f4f0ff; }
+        .s8-word-mask { overflow: hidden; height: 76px; }
+        .s8-word { display: block; }
+
+        /* install panel */
+        #s8-panel { margin-top: 70px; display: flex; align-items: center; height: 104px; padding: 0 36px 0 38px; background: #1a1430; border: 1.5px solid #2e2550; border-radius: 22px; font-family: "Source Code Pro", ui-monospace, monospace; font-size: 40px; }
+        #s8-prompt { color: #6ce6ff; font-weight: 600; width: 24px; margin-right: 26px; }
+        #s8-cmd { position: relative; width: 960px; height: 52px; line-height: 52px; white-space: nowrap; color: #f4f0ff; font-weight: 400; }
+        .s8-ch { display: inline-block; width: 24px; text-align: center; }
+        #s8-caret { position: absolute; left: 0; top: 7px; width: 4px; height: 40px; border-radius: 1px; background: #6ce6ff; }
+        #s8-copy { margin-left: 30px; width: 34px; height: 34px; display: block; opacity: 0.85; }
+
+        /* url */
+        #s8-url-mask { margin-top: 42px; height: 52px; overflow: hidden; }
+        #s8-url { display: block; font-family: "Source Code Pro", ui-monospace, monospace; font-size: 36px; line-height: 52px; color: #9c93b8; }
+        #s8-url b { font-weight: 600; color: #f4f0ff; }
+      </style>
+
+      <div data-hf-id="hf-eeql" id="root" data-composition-id="b8-end" data-width="1920" data-height="1080">
+        <div data-hf-id="hf-eeqh" id="s8-card" class="clip" data-start="0" data-duration="5.4" data-track-index="0">
+          <div data-hf-id="hf-zdgl" id="s8-stage">
+            <div data-hf-id="hf-v05j" id="s8-stack">
+              <div data-hf-id="hf-01u3" id="s8-lockup">
+                <div data-hf-id="hf-omm2" id="s8-mark-mask" class="s8-mask">
+                  <div data-hf-id="hf-3bp2" id="s8-mark-in">
+                    <svg data-hf-id="hf-uzpk" id="s8-mark-img" viewBox="0 0 64 64" role="img" aria-label="Cutscene logo">
+                      <rect data-hf-id="hf-jzfv" x="4" y="4" width="56" height="56" rx="15" fill="#F4F3EE"/>
+                      <rect data-hf-id="hf-22vn" id="s8-mark-bar" x="24.5" y="14" width="7" height="36" rx="3.5" fill="#0B0D12"/>
+                    </svg>
+                  </div>
+                </div>
+                <div data-hf-id="hf-7e9a" id="s8-wm-mask">
+                  <div data-hf-id="hf-9k3j" id="s8-wm-in"><span data-hf-id="hf-zcbg" id="s8-wm">Cutscene</span></div>
+                  <div data-hf-id="hf-4oda" id="s8-echo"></div>
+                </div>
+              </div>
+
+              <div data-hf-id="hf-rx1f" id="s8-line">
+                <div data-hf-id="hf-knpz" class="s8-word-mask"><span data-hf-id="hf-hckp" class="s8-word" id="s8-w1">Free</span></div>
+                <div data-hf-id="hf-nimv" class="s8-word-mask"><span data-hf-id="hf-o581" class="s8-word" id="s8-w2">and</span></div>
+                <div data-hf-id="hf-n4bu" class="s8-word-mask"><span data-hf-id="hf-zvd9" class="s8-word" id="s8-w3">open</span></div>
+                <div data-hf-id="hf-mq0t" class="s8-word-mask"><span data-hf-id="hf-7st7" class="s8-word" id="s8-w4">source</span></div>
+              </div>
+
+              <div data-hf-id="hf-0qwh" id="s8-panel">
+                <span data-hf-id="hf-6198" id="s8-prompt">&#8250;</span>
+                <div data-hf-id="hf-1jtf" id="s8-cmd"><span data-hf-id="hf-vwpv" id="s8-chars"></span><div data-hf-id="hf-5pji" id="s8-caret"></div></div>
+                <!-- a quiet copy glyph: an affordance, not a button -->
+                <svg data-hf-id="hf-93b5" id="s8-copy" viewBox="0 0 24 24" fill="none" stroke="#9C93B8" stroke-width="1.6" stroke-linejoin="round">
+                  <rect data-hf-id="hf-csrd" x="8.5" y="8.5" width="12" height="12" rx="2.6" />
+                  <path data-hf-id="hf-mw9s" d="M15.5 8.5 V6.1 A2.6 2.6 0 0 0 12.9 3.5 H6.1 A2.6 2.6 0 0 0 3.5 6.1 V12.9 A2.6 2.6 0 0 0 6.1 15.5 H8.5" />
+                </svg>
+              </div>
+
+              <div data-hf-id="hf-9lmt" id="s8-url-mask"><span data-hf-id="hf-tb8b" id="s8-url" data-layout-allow-overflow>github.com/<b data-hf-id="hf-5f5e">Smartulf123/cutscene</b></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          const CMD = "claude plugin install cutscene@cutscene";
+          const CH = 24; // Source Code Pro advance: 0.6em at 40px
+          const charsEl = document.getElementById("s8-chars");
+          const chars = [];
+          for (const c of CMD) {
+            const s = document.createElement("span");
+            s.className = "s8-ch";
+            s.textContent = c === " " ? " " : c;
+            charsEl.appendChild(s);
+            chars.push(s);
+          }
+
+          const tl = gsap.timeline({ paused: true });
+
+          // slow camera drift over the whole card
+          tl.fromTo("#s8-stage", { scale: 1 }, { scale: 1.03, duration: 5.4, ease: "sine.inOut" }, 0);
+
+          // 1. the mark rises out of its mask, then its cut bar draws in (ahead of "Cutscene." @0.88)
+          tl.fromTo("#s8-mark-in", { yPercent: 112 }, { yPercent: 0, duration: 0.85, ease: "expo.out" }, 0.04);
+          tl.fromTo("#s8-mark-bar", { scaleY: 0, transformOrigin: "50% 50%" }, { scaleY: 1, duration: 0.6, ease: "expo.out" }, 0.3);
+
+          // 2. the cut echoes: a copy of the mark's bar slides out and wipes the wordmark in
+          tl.fromTo("#s8-echo", { scaleY: 0.2, opacity: 0 }, { scaleY: 1, opacity: 1, duration: 0.16, ease: "power2.out" }, 0.56);
+          tl.fromTo("#s8-wm-mask", { xPercent: -100 }, { xPercent: 0, duration: 0.6, ease: "power3.inOut" }, 0.56);
+          tl.fromTo("#s8-wm-in", { xPercent: 100 }, { xPercent: 0, duration: 0.6, ease: "power3.inOut" }, 0.56);
+          tl.fromTo("#s8-wm", { x: 34 }, { x: 0, duration: 1.1, ease: "expo.out" }, 0.56);
+          tl.to("#s8-echo", { scaleY: 0, opacity: 0, duration: 0.3, ease: "power3.in" }, 1.12);
+
+          // 3. "Free and open source", word by word on "Free, open source," (1.34-2.2)
+          const W = [["#s8-w1", 1.24], ["#s8-w2", 1.58], ["#s8-w3", 1.72], ["#s8-w4", 1.88]];
+          W.forEach(([id, t]) => {
+            tl.fromTo(id, { yPercent: 110 }, { yPercent: 0, duration: 0.75, ease: "expo.out" }, t);
+          });
+
+          // 4. the install panel arrives, then the command types (around "ready when you are")
+          tl.fromTo("#s8-panel", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out" }, 2.02);
+          tl.fromTo("#s8-caret", { opacity: 0 }, { opacity: 1, duration: 0.01 }, 2.24);
+          const T0 = 2.32, STEP = 0.015;
+          chars.forEach((s, i) => {
+            tl.fromTo(s, { opacity: 0 }, { opacity: 1, duration: 0.01, ease: "none" }, T0 + i * STEP);
+          });
+          tl.fromTo("#s8-caret", { x: 0 }, { x: CMD.length * CH + 4, duration: CMD.length * STEP, ease: "steps(" + CMD.length + ")" }, T0 - STEP + 0.005);
+          // a calm blink while she finishes, ending lit
+          const blinkFrom = T0 + CMD.length * STEP + 0.4;
+          for (let k = 0; k < 2; k++) {
+            const t = blinkFrom + k * 0.9;
+            tl.to("#s8-caret", { opacity: 0, duration: 0.01 }, t);
+            tl.to("#s8-caret", { opacity: 1, duration: 0.01 }, t + 0.45);
+          }
+
+          // 5. the url (around "ready when you are", 2.4-3.0)
+          tl.fromTo("#s8-url", { yPercent: 110 }, { yPercent: 0, duration: 0.8, ease: "expo.out" }, 2.82);
+
+          tl.set({}, {}, 5.4);
+          window.__timelines["b8-end"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

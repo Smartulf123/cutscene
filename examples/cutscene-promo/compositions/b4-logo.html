@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Space Grotesk"; src: url("../assets/fonts/space-grotesk-latin-700-normal.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: block; }
+
+        #root { position: absolute; inset: 0; }
+        /* b4: the Cutscene mark (flat, from assets/logo.svg), then the wordmark. Prefix s4-. */
+        #s4-drift { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 940px 470px; }
+
+        /* glow behind the mark; it travels with the mark */
+        #s4-glow { position: absolute; left: 160px; top: -330px; width: 1600px; height: 1600px; border-radius: 50%;
+          background: radial-gradient(circle at 50% 50%, rgba(108, 230, 255, 0.16) 0%, rgba(108, 230, 255, 0.07) 22%, rgba(46, 37, 80, 0.35) 38%, rgba(15, 11, 26, 0) 62%); }
+        #s4-glowm { position: absolute; left: 560px; top: 70px; width: 800px; height: 800px; border-radius: 50%;
+          background: radial-gradient(circle at 50% 50%, rgba(255, 61, 154, 0.22) 0%, rgba(255, 61, 154, 0.07) 30%, rgba(255, 61, 154, 0) 64%); }
+
+        /* the mark: 420 px at HERO (960, 470), 300 px in the lockup */
+        #s4-mark { position: absolute; left: 750px; top: 260px; width: 420px; height: 420px; transform-origin: 50% 50%; }
+        #s4-mark svg { display: block; width: 420px; height: 420px; overflow: visible; }
+
+        /* the cut lands: a thin anamorphic streak through the mark */
+        #s4-streak { position: absolute; left: 160px; top: 467px; width: 1600px; height: 6px; border-radius: 3px; transform-origin: 50% 50%;
+          background: linear-gradient(90deg, rgba(108, 230, 255, 0) 0%, rgba(108, 230, 255, 0.55) 30%, rgba(244, 240, 255, 0.95) 50%, rgba(108, 230, 255, 0.55) 70%, rgba(108, 230, 255, 0) 100%);
+          box-shadow: 0 0 24px rgba(108, 230, 255, 0.55); }
+
+        /* the wordmark */
+        #s4-word { position: absolute; left: 690px; top: 336px; height: 250px; padding: 0 12px; overflow: hidden; white-space: nowrap;
+          font: 700 214px/250px "Space Grotesk", sans-serif; letter-spacing: -0.035em; color: #f4f0ff; }
+        .s4-l { display: inline-block; }
+      </style>
+
+      <div data-hf-id="hf-znc7" id="root" data-composition-id="b4-logo" data-width="1920" data-height="1080">
+        <div data-hf-id="hf-3xcu" id="s4-drift">
+          <div data-hf-id="hf-cl7a" id="s4-glow"></div>
+          <div data-hf-id="hf-0t9b" id="s4-glowm"></div>
+          <div data-hf-id="hf-plqo" id="s4-mark">
+            <svg data-hf-id="hf-9wxc" viewBox="0 0 64 64" aria-label="Cutscene">
+              <rect data-hf-id="hf-s4pa" x="4" y="4" width="56" height="56" rx="15" fill="#F4F3EE"/>
+              <rect data-hf-id="hf-s4br" id="s4-bar" x="24.5" y="14" width="7" height="36" rx="3.5" fill="#0B0D12"/>
+            </svg>
+          </div>
+          <div data-hf-id="hf-1xtv" id="s4-streak"></div>
+          <div data-hf-id="hf-32p5" id="s4-word"><span data-hf-id="hf-rw60" class="s4-l">C</span><span data-hf-id="hf-2dne" class="s4-l">u</span><span data-hf-id="hf-1zcd" class="s4-l">t</span><span data-hf-id="hf-4rhk" class="s4-l">s</span><span data-hf-id="hf-f6d4" class="s4-l">c</span><span data-hf-id="hf-csiy" class="s4-l">e</span><span data-hf-id="hf-gda7" class="s4-l">n</span><span data-hf-id="hf-ibse" class="s4-l">e</span></div>
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          // The mark is centred at HERO (960, 470) until the glide,
+          // then at LOCK (470, 470), 300 px tall. The glide runs 1.0 to 1.8 s (expo.inOut).
+          const HERO_X = 960, LOCK_X = 470, T_GLIDE = 1.0, D_GLIDE = 0.8;
+          const dx = LOCK_X - HERO_X;
+
+          const tl = gsap.timeline({ paused: true });
+
+          // slow camera drift over the beat
+          tl.fromTo("#s4-drift", { scale: 1 }, { scale: 1.04, duration: 3.5, ease: "sine.inOut" }, 0);
+
+          // glow: blooms as the mark arrives, follows it into the lockup
+          tl.fromTo("#s4-glow", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 1.0, ease: "expo.out" }, 0.05);
+          tl.fromTo("#s4-glow", { x: 0 }, { x: dx, duration: D_GLIDE, ease: "expo.inOut" }, T_GLIDE);
+          tl.fromTo("#s4-glowm", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.5, ease: "expo.out" }, 0.46);
+          tl.to("#s4-glowm", { opacity: 0.55, duration: 0.8, ease: "sine.inOut" }, 0.96);
+          tl.fromTo("#s4-glowm", { x: 0 }, { x: dx, duration: D_GLIDE, ease: "expo.inOut" }, T_GLIDE);
+
+          // the mark arrives, the magenta bar drops into its slot and lands at 0.5 s
+          tl.fromTo("#s4-mark", { opacity: 0, scale: 0.82, y: 26 }, { opacity: 1, scale: 1, y: 0, duration: 0.7, ease: "expo.out" }, 0.0);
+          tl.fromTo("#s4-bar", { y: -44, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power4.in" }, 0.2);
+          tl.fromTo("#s4-mark", { scaleY: 1 }, { scaleY: 0.965, duration: 0.07, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, 0.5);
+          // the glide into the lockup: 420 px to 300 px
+          tl.to("#s4-mark", { x: dx, scale: 300 / 420, duration: D_GLIDE, ease: "expo.inOut" }, T_GLIDE);
+
+          // the bar lands at 0.5 s: a streak flashes through the mark
+          tl.fromTo("#s4-streak", { opacity: 0, scaleX: 0.15 }, { opacity: 1, scaleX: 1, duration: 0.16, ease: "power4.out" }, 0.48);
+          tl.to("#s4-streak", { opacity: 0, scaleY: 0.4, duration: 0.45, ease: "power2.in" }, 0.64);
+
+          // the wordmark rises letter by letter as the mark glides into the lockup
+          gsap.utils.toArray("#s4-word .s4-l").forEach((el, i) => {
+            tl.fromTo(el, { yPercent: 112 }, { yPercent: 0, duration: 0.75, ease: "expo.out" }, 1.48 + i * 0.035);
+          });
+
+          tl.set({}, {}, 3.5);
+          window.__timelines["b4-logo"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

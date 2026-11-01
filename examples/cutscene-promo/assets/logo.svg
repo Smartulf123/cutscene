@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <title>Cutscene</title>
+  <path fill="#F4F3EE" fill-rule="evenodd" d="M19 4 H45 A15 15 0 0 1 60 19 V45 A15 15 0 0 1 45 60 H19 A15 15 0 0 1 4 45 V19 A15 15 0 0 1 19 4 Z M28 13.5 A3.5 3.5 0 0 0 24.5 17 V47 A3.5 3.5 0 0 0 28 50.5 A3.5 3.5 0 0 0 31.5 47 V17 A3.5 3.5 0 0 0 28 13.5 Z"/>
+  <rect x="25.5" y="15" width="5" height="34" rx="2.5" fill="#FF7A45"/>
+</svg>

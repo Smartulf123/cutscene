@@ -1,0 +1,207 @@
+<!doctype html>
+<!--
+  b7 "one beat sheet, watched live" (35.4-40.0 s on the host, local 0-4.6; voice_at 35.65 = local 0.25).
+  A real screen recording of the Cutscene preview (assets/footage/preview-recording.mp4, made by
+  .cutscene/capture/record-preview.mjs) plays in an app window: the Studio playing this video from
+  30.8 s, across the cut from the montage into the voice scene. This video's real beat sheet
+  (.cutscene/beats.json) slides in beside it; its cyan playhead follows the recording's time, and on
+  "in sync" a line ties it to the Studio's own timeline playhead in the recording. On "watch every
+  change live" the camera pushes into the Studio's preview canvas.
+  Voice words (local): One 0.25, beat 0.61, sheet 0.79, keeps 0.99, sync 1.63, and 2.09, watch 2.25,
+  every 2.47, change 2.67, live 2.93-3.21. Host captions sit at y 940-1012.
+-->
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; overflow: hidden; font-family: "Source Code Pro", monospace; color: #f4f0ff; }
+        #s7-world { position: absolute; inset: 0; transform-origin: 50% 46%; }
+        #s7-cam { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; }
+
+        /* the app window holding the recording */
+        #s7-win { position: absolute; left: 488px; top: 104px; width: 1312px; height: 794px; background: #1a1430; border: 1.5px solid #3a3063; border-radius: 22px; overflow: hidden; }
+        #s7-bar { position: absolute; left: 0; top: 0; width: 1312px; height: 56px; border-bottom: 1.5px solid #2e2550; background: #1a1430; }
+        .s7-dot { position: absolute; top: 21px; width: 14px; height: 14px; border-radius: 7px; background: #2e2550; }
+        #s7-url { position: absolute; left: 0; right: 0; top: 0; height: 56px; line-height: 56px; text-align: center; font-size: 30px; color: #9c93b8; white-space: nowrap; }
+        #s7-url b { color: #f4f0ff; font-weight: 400; }
+        #s7-pic { position: absolute; left: 0; top: 56px; width: 1312px; height: 738px; background: #0f0b1a; }
+        #s7-rec { position: absolute; left: 0; top: 0; width: 1312px; height: 738px; display: block; object-fit: fill; }
+        /* the Studio's preview canvas inside the recording (measured from the recording) */
+        #s7-live { position: absolute; border: 1.5px solid #6ce6ff; border-radius: 3px; box-shadow: 0 0 14px 1px rgba(108, 230, 255, 0.45); opacity: 0; }
+
+        /* the beat sheet */
+        #s7-sheet { position: absolute; left: 120px; top: 196px; width: 580px; height: 568px; background: #1a1430; border: 1.5px solid #2e2550; border-radius: 22px; overflow: hidden; }
+        #s7-head { position: absolute; left: 0; top: 0; width: 580px; height: 76px; border-bottom: 1.5px solid #2e2550; font-size: 30px; line-height: 76px; white-space: nowrap; }
+        #s7-file { position: absolute; left: 28px; top: 0; font-weight: 600; }
+        #s7-file-icon { position: absolute; left: 28px; top: 23px; width: 22px; height: 28px; border: 2.5px solid #9c93b8; border-radius: 4px; }
+        #s7-file-name { position: absolute; left: 66px; top: 0; }
+        #s7-count { position: absolute; right: 28px; top: 0; color: #9c93b8; }
+        .s7-row { position: absolute; left: 0; width: 580px; height: 58px; font-size: 30px; line-height: 58px; white-space: nowrap; }
+        .s7-row-bg { position: absolute; left: 0; top: 0; width: 580px; height: 58px; background: rgba(108, 230, 255, 0.08); opacity: 0; }
+        .s7-id { position: absolute; left: 28px; color: #9c93b8; font-weight: 600; }
+        .s7-tm { position: absolute; left: 92px; color: #9c93b8; }
+        .s7-lb { position: absolute; left: 278px; color: #9c93b8; }
+        #s7-ph-pos { position: absolute; left: 0; top: 0; width: 580px; height: 2px; }
+        #s7-ph { position: absolute; left: 0; top: 0; width: 580px; height: 2px; background: #6ce6ff; box-shadow: 0 0 14px 1px rgba(108, 230, 255, 0.5); transform-origin: 0 50%; }
+        #s7-ph-knob { position: absolute; left: 0; top: -9px; width: 0; height: 0; border-top: 10px solid transparent; border-bottom: 10px solid transparent; border-left: 14px solid #6ce6ff; }
+
+        /* the sync line: sheet playhead to the Studio's timeline playhead in the recording */
+        #s7-sync { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; pointer-events: none; }
+        #s7-sync-end-pos { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+
+        /* keeps the host captions readable once the camera is inside the Studio */
+        #s7-scrim { position: absolute; left: 0; top: 820px; width: 1920px; height: 260px; background: linear-gradient(to bottom, rgba(15, 11, 26, 0), rgba(15, 11, 26, 0.92) 46%, rgba(15, 11, 26, 0.96)); opacity: 0; }
+      </style>
+
+      <div data-hf-id="hf-vmc9" id="root" data-composition-id="b7-studio" data-width="1920" data-height="1080">
+        <div data-hf-id="hf-yqqh" id="s7-world" data-layout-allow-overflow>
+          <div data-hf-id="hf-c1wx" id="s7-cam">
+            <div data-hf-id="hf-w63i" id="s7-win">
+              <div data-hf-id="hf-zqb7" id="s7-bar">
+                <div data-hf-id="hf-guyh" class="s7-dot" style="left: 26px"></div>
+                <div data-hf-id="hf-ok7q" class="s7-dot" style="left: 50px"></div>
+                <div data-hf-id="hf-wtok" class="s7-dot" style="left: 74px"></div>
+                <div data-hf-id="hf-3ah3" id="s7-url">127.0.0.1:3002/#project/<b data-hf-id="hf-lesb">cutscene-promo</b></div>
+              </div>
+              <div data-hf-id="hf-eyqc" id="s7-pic">
+                <video data-hf-id="hf-9s6m" id="s7-rec" class="clip" src="../assets/footage/preview-recording.mp4" muted playsinline data-start="0" data-duration="4.6" data-track-index="1"></video>
+                <div data-hf-id="hf-3rv6" id="s7-live"></div>
+              </div>
+            </div>
+          </div>
+
+          <svg data-hf-id="hf-78gm" id="s7-sync" viewBox="0 0 1920 1080" fill="none">
+            <path data-hf-id="hf-03ju" id="s7-sync-path" d="M0 0" stroke="#6ce6ff" stroke-width="2.5" stroke-linecap="round" />
+          </svg>
+          <div data-hf-id="hf-5z1k" id="s7-sync-end-pos"></div>
+
+          <div data-hf-id="hf-nuud" id="s7-sheet">
+            <div data-hf-id="hf-578i" id="s7-head">
+              <div data-hf-id="hf-qreg" id="s7-file-icon"></div><span data-hf-id="hf-9npm" id="s7-file-name">beats.json</span>
+              <span data-hf-id="hf-vyle" id="s7-count">8 beats · 45.4 s</span>
+            </div>
+            <div data-hf-id="hf-pbpd" id="s7-ph-pos"><div data-hf-id="hf-rjhg" id="s7-ph"><div data-hf-id="hf-ecpp" id="s7-ph-knob"></div></div></div>
+            <div data-hf-id="hf-8y5v" id="s7-rows"></div>
+          </div>
+        </div>
+        <div data-hf-id="hf-qyim" id="s7-scrim"></div>
+      </div>
+
+      <script>
+        (function () {
+          // This video's beat sheet (.cutscene/beats.json), labels shortened.
+          const BEATS = [
+            { id: "b1", a: 0, b: 3.6, label: "Raw take" },
+            { id: "b2", a: 3.6, b: 6.4, label: "The request" },
+            { id: "b3", a: 6.4, b: 19.9, label: "The real edit" },
+            { id: "b4", a: 19.9, b: 23.4, label: "Logo" },
+            { id: "b5", a: 23.4, b: 32.4, label: "Footage montage" },
+            { id: "b6", a: 32.4, b: 35.4, label: "Designed voice" },
+            { id: "b7", a: 35.4, b: 40.0, label: "Live preview" },
+            { id: "b8", a: 40.0, b: 45.4, label: "End card" },
+          ];
+          // Where things are in the recording. record-preview.mjs rewrites this block after each
+          // recording: start time, Studio viewport (CSS px), the preview canvas rect and the timeline
+          // playhead handle's centre in every frame (CSS px of the Studio page).
+          /* REC-LAYOUT:BEGIN (written by .cutscene/capture/record-preview.mjs) */
+          const REC = {"start":33.3,"fps":30,"frames":138,"viewport":[1440,810],"size":[2560,1440],"canvas":[448.1,101,504.9,284],"playhead":[[943.4,529.5],[943.4,529.5],[945.1,529.5],[945.1,529.5],[946.2,529.5],[946.2,529.5],[947.3,529.5],[947.3,529.5],[949,529.5],[949,529.5],[950.1,529.5],[950.1,529.5],[951.8,529.5],[951.8,529.5],[952.9,529.5],[952.9,529.5],[954.1,529.5],[954.1,529.5],[955.8,529.5],[955.8,529.5],[956.9,529.5],[956.9,529.5],[958.6,529.5],[958.6,529.5],[959.7,529.5],[959.7,529.5],[960.8,529.5],[960.8,529.5],[962.5,529.5],[962.5,529.5],[963.6,529.5],[963.6,529.5],[965.3,529.5],[965.3,529.5],[966.4,529.5],[966.4,529.5],[967.6,529.5],[967.6,529.5],[969.3,529.5],[969.3,529.5],[970.4,529.5],[970.4,529.5],[972.1,529.5],[972.1,529.5],[973.2,529.5],[973.2,529.5],[974.9,529.5],[974.9,529.5],[976,529.5],[976,529.5],[977.1,529.5],[977.1,529.5],[978.8,529.5],[978.8,529.5],[979.9,529.5],[979.9,529.5],[981.6,529.5],[981.6,529.5],[982.8,529.5],[982.8,529.5],[983.9,529.5],[983.9,529.5],[985.6,529.5],[985.6,529.5],[986.7,529.5],[986.7,529.5],[988.4,529.5],[988.4,529.5],[989.5,529.5],[989.5,529.5],[990.6,529.5],[990.6,529.5],[992.3,529.5],[992.3,529.5],[993.4,529.5],[993.4,529.5],[995.1,529.5],[995.1,529.5],[996.3,529.5],[996.3,529.5],[997.4,529.5],[997.4,529.5],[999.1,529.5],[999.1,529.5],[1000.2,529.5],[1000.2,529.5],[1001.9,529.5],[1001.9,529.5],[1003,529.5],[1003,529.5],[1004.1,529.5],[1004.1,529.5],[1005.8,529.5],[1005.8,529.5],[1006.9,529.5],[1006.9,529.5],[1008.6,529.5],[1008.6,529.5],[1009.8,529.5],[1009.8,529.5],[1010.9,529.5],[1010.9,529.5],[1012.6,529.5],[1012.6,529.5],[1013.7,529.5],[1013.7,529.5],[1015.4,529.5],[1015.4,529.5],[1016.5,529.5],[1016.5,529.5],[1017.6,529.5],[1017.6,529.5],[1019.3,529.5],[1019.3,529.5],[1020.4,529.5],[1020.4,529.5],[1022.1,529.5],[1022.1,529.5],[1023.3,529.5],[1023.3,529.5],[1024.4,529.5],[1024.4,529.5],[1026.1,529.5],[1026.1,529.5],[1027.2,529.5],[1027.2,529.5],[1028.9,529.5],[1028.9,529.5],[1030,529.5],[1030,529.5],[1031.1,529.5],[1031.1,529.5],[1032.8,529.5],[1032.8,529.5],[1033.9,529.5],[1033.9,529.5],[1035.6,529.5],[1035.6,529.5]]};
+          /* REC-LAYOUT:END */
+          const REC_START = REC.start;
+          const ROW_TOP = 88, ROW_H = 58;
+          const SHEET_X = 120, SHEET_Y = 196, SHEET_W = 580;
+          // The window shows the recording 1312 px wide, so 1 Studio CSS px = K screen px.
+          const PIC_X = 488, PIC_Y = 104 + 56, K = 1312 / REC.viewport[0];
+          const CANVAS = { x: REC.canvas[0], y: REC.canvas[1], w: REC.canvas[2], h: REC.canvas[3] };
+          const handleAt = (t) => REC.playhead[Math.min(REC.playhead.length - 1, Math.max(0, Math.round(t * REC.fps)))];
+
+          const live = document.getElementById("s7-live");
+          live.style.left = (CANVAS.x * K).toFixed(1) + "px";
+          live.style.top = (CANVAS.y * K).toFixed(1) + "px";
+          live.style.width = (CANVAS.w * K).toFixed(1) + "px";
+          live.style.height = (CANVAS.h * K).toFixed(1) + "px";
+
+          const fmt1 = (v) => v.toFixed(1);
+          const rows = document.getElementById("s7-rows");
+          const rowEls = BEATS.map((bt, i) => {
+            const r = document.createElement("div");
+            r.className = "s7-row";
+            r.style.top = ROW_TOP + i * ROW_H + "px";
+            r.innerHTML = `<div class="s7-row-bg"></div><span class="s7-id">${bt.id}</span><span class="s7-tm">${fmt1(bt.a)}–${fmt1(bt.b)}</span><span class="s7-lb">${bt.label}</span>`;
+            rows.appendChild(r);
+            return { bg: r.children[0], id: r.children[1], lb: r.children[3] };
+          });
+
+          const ph = document.getElementById("s7-ph-pos");
+          const syncPath = document.getElementById("s7-sync-path");
+          const syncEnd = document.getElementById("s7-sync-end-pos");
+          const LINE_A = 1.0, LINE_B = 1.5;     // the line draws out on "keeps it all"
+
+          let lastBeat = -1;
+          function render(t) {
+            const v = REC_START + Math.max(0, t);
+            let k = BEATS.findIndex((bt) => v >= bt.a && v < bt.b);
+            if (k < 0) k = BEATS.length - 1;
+            const bt = BEATS[k];
+            const y = ROW_TOP + k * ROW_H + ((v - bt.a) / (bt.b - bt.a)) * ROW_H;
+            ph.style.transform = `translateY(${y.toFixed(1)}px)`;
+            if (k !== lastBeat) {
+              rowEls.forEach((re, i) => {
+                const on = i === k;
+                re.bg.style.opacity = on ? "1" : "0";
+                re.id.style.color = on ? "#6ce6ff" : "#9c93b8";
+                re.lb.style.color = on ? "#f4f0ff" : "#9c93b8";
+              });
+              lastBeat = k;
+            }
+            // the sync line: from the sheet playhead's right end to the Studio's playhead handle
+            const ax = SHEET_X + SHEET_W, ay = SHEET_Y + y;
+            const hd = handleAt(t) || [0, 0];
+            const bx = PIC_X + hd[0] * K, by = PIC_Y + hd[1] * K;
+            const u = Math.min(1, Math.max(0, (t - LINE_A) / (LINE_B - LINE_A)));
+            const e = 1 - Math.pow(1 - u, 4);
+            const mx = ax + 120, ex = ax + (bx - ax) * e, ey = ay + (by - ay) * e;
+            syncPath.setAttribute("d", u <= 0 ? "M0 0" : `M${ax.toFixed(1)} ${ay.toFixed(1)} C${mx.toFixed(1)} ${ay.toFixed(1)} ${(ex - 80 * e).toFixed(1)} ${ey.toFixed(1)} ${ex.toFixed(1)} ${ey.toFixed(1)}`);
+            syncEnd.style.transform = `translate(${ex.toFixed(1)}px, ${ey.toFixed(1)}px)`;
+          }
+          render(0);
+
+          const tl = gsap.timeline({ paused: true });
+          const clock = { t: 0 };
+          tl.to(clock, { t: 4.6, duration: 4.6, ease: "none", onUpdate: () => render(clock.t) }, 0);
+
+          // ---- entrance: the window is composed by ~0.35 s behind the cut
+          tl.fromTo("#s7-win", { y: 36, scale: 0.97, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.8, ease: "expo.out", immediateRender: true }, 0);
+
+          // ---- "One beat sheet": the sheet slides in, rows rise, its playhead lights
+          tl.fromTo("#s7-sheet", { x: -70, opacity: 0 }, { x: 0, opacity: 1, duration: 0.75, ease: "expo.out", immediateRender: true }, 0.42);
+          tl.fromTo("#s7-rows .s7-row", { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "expo.out", stagger: 0.03, immediateRender: true }, 0.5);
+          tl.fromTo("#s7-ph", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "expo.out", immediateRender: true }, 0.72);
+
+          // ---- "keeps it all in sync": the line reaches the Studio's playhead; on "sync" both flare
+          tl.fromTo("#s7-ph", { scaleY: 1 }, { scaleY: 2.5, duration: 0.14, ease: "power3.out", immediateRender: false }, 1.6);
+          tl.to("#s7-ph", { scaleY: 1, duration: 0.5, ease: "expo.out" }, 1.74);
+
+          // ---- "and you watch every change live": the sheet steps aside, the camera goes into the preview
+          tl.to(["#s7-sync", "#s7-sync-end-pos"], { opacity: 0, duration: 0.25, ease: "power3.in" }, 1.98);
+          tl.to("#s7-sheet", { x: -90, opacity: 0, duration: 0.35, ease: "power3.in" }, 2.0);
+          // push: the canvas centre goes to (960, 480) at scale S
+          const S = 2.2;
+          const cx = PIC_X + (CANVAS.x + CANVAS.w / 2) * K, cy = PIC_Y + (CANVAS.y + CANVAS.h / 2) * K;
+          tl.fromTo("#s7-cam", { x: 0, y: 0, scale: 1 }, { x: 960 - S * cx, y: 480 - S * cy, scale: S, duration: 0.95, ease: "expo.inOut", immediateRender: true }, 2.05);
+          tl.fromTo("#s7-scrim", { opacity: 0 }, { opacity: 1, duration: 0.7, ease: "power2.inOut", immediateRender: true }, 2.2);
+
+          // ---- "live": the canvas edge lights up
+          tl.fromTo("#s7-live", { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "power3.out", immediateRender: true }, 2.93);
+          tl.to("#s7-live", { opacity: 0.45, duration: 0.8, ease: "sine.out" }, 3.1);
+
+          // ---- slow camera drift
+          tl.fromTo("#s7-world", { scale: 1 }, { scale: 1.03, duration: 4.6, ease: "sine.inOut", immediateRender: true }, 0);
+
+          tl.set({}, {}, 4.6);
+          window.__timelines["b7-studio"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "name": "cutscene launch orbit",
+  "palette": {
+    "bg": "#0F0B1A",
+    "fg": "#F4F0FF",
+    "accent": "#FF3D9A",
+    "accent2": "#6CE6FF"
+  },
+  "type": {
+    "display": {
+      "family": "Space Grotesk",
+      "weight": 700,
+      "src": "assets/fonts/space-grotesk-latin-700-normal.woff2"
+    },
+    "body": {
+      "family": "Source Code Pro",
+      "weight": 400
+    }
+  },
+  "motion": {
+    "character": "cinematic",
+    "ease": "expo.inOut",
+    "duration_scale": 1.0
+  },
+  "texture": {
+    "grain": 0.05,
+    "vignette": 0.25
+  },
+  "source": "brand",
+  "seed": 871146
+}

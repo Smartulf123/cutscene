@@ -1,0 +1,189 @@
+{
+  "version": 1,
+  "date": "2026-10-31T13:56:07.942Z",
+  "engine": "whisper",
+  "lines": [
+    {
+      "id": "b4",
+      "file": "assets/voice/b4.wav",
+      "line": "Meet Cutscene, the video editor inside your A I agent.",
+      "verified": true,
+      "heard": "Meet Cutscene, the video editor inside your AI agent.",
+      "wer": 0,
+      "issues": [],
+      "warnings": [],
+      "words": [
+        {
+          "w": "Meet",
+          "start": 0,
+          "end": 0.34,
+          "p": 0.911
+        },
+        {
+          "w": "Cutscene,",
+          "start": 0.34,
+          "end": 0.8,
+          "p": 0.958
+        },
+        {
+          "w": "the",
+          "start": 0.9,
+          "end": 0.94,
+          "p": 0.993
+        },
+        {
+          "w": "video",
+          "start": 0.94,
+          "end": 1.18,
+          "p": 0.956
+        },
+        {
+          "w": "editor",
+          "start": 1.18,
+          "end": 1.5,
+          "p": 0.999
+        },
+        {
+          "w": "inside",
+          "start": 1.5,
+          "end": 1.82,
+          "p": 0.96
+        },
+        {
+          "w": "your",
+          "start": 1.82,
+          "end": 2.08,
+          "p": 0.995
+        },
+        {
+          "w": "A",
+          "start": 2.08,
+          "end": 2.3,
+          "p": 0.948
+        },
+        {
+          "w": "I",
+          "start": 2.08,
+          "end": 2.3,
+          "p": 0.948
+        },
+        {
+          "w": "agent.",
+          "start": 2.3,
+          "end": 2.66,
+          "p": 0.851
+        }
+      ],
+      "transcribe_seconds": 19
+    },
+    {
+      "id": "b5",
+      "file": "assets/voice/b5.wav",
+      "line": "Color grade it. Pin text to the footage. Swap the background. Drop in live three D.",
+      "verified": true,
+      "heard": "Color grade it. Pin text to the footage. Swap the background. Drop in live 3D.",
+      "wer": 0,
+      "issues": [],
+      "warnings": [],
+      "words": [
+        {
+          "w": "Color",
+          "start": 0,
+          "end": 0.38,
+          "p": 0.809
+        },
+        {
+          "w": "grade",
+          "start": 0.38,
+          "end": 0.64,
+          "p": 0.744
+        },
+        {
+          "w": "it.",
+          "start": 0.64,
+          "end": 0.8,
+          "p": 0.952
+        },
+        {
+          "w": "Pin",
+          "start": 0.86,
+          "end": 1.04,
+          "p": 0.95
+        },
+        {
+          "w": "text",
+          "start": 1.04,
+          "end": 1.3,
+          "p": 0.982
+        },
+        {
+          "w": "to",
+          "start": 1.3,
+          "end": 1.46,
+          "p": 0.992
+        },
+        {
+          "w": "the",
+          "start": 1.46,
+          "end": 1.54,
+          "p": 0.994
+        },
+        {
+          "w": "footage.",
+          "start": 1.54,
+          "end": 1.84,
+          "p": 0.997
+        },
+        {
+          "w": "Swap",
+          "start": 2.1,
+          "end": 2.32,
+          "p": 0.997
+        },
+        {
+          "w": "the",
+          "start": 2.32,
+          "end": 2.44,
+          "p": 0.995
+        },
+        {
+          "w": "background.",
+          "start": 2.44,
+          "end": 2.8,
+          "p": 0.994
+        },
+        {
+          "w": "Drop",
+          "start": 3.02,
+          "end": 3.18,
+          "p": 0.996
+        },
+        {
+          "w": "in",
+          "start": 3.18,
+          "end": 3.36,
+          "p": 0.976
+        },
+        {
+          "w": "live",
+          "start": 3.36,
+          "end": 3.58,
+          "p": 0.647
+        },
+        {
+          "w": "three",
+          "start": 3.58,
+          "end": 3.96,
+          "p": 0.886
+        },
+        {
+          "w": "D.",
+          "start": 3.58,
+          "end": 3.96,
+          "p": 0.886
+        }
+      ],
+      "transcribe_seconds": 15.51
+    }
+  ]
+}

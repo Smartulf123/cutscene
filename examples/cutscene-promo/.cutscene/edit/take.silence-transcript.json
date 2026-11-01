@@ -1,0 +1,355 @@
+{
+  "version": 1,
+  "kind": "cutscene-transcript",
+  "timeline": "edited",
+  "source": "C:\\Users\\kaspe\\OneDrive\\Desktop\\Video Editing AI Program\\examples\\cutscene-promo\\footage\\take.mp4",
+  "edl": "take.silence-edl.json",
+  "audio_duration_secs": 15.999,
+  "source_audio_duration_secs": 23.467,
+  "produced_by": "cutscene-edit cut-silences",
+  "words": [
+    {
+      "type": "word",
+      "text": "Hey,",
+      "refined": "start",
+      "start": 0.226,
+      "end": 0.48,
+      "source_start": 1.826,
+      "source_end": 2.08
+    },
+    {
+      "type": "word",
+      "text": "I'm",
+      "start": 0.48,
+      "end": 0.8,
+      "source_start": 2.08,
+      "source_end": 2.4
+    },
+    {
+      "type": "word",
+      "text": "Casper.",
+      "refined": "end",
+      "start": 0.8,
+      "end": 1.394,
+      "source_start": 2.4,
+      "source_end": 2.994
+    },
+    {
+      "type": "word",
+      "text": "I",
+      "start": 1.593,
+      "end": 1.833,
+      "source_start": 4.16,
+      "source_end": 4.4
+    },
+    {
+      "type": "word",
+      "text": "make",
+      "refined": "start",
+      "start": 2.01,
+      "end": 2.073,
+      "source_start": 4.577,
+      "source_end": 4.64
+    },
+    {
+      "type": "word",
+      "text": "videos",
+      "start": 2.313,
+      "end": 2.713,
+      "source_start": 4.88,
+      "source_end": 5.28
+    },
+    {
+      "type": "word",
+      "text": "about",
+      "start": 2.953,
+      "end": 3.113,
+      "source_start": 5.52,
+      "source_end": 5.68
+    },
+    {
+      "type": "word",
+      "text": "building",
+      "start": 3.113,
+      "end": 3.593,
+      "source_start": 5.68,
+      "source_end": 6.16
+    },
+    {
+      "type": "word",
+      "text": "things",
+      "start": 3.593,
+      "end": 4.073,
+      "source_start": 6.16,
+      "source_end": 6.64
+    },
+    {
+      "type": "word",
+      "text": "with",
+      "start": 4.073,
+      "end": 4.313,
+      "source_start": 6.64,
+      "source_end": 6.88
+    },
+    {
+      "type": "word",
+      "text": "AI.",
+      "refined": "end",
+      "start": 4.313,
+      "end": 4.748,
+      "source_start": 6.88,
+      "source_end": 7.315
+    },
+    {
+      "type": "word",
+      "text": "So",
+      "refined": "start",
+      "start": 4.952,
+      "end": 5.22,
+      "source_start": 8.452,
+      "source_end": 8.72
+    },
+    {
+      "type": "word",
+      "text": "today",
+      "start": 5.46,
+      "end": 6.02,
+      "source_start": 8.96,
+      "source_end": 9.52
+    },
+    {
+      "type": "word",
+      "text": "I",
+      "refined": "start",
+      "start": 6.344,
+      "end": 6.42,
+      "source_start": 9.844,
+      "source_end": 9.92
+    },
+    {
+      "type": "word",
+      "text": "wanted",
+      "start": 6.42,
+      "end": 6.74,
+      "source_start": 9.92,
+      "source_end": 10.24
+    },
+    {
+      "type": "word",
+      "text": "to",
+      "start": 6.74,
+      "end": 6.9,
+      "source_start": 10.24,
+      "source_end": 10.4
+    },
+    {
+      "type": "word",
+      "text": "show",
+      "start": 6.9,
+      "end": 7.14,
+      "source_start": 10.4,
+      "source_end": 10.64
+    },
+    {
+      "type": "word",
+      "text": "you",
+      "start": 7.14,
+      "end": 7.38,
+      "source_start": 10.64,
+      "source_end": 10.88
+    },
+    {
+      "type": "word",
+      "text": "how",
+      "start": 7.38,
+      "end": 7.62,
+      "source_start": 10.88,
+      "source_end": 11.12
+    },
+    {
+      "type": "word",
+      "text": "I",
+      "start": 7.62,
+      "end": 7.86,
+      "source_start": 11.12,
+      "source_end": 11.36
+    },
+    {
+      "type": "word",
+      "text": "edit",
+      "start": 7.86,
+      "end": 8.34,
+      "source_start": 11.36,
+      "source_end": 11.84
+    },
+    {
+      "type": "word",
+      "text": "my",
+      "start": 8.34,
+      "end": 8.66,
+      "source_start": 11.84,
+      "source_end": 12.16
+    },
+    {
+      "type": "word",
+      "text": "videos.",
+      "refined": "end",
+      "start": 8.66,
+      "end": 9.096,
+      "source_start": 12.16,
+      "source_end": 12.596
+    },
+    {
+      "type": "word",
+      "text": "I",
+      "refined": "moved",
+      "start": 9.317,
+      "end": 9.417,
+      "source_start": 14.384,
+      "source_end": 14.484
+    },
+    {
+      "type": "word",
+      "text": "don't",
+      "refined": "start",
+      "start": 9.417,
+      "end": 9.653,
+      "source_start": 14.484,
+      "source_end": 14.72
+    },
+    {
+      "type": "word",
+      "text": "open",
+      "start": 9.653,
+      "end": 10.133,
+      "source_start": 14.72,
+      "source_end": 15.2
+    },
+    {
+      "type": "word",
+      "text": "any",
+      "start": 10.133,
+      "end": 10.453,
+      "source_start": 15.2,
+      "source_end": 15.52
+    },
+    {
+      "type": "word",
+      "text": "editor.",
+      "refined": "end",
+      "start": 10.453,
+      "end": 10.984,
+      "source_start": 15.52,
+      "source_end": 16.051
+    },
+    {
+      "type": "word",
+      "text": "I",
+      "refined": "start",
+      "start": 11.173,
+      "end": 11.226,
+      "source_start": 17.307,
+      "source_end": 17.36
+    },
+    {
+      "type": "word",
+      "text": "just",
+      "start": 11.226,
+      "end": 11.546,
+      "source_start": 17.36,
+      "source_end": 17.68
+    },
+    {
+      "type": "word",
+      "text": "tell",
+      "start": 11.546,
+      "end": 11.866,
+      "source_start": 17.68,
+      "source_end": 18
+    },
+    {
+      "type": "word",
+      "text": "cutscene",
+      "refined": "end",
+      "start": 11.866,
+      "end": 12.642,
+      "source_start": 18,
+      "source_end": 18.776
+    },
+    {
+      "type": "word",
+      "text": "and",
+      "refined": "start",
+      "start": 12.92,
+      "end": 13.146,
+      "source_start": 19.054,
+      "source_end": 19.28
+    },
+    {
+      "type": "word",
+      "text": "my",
+      "start": 13.146,
+      "end": 13.386,
+      "source_start": 19.28,
+      "source_end": 19.52
+    },
+    {
+      "type": "word",
+      "text": "AI",
+      "start": 13.386,
+      "end": 13.866,
+      "source_start": 19.52,
+      "source_end": 20
+    },
+    {
+      "type": "word",
+      "text": "agents",
+      "start": 13.866,
+      "end": 14.426,
+      "source_start": 20,
+      "source_end": 20.56
+    },
+    {
+      "type": "word",
+      "text": "to",
+      "start": 14.426,
+      "end": 14.666,
+      "source_start": 20.56,
+      "source_end": 20.8
+    },
+    {
+      "type": "word",
+      "text": "do",
+      "start": 14.666,
+      "end": 14.826,
+      "source_start": 20.8,
+      "source_end": 20.96
+    },
+    {
+      "type": "word",
+      "text": "it",
+      "start": 14.826,
+      "end": 15.066,
+      "source_start": 20.96,
+      "source_end": 21.2
+    },
+    {
+      "type": "word",
+      "text": "for",
+      "refined": "end",
+      "start": 15.066,
+      "end": 15.241,
+      "source_start": 21.2,
+      "source_end": 21.375
+    },
+    {
+      "type": "word",
+      "text": "me.",
+      "end_estimated": true,
+      "start": 15.386,
+      "end": 15.68,
+      "source_start": 21.52,
+      "source_end": 21.814
+    }
+  ]
+}

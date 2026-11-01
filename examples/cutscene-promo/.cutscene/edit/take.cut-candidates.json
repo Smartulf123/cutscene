@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "kind": "cutscene-cut-candidates",
+  "transcript": "C:\\Users\\kaspe\\OneDrive\\Desktop\\Video Editing AI Program\\examples\\cutscene-promo\\.cutscene\\edit\\take.transcript.json",
+  "timeline": "source",
+  "word_count": 41,
+  "segment_count": 5,
+  "counts": {},
+  "proposed_cut_seconds": 0,
+  "candidates": []
+}

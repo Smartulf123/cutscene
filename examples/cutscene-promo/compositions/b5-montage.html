@@ -1,0 +1,195 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Space Grotesk"; src: url("../assets/fonts/space-grotesk-latin-700-normal.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: block; }
+
+        #root { position: absolute; inset: 0; }
+        /* b5: four shots on real footage, one per bar (2.25 s). Prefix s5-. */
+        #s5-stage { position: absolute; inset: 0; overflow: hidden; color: #f4f0ff; font-family: "Source Code Pro", ui-monospace, monospace; }
+        .s5-shot { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 960px 520px; }
+        .s5-vid { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; object-fit: cover; }
+
+        /* a reveal made of two transforms: the window slides one way, its content the other */
+        .s5-win { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; }
+        .s5-winin { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+
+        /* ---- 1. colour grade: a wipe line with before / after tags */
+        #s5-wl1 { position: absolute; left: -2px; top: 0; width: 4px; height: 1080px; background: #f4f0ff; box-shadow: 0 0 18px rgba(244, 240, 255, 0.7), 0 0 60px rgba(108, 230, 255, 0.45); }
+        .s5-wtag { position: absolute; top: 176px; height: 44px; padding: 0 16px; border-radius: 10px; font: 600 30px/44px "Source Code Pro", monospace; white-space: nowrap; background: rgba(15, 11, 26, 0.72); border: 1.5px solid rgba(244, 240, 255, 0.25); }
+        #s5-tag-a { right: 22px; color: #f4f0ff; }
+        #s5-tag-b { left: 22px; color: #9c93b8; }
+
+        /* ---- 2. text pinned into the water */
+        #s5-pin { position: absolute; left: 236px; top: 300px; height: 330px; white-space: nowrap; overflow: hidden; }
+        #s5-pinword { display: block; font: 700 300px/330px "Space Grotesk", sans-serif; letter-spacing: -0.035em; color: #f4f0ff; opacity: 0.93;
+          text-shadow: 10px 22px 34px rgba(4, 18, 20, 0.55); }
+        .s5-pl { display: inline-block; }
+        /* the surf in front of the letters: the same footage, keyed on brightness, only where the word meets the foam */
+        #s5-foamwin { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; clip-path: inset(240px 380px 400px 1000px); }
+        #s5-foam { filter: url("#s5-foamkey"); }
+
+        /* ---- 3. background swap */
+        #s5-wl3 { position: absolute; left: -2px; top: 0; width: 4px; height: 1080px; background: #6ce6ff; box-shadow: 0 0 22px rgba(108, 230, 255, 0.85), 0 0 70px rgba(108, 230, 255, 0.45); }
+        #s5-city { filter: brightness(0.82) saturate(1.12) contrast(1.06); }
+        #s5-kasper { filter: drop-shadow(0 0 3px rgba(255, 196, 150, 0.55)) drop-shadow(0 0 22px rgba(255, 170, 120, 0.22)); }
+
+        /* ---- 4. a face cam over the screen: Kasper's own webcam footage in a frame */
+        #s5-dev { filter: brightness(0.86); }
+        #s5-cam { position: absolute; left: 1270px; top: 250px; width: 520px; height: 520px; border-radius: 34px; overflow: hidden;
+          border: 4px solid #f4f0ff; background: #0f0b1a; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45); transform-origin: 100% 100%; }
+        #s5-camvid { position: absolute; left: -330px; top: -70px; width: 1240px; height: 698px; object-fit: cover; }
+
+        /* ---- shared chrome: scrims and the label */
+        #s5-scrimb { position: absolute; left: 0; top: 600px; width: 1920px; height: 480px; background: linear-gradient(to top, rgba(15, 11, 26, 0.86) 0, rgba(15, 11, 26, 0.55) 200px, rgba(15, 11, 26, 0) 480px); }
+        #s5-scrimt { position: absolute; left: 0; top: 0; width: 1920px; height: 260px; background: linear-gradient(to bottom, rgba(15, 11, 26, 0.6) 0, rgba(15, 11, 26, 0) 260px); }
+        .s5-label { position: absolute; left: 120px; top: 738px; height: 150px; display: flex; gap: 0.24em; overflow: hidden; white-space: nowrap;
+          font: 700 124px/150px "Space Grotesk", sans-serif; letter-spacing: -0.03em; color: #f4f0ff; }
+        .s5-w { display: inline-block; }
+        .s5-hl { color: #6ce6ff; }
+      </style>
+
+      <div data-hf-id="hf-zg8i" id="root" data-composition-id="b5-montage" data-width="1920" data-height="1080">
+        <svg data-hf-id="hf-8rgt" width="0" height="0" style="position:absolute">
+          <!-- luma key: alpha from brightness, so only the white surf stays opaque -->
+          <filter data-hf-id="hf-jkp8" id="s5-foamkey" color-interpolation-filters="sRGB" x="0" y="0" width="100%" height="100%">
+            <feColorMatrix data-hf-id="hf-gy2d" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  2.2 2.6 2.2 0 -3.75" />
+          </filter>
+        </svg>
+        <div data-hf-id="hf-os90" id="s5-stage">
+
+          <!-- 1. Color grade it (0 to 2.25): rain-street, raw under, graded on top behind a wipe -->
+          <div data-hf-id="hf-pafp" id="s5-shot1" class="s5-shot">
+            <video data-hf-id="hf-smsp" id="s5-rain-raw" class="s5-vid clip" src="../assets/footage/rain-street.mp4" muted playsinline data-start="0" data-duration="2.25" data-media-start="0.4" data-track-index="1"></video>
+            <div data-hf-id="hf-n29v" id="s5-win1" class="s5-win">
+              <div data-hf-id="hf-fxmt" id="s5-win1in" class="s5-winin">
+                <video data-hf-id="hf-h9r3" id="s5-rain-grade" class="s5-vid clip" src="../assets/footage/rain-street.mp4" muted playsinline data-start="0" data-duration="2.25" data-media-start="0.4" data-track-index="2"
+                  data-color-grading='{"adjust":{"exposure":0.04,"contrast":0.24,"highlights":-0.18,"shadows":0.06,"blacks":-0.12,"temperature":-0.22,"tint":0.14,"vibrance":0.22,"saturation":0.18},"wheels":{"shadows":{"hue":192,"amount":0.6},"midtones":{"hue":205,"amount":0.18},"highlights":{"hue":322,"amount":0.42}},"details":{"vignette":0.22},"effects":{"bloom":0.7}}'></video>
+              </div>
+            </div>
+            <div data-hf-id="hf-7yh5" id="s5-wipe1" class="clip" data-start="0" data-duration="2.25" data-track-index="3" style="position:absolute;left:0;top:0;width:1920px;height:1080px">
+              <div data-hf-id="hf-kpaw" id="s5-wl1">
+                <div data-hf-id="hf-wiq2" id="s5-tag-a" class="s5-wtag">graded</div>
+                <div data-hf-id="hf-yqbu" id="s5-tag-b" class="s5-wtag">raw</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Pin text to the footage (2.25 to 4.5): coast-aerial, the word sits in the water under the surf -->
+          <div data-hf-id="hf-t8jq" id="s5-shot2" class="s5-shot">
+            <video data-hf-id="hf-rsy8" id="s5-coast" data-hf-media-start-basis="local" class="s5-vid clip" src="../assets/footage/coast-aerial.mp4" muted playsinline data-start="2.25" data-duration="2.25" data-media-start="0.6" data-track-index="1"></video>
+            <div data-hf-id="hf-3ljq" id="s5-pinclip" class="clip" data-start="2.25" data-duration="2.25" data-track-index="2" style="position:absolute;left:0;top:0;width:1920px;height:1080px">
+              <div data-hf-id="hf-5p8g" id="s5-pintrack" style="position:absolute;left:0;top:0;width:1920px;height:1080px">
+                <div data-hf-id="hf-0sxf" id="s5-pin"><span data-hf-id="hf-4wys" id="s5-pinword"><span data-hf-id="hf-7rn6" class="s5-pl">L</span><span data-hf-id="hf-vg5b" class="s5-pl">o</span><span data-hf-id="hf-lwsn" class="s5-pl">w</span><span data-hf-id="hf-jgju" class="s5-pl">&nbsp;</span><span data-hf-id="hf-lihm" class="s5-pl">t</span><span data-hf-id="hf-w8rd" class="s5-pl">i</span><span data-hf-id="hf-rve2" class="s5-pl">d</span><span data-hf-id="hf-rh31" class="s5-pl">e</span></span></div>
+              </div>
+            </div>
+            <div data-hf-id="hf-70et" id="s5-foamwin">
+              <video data-hf-id="hf-lks7" id="s5-foam" data-hf-media-start-basis="local" class="s5-vid clip" src="../assets/footage/coast-aerial.mp4" muted playsinline data-start="2.25" data-duration="2.25" data-media-start="0.6" data-track-index="3"></video>
+            </div>
+          </div>
+
+          <!-- 3. Swap the background (4.5 to 6.75): the office wipes away, city lights behind Kasper -->
+          <div data-hf-id="hf-x6nr" id="s5-shot3" class="s5-shot">
+            <video data-hf-id="hf-w2ka" id="s5-city" data-hf-media-start-basis="local" class="s5-vid clip" src="../assets/footage/city-bokeh.mp4" muted playsinline data-start="4.5" data-duration="2.25" data-media-start="0.3" data-track-index="1"></video>
+            <div data-hf-id="hf-f61t" id="s5-win3" class="s5-win">
+              <div data-hf-id="hf-v5nv" id="s5-win3in" class="s5-winin">
+                <video data-hf-id="hf-ufkm" id="s5-office" data-hf-media-start-basis="local" class="s5-vid clip" src="../assets/footage/take-clean.mp4" muted playsinline data-start="4.5" data-duration="2.25" data-media-start="9.55" data-track-index="2"></video>
+              </div>
+            </div>
+            <div data-hf-id="hf-9042" id="s5-wipe3" class="clip" data-start="4.5" data-duration="2.25" data-track-index="3" style="position:absolute;left:0;top:0;width:1920px;height:1080px">
+              <div data-hf-id="hf-rmoi" id="s5-wl3"></div>
+            </div>
+            <video data-hf-id="hf-7ruw" id="s5-kasper" data-hf-media-start-basis="local" class="s5-vid clip" src="../assets/footage/take-cutout.webm" muted playsinline data-start="4.5" data-duration="2.25" data-media-start="0" data-track-index="4"></video>
+          </div>
+
+          <!-- 4. Add your face cam (6.75 to 9): the developer's screen with Kasper's webcam footage framed over it -->
+          <div data-hf-id="hf-3cdk" id="s5-shot4" class="s5-shot">
+            <video data-hf-id="hf-eghe" id="s5-dev" data-hf-media-start-basis="local" class="s5-vid clip" src="../assets/footage/developer.mp4" muted playsinline data-start="6.75" data-duration="2.25" data-media-start="0.3" data-track-index="1"></video>
+            <div data-hf-id="hf-pfaz" id="s5-cam">
+              <video data-hf-id="hf-xzut" id="s5-camvid" data-hf-media-start-basis="local" class="clip" src="../assets/footage/take-clean.mp4" muted playsinline data-start="6.75" data-duration="2.25" data-media-start="3.4" data-track-index="3"></video>
+            </div>
+          </div>
+
+          <!-- chrome over every shot -->
+          <div data-hf-id="hf-k6p0" id="s5-scrimt"></div>
+          <div data-hf-id="hf-kuve" id="s5-scrimb"></div>
+
+          <div data-hf-id="hf-7gj4" id="s5-lab1" class="s5-label clip" data-start="0" data-duration="2.25" data-track-index="10"><span data-hf-id="hf-rc5k" class="s5-w">Color</span><span data-hf-id="hf-qbyc" class="s5-w">grade</span><span data-hf-id="hf-9gjk" class="s5-w">it</span></div>
+          <div data-hf-id="hf-6loi" id="s5-lab2" class="s5-label clip" data-start="2.25" data-duration="2.25" data-track-index="10"><span data-hf-id="hf-drb8" class="s5-w">Pin</span><span data-hf-id="hf-aey6" class="s5-w">text</span><span data-hf-id="hf-crdg" class="s5-w">to</span><span data-hf-id="hf-itf0" class="s5-w">the</span><span data-hf-id="hf-8v20" class="s5-w">footage</span></div>
+          <div data-hf-id="hf-1mi3" id="s5-lab3" class="s5-label clip" data-start="4.5" data-duration="2.25" data-track-index="10"><span data-hf-id="hf-9rz2" class="s5-w">Swap</span><span data-hf-id="hf-wnwk" class="s5-w">the</span><span data-hf-id="hf-6xm5" class="s5-w">background</span></div>
+          <div data-hf-id="hf-1m89" id="s5-lab4" class="s5-label clip" data-start="6.75" data-duration="2.25" data-track-index="10"><span data-hf-id="hf-gx8c" class="s5-w">Add</span><span data-hf-id="hf-z4ku" class="s5-w">your</span><span data-hf-id="hf-yfbz" class="s5-w">face</span><span data-hf-id="hf-kyab" class="s5-w s5-hl">cam</span></div>
+
+
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          const BAR = 2.25;
+          const FACE_AT = 7.43; // "face" in the narrator's phrase (b5 time)
+          const tl = gsap.timeline({ paused: true });
+
+          // each shot: a hard cut on the bar, a quick settle from a punch-in, then a slow drift
+          ["#s5-shot1", "#s5-shot2", "#s5-shot3", "#s5-shot4"].forEach((sel, i) => {
+            const t0 = i * BAR;
+            tl.fromTo(sel, { scale: 1.07 }, { scale: 1.0, duration: 0.55, ease: "expo.out", immediateRender: i === 0 }, t0);
+            tl.to(sel, { scale: 1.025, duration: BAR - 0.55, ease: "sine.inOut" }, t0 + 0.55);
+          });
+
+          // labels land on the spoken word (b5 time; the phrases start at 0.2, 2.45, 4.7 and 6.95)
+          const WORDS = [
+            ["#s5-lab1", [0.2, 0.58, 0.84]],
+            ["#s5-lab2", [2.51, 2.69, 2.95, 3.11, 3.19]],
+            ["#s5-lab3", [4.76, 4.98, 5.1]],
+            ["#s5-lab4", [6.95, 7.29, 7.43, 7.67]],
+          ];
+          WORDS.forEach(([sel, times]) => {
+            gsap.utils.toArray(`${sel} .s5-w`).forEach((el, i) => {
+              tl.fromTo(el, { yPercent: 110 }, { yPercent: 0, duration: 0.5, ease: "expo.out" }, times[i] - 0.06);
+            });
+          });
+
+          // ---- 1. the grade wipes in left to right: to the middle on "grade", then all the way.
+          // The window slides right while its content slides back, so the footage never moves.
+          const wipe = (win, inner, line, steps) => {
+            let prev = null;
+            steps.forEach(([at, dur, to, ease]) => {
+              const from = prev === null ? 0 : prev;
+              tl.fromTo(win, { x: (from - 1) * 1920 }, { x: (to - 1) * 1920, duration: dur, ease, immediateRender: prev === null }, at);
+              tl.fromTo(inner, { x: (1 - from) * 1920 }, { x: (1 - to) * 1920, duration: dur, ease, immediateRender: prev === null }, at);
+              tl.fromTo(line, { x: from * 1920 }, { x: to * 1920, duration: dur, ease, immediateRender: prev === null }, at);
+              prev = to;
+            });
+          };
+          wipe("#s5-win1", "#s5-win1in", "#s5-wl1", [[0.14, 0.6, 0.56, "expo.out"], [0.74, 0.6, 0.64, "sine.inOut"], [1.34, 0.55, 1.0, "power3.inOut"]]);
+          tl.fromTo("#s5-wl1", { opacity: 1 }, { opacity: 0, duration: 0.2, ease: "power2.in" }, 1.7);
+
+          // ---- 2. the word rises out of the water on "Pin" and rides the drone's drift
+          gsap.utils.toArray("#s5-pinword .s5-pl").forEach((el, i) => {
+            tl.fromTo(el, { yPercent: 105, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.7, ease: "expo.out" }, 2.47 + i * 0.03);
+          });
+          // measured on the rocks: about 1 px right and 6 px up over these 2.25 s
+          tl.fromTo("#s5-pintrack", { x: 0, y: 0 }, { x: 1, y: -6, duration: BAR, ease: "none" }, 2.25);
+
+          // ---- 3. the office wipes away left to right on "Swap", revealing the city (a window
+          // that slides right, holding the office still inside it)
+          tl.fromTo("#s5-win3", { x: 0 }, { x: 1920, duration: 0.7, ease: "expo.inOut", immediateRender: false }, 4.72);
+          tl.fromTo("#s5-win3in", { x: 0 }, { x: -1920, duration: 0.7, ease: "expo.inOut", immediateRender: false }, 4.72);
+          tl.fromTo("#s5-wl3", { x: 0 }, { x: 1920, duration: 0.7, ease: "expo.inOut", immediateRender: false }, 4.72);
+          tl.fromTo("#s5-wl3", { opacity: 0 }, { opacity: 1, duration: 0.08, ease: "none", immediateRender: false }, 4.72);
+          tl.to("#s5-wl3", { opacity: 0, duration: 0.15, ease: "power2.in" }, 5.3);
+          tl.fromTo("#s5-city", { scale: 1.14 }, { scale: 1.06, duration: BAR, ease: "sine.out", immediateRender: false }, 4.5);
+
+          // ---- 4. the face cam pops in on "face" and settles; a slow push keeps it alive
+          tl.fromTo("#s5-cam", { opacity: 0, scale: 0.55 }, { opacity: 1, scale: 1, duration: 0.6, ease: "expo.out" }, FACE_AT - 0.08);
+          tl.fromTo("#s5-camvid", { scale: 1 }, { scale: 1.05, duration: 9.0 - FACE_AT, ease: "sine.inOut", transformOrigin: "50% 40%" }, FACE_AT);
+
+          tl.set({}, {}, 9.0);
+          window.__timelines["b5-montage"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

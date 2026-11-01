@@ -1,0 +1,30 @@
+# Cutscene: caches and outputs that are rebuilt automatically
+.hyperframes/
+.thumbnails/
+.transcode-cache/
+.cutscene/3d/*/frames/
+.cutscene/3d/*/stills/
+.cutscene/stills/
+.cutscene/voice/takes/
+renders/
+/*.mp4
+/*.mov
+/*.webm
+node_modules/
+
+# Not kept in git (run `node footage/prepare.mjs` to get them back):
+# raw takes and the Pexels clips, the cut-down stock pieces, and the bundled sound effects
+/footage/*.mp4
+/footage/*.webm
+/assets/footage/city-bokeh.mp4
+/assets/footage/coast-aerial.mp4
+/assets/footage/developer.mp4
+/assets/footage/rain-street.mp4
+/assets/sfx/
+# edit work files (the edit lists and transcripts stay)
+/.cutscene/edit/*.mp4
+/.cutscene/edit/*.webm
+/.cutscene/edit/*.wav
+/.cutscene/edit/old-take/
+# the earlier 35 s cut, kept on this computer only
+/.cutscene/old-35s/
